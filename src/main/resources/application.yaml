@@ -1,0 +1,37 @@
+server:
+  port: 80
+  servlet:
+    session:
+      cookie:
+        name: sid
+      timeout: 1d
+logging:
+  file:
+    path: neplog
+    max-history: 30
+spring:
+  datasource:
+    url: jdbc:h2:~/neplog
+    username: neplog
+    password: neplog
+    driver-class-name: org.h2.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      validation-query: SELECT 1 FROM DUAL
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 3MB
+
+xblog:
+  uploaded-file:
+    root: uploads
+    options:
+      avatar: {path: [img], thumbnail:{generate: true, generateStrategy: scale, width: 60, height: 60}}
+      postCover: {path: [img], thumbnail:{generate: true, generateStrategy: scale, width: 60, height: 60}}
+      background: {path: [img], thumbnail:{generate: false}}
+      img: {path: [img], thumbnail:{generate: false}}
+      commonFile: {path: [common]}

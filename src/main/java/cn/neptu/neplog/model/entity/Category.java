@@ -1,0 +1,37 @@
+package cn.neptu.neplog.model.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Entity
+public class Category extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "name",columnDefinition = "varchar(15) not null")
+    private String name;
+
+    @Override
+    protected void prePersist() {
+        super.prePersist();
+        if(name == null || name.equals("")){
+            name = "未命名";
+        }
+    }
+
+    @Override
+    protected void preUpdate() {
+        super.preUpdate();
+    }
+}
