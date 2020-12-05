@@ -22,12 +22,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @EnableAsync
 @Configuration
-public class XBlogConfiguration implements WebMvcConfigurer {
+public class NeplogConfiguration implements WebMvcConfigurer {
 
     @Resource
     private AuthenticationInterceptor authorizationInterceptor;
 
-    @Value("${xblog.uploaded-file.root:uploads}")
+    @Value("${neplog.file.root:uploads}")
     private String localFileRootPath;
 
     @Override
@@ -42,7 +42,7 @@ public class XBlogConfiguration implements WebMvcConfigurer {
         String realPath = "file:" + path.getAbsolutePath() + File.separator;
         log.info("Adding '{}' to mapped resource location",realPath);
         registry.addResourceHandler("/uploads/**").addResourceLocations(realPath);
-//        registry.addResourceHandler("/res/**").addResourceLocations("classpath:/static/**");
+
     }
 
     @Override
@@ -54,14 +54,14 @@ public class XBlogConfiguration implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Bean
-    public FilterRegistrationBean<RewriteFilter> rewriteFilter(){
-        FilterRegistrationBean<RewriteFilter> frb = new FilterRegistrationBean<>();
-        frb.setFilter(new RewriteFilter());
-        frb.addUrlPatterns("/x/*");
-        frb.setOrder(1);
-        return frb;
-    }
+//    @Bean
+//    public FilterRegistrationBean<RewriteFilter> rewriteFilter(){
+//        FilterRegistrationBean<RewriteFilter> frb = new FilterRegistrationBean<>();
+//        frb.setFilter(new RewriteFilter());
+//        frb.addUrlPatterns("/x/*");
+//        frb.setOrder(1);
+//        return frb;
+//    }
 
     @Bean(name = "taskExecutor")
     public TaskExecutor taskExecutor() {
@@ -70,36 +70,10 @@ public class XBlogConfiguration implements WebMvcConfigurer {
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(20);
         executor.setKeepAliveSeconds(60);
-        executor.setThreadNamePrefix("xblog-");
+        executor.setThreadNamePrefix("neplog-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);
         return executor;
     }
 
-//    @Bean
-//    public Connector connector(){
-//        Connector connector=new Connector("org.apache.coyote.http11.Http11NioProtocol");
-//        connector.setScheme("http");
-//        connector.setPort(80);
-//        connector.setSecure(false);
-//        connector.setRedirectPort(443);
-//        return connector;
-//    }
-//
-//    @Bean
-//    public TomcatServletWebServerFactory tomcatServletWebServerFactory(Connector connector){
-//        TomcatServletWebServerFactory tomcat=new TomcatServletWebServerFactory(){
-//            @Override
-//            protected void postProcessContext(Context context) {
-//                SecurityConstraint securityConstraint=new SecurityConstraint();
-//                securityConstraint.setUserConstraint("CONFIDENTIAL");
-//                SecurityCollection collection=new SecurityCollection();
-//                collection.addPattern("/*");
-//                securityConstraint.addCollection(collection);
-//                context.addConstraint(securityConstraint);
-//            }
-//        };
-//        tomcat.addAdditionalTomcatConnectors(connector);
-//        return tomcat;
-//    }
 }

@@ -26,8 +26,8 @@ spring:
     multipart:
       max-file-size: 3MB
 
-xblog:
-  uploaded-file:
+neplog:
+  file:
     root: uploads
     options:
       avatar: {path: [img], thumbnail:{generate: true, generateStrategy: scale, width: 60, height: 60}}
@@ -35,3 +35,6 @@ xblog:
       background: {path: [img], thumbnail:{generate: false}}
       img: {path: [img], thumbnail:{generate: false}}
       commonFile: {path: [common]}
+
+  security:
+    secret: j.2_d?+bn

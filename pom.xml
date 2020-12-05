@@ -64,94 +64,34 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-all -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.vladsch.flexmark</groupId>-->
-        <!--            <artifactId>flexmark-all</artifactId>-->
-        <!--            <version>0.62.2</version>-->
-        <!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-tables</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-emoji -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-emoji</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-autolink -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-autolink</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-gfm-strikethrough -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-gfm-strikethrough</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-anchorlink -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-anchorlink</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-toc -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-toc</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-escaped-character -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-escaped-character</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-gitlab -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-gitlab</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-gfm-tasklist -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-gfm-tasklist</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-ext-media-tags -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-media-tags</artifactId>
-            <version>0.62.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.9.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.21</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
         </dependency>
 
     </dependencies>
@@ -171,6 +111,39 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>spring</id>
+            <url>https://maven.aliyun.com/repository/spring</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -27,10 +28,10 @@ public class User extends BaseEntity{
     @Column(name = "username",columnDefinition = "varchar(32) not null unique")
     private String username;
 
-    @Column(name = "password",columnDefinition = "varchar(127) not null")
+    @Column(name = "password",nullable = false,columnDefinition = "varchar(127) not null")
     private String password;
 
-    @Column(name = "nickname",columnDefinition = "varchar(31) not null")
+    @Column(name = "nickname",nullable = false,columnDefinition = "varchar(31) not null")
     private String nickname;
 
     @Column(name = "email",columnDefinition = "varchar(127) default ''")
@@ -42,6 +43,7 @@ public class User extends BaseEntity{
     @Column(name = "last_login_ip", columnDefinition = "varchar(15) default ''")
     private String lastLoginIP;
 
-    @Column(name = "level", columnDefinition = "int default 1")
+    @Column(name = "level")
+    @ColumnDefault("1")
     private Integer level;
 }

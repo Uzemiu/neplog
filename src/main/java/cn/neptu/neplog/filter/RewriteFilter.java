@@ -14,6 +14,6 @@ public class RewriteFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        req.getRequestDispatcher("/index.html").forward(req, resp);
+//        req.getRequestDispatcher("/index.html").forward(req, resp);
     }
 }
