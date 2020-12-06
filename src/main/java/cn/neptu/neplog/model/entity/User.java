@@ -25,25 +25,37 @@ public class User extends BaseEntity{
     @Column(name = "id", length = 32)
     private String id;
 
-    @Column(name = "username",columnDefinition = "varchar(32) not null unique")
+    @Column(name = "username",length = 32,unique = true,nullable = false)
     private String username;
 
-    @Column(name = "password",nullable = false,columnDefinition = "varchar(127) not null")
+    @Column(name = "password",nullable = false)
     private String password;
 
-    @Column(name = "nickname",nullable = false,columnDefinition = "varchar(31) not null")
+    @Column(name = "nickname",length = 32,unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "email",columnDefinition = "varchar(127) default ''")
+    @Column(name = "email",length = 127)
+    @ColumnDefault("")
     private String email;
 
-    @Column(name = "avatar",columnDefinition = "varchar(1023) default ''")
+    @Column(name = "avatar",length = 1023)
+    @ColumnDefault("")
     private String avatar;
-
-    @Column(name = "last_login_ip", columnDefinition = "varchar(15) default ''")
-    private String lastLoginIP;
 
     @Column(name = "level")
     @ColumnDefault("1")
     private Integer level;
+
+    @Override
+    protected void prePersist() {
+        if(email == null){
+            email = "";
+        }
+        if(avatar == null){
+            avatar = "";
+        }
+        if(level == null){
+            level = 1;
+        }
+    }
 }

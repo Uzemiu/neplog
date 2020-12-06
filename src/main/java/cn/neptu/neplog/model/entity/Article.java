@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -23,37 +24,45 @@ public class Article extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "title",columnDefinition = "varchar(255) not null")
+    @Column(name = "title",length = 255,nullable = false)
     private String title;
 
-    @Column(name = "summary", columnDefinition = "varchar(255) default ''")
+    @Column(name = "summary",length = 255)
+    @ColumnDefault("")
     private String summary;
 
-    @Column(name = "content", columnDefinition = "longtext not null")
+    @Column(name = "content",nullable = false)
+    @Lob
     private String content;
 
-    @Column(name = "html_content", columnDefinition = "longtext not null")
+    @Column(name = "html_content",nullable = false)
+    @Lob
     private String htmlContent;
 
-    @Column(name = "privacy", columnDefinition = "boolean default false")
+    @Column(name = "privacy")
     private Boolean privacy;
 
-    @Column(name = "cover", columnDefinition = "varchar(1023) default ''")
+    @Column(name = "cover",length = 1023)
+    @ColumnDefault("")
     private String cover;
 
-    @Column(name = "priority", columnDefinition = "int default 0")
+    @Column(name = "priority")
+    @ColumnDefault("0")
     private Integer priority;
 
-    @Column(name = "status", columnDefinition = "int default 0")
+    @Column(name = "status")
+    @ColumnDefault("0")
     private Integer status;
 
-    @Column(name = "views", columnDefinition = "int default 0")
+    @Column(name = "views")
+    @ColumnDefault("0")
     private Integer views;
 
-    @Column(name = "likes", columnDefinition = "int default 0")
+    @Column(name = "likes")
+    @ColumnDefault("0")
     private Integer likes;
 
-    @Column(name = "category", columnDefinition = "int default 0")
+    @Column(name = "category")
     private Integer category;
 
     @Override

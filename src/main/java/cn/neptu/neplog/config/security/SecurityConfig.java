@@ -20,13 +20,18 @@ public class SecurityConfig {
     private String secret;
 
     /**
-     * jwt过期时间（毫秒）
+     * AES加密密钥
      */
-    private long expire;
+    private String AESKey;
 
     /**
-     * jwt有效期小于该时间则续期（毫秒）
+     * jwt过期时间（小时）
      */
-    private long refresh;
+    private int tokenExpireTime;
+
+    /**
+     * jwt有效期小于该时间则续期（小时）
+     */
+    private int tokenRefreshTime;
 
 }

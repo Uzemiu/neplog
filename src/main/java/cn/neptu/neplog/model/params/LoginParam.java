@@ -1,4 +1,4 @@
-package cn.neptu.neplog.model.dto;
+package cn.neptu.neplog.model.params;
 
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class LoginParam {
     private String password;
 
     @NotBlank(message = "验证码不能为空")
-    private String code;
+    private String captcha;
 
     @NotBlank
     private String uuid;

@@ -33,14 +33,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = jwtUtil.resolveToken(httpServletRequest);
-        Claims claims = jwtUtil.parseToken(token);
+        if(token != null){
+            Claims claims = jwtUtil.parseToken(token);
 
-        String userId = claims.getSubject();
-        User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
-        securityUtil.setCurrentUser(user);
+            String userId = claims.getSubject();
+            User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
+            securityUtil.setCurrentUser(user);
 
-        Date expire = claims.getExpiration();
-
+            Date expire = claims.getExpiration();
+            // todo token续期
+        }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
 

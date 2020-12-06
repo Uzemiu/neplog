@@ -1,58 +1,76 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
-import cn.neptu.neplog.config.security.SecurityConfig;
-import cn.neptu.neplog.model.dto.LoginParam;
+import cn.neptu.neplog.annotation.RequiredLevel;
+import cn.neptu.neplog.exception.BadRequestException;
+import cn.neptu.neplog.model.dto.UserDTO;
+import cn.neptu.neplog.model.params.LoginParam;
+import cn.neptu.neplog.model.params.RegisterParam;
+import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.model.support.BaseResponse;
+import cn.neptu.neplog.model.support.VerificationCode;
+import cn.neptu.neplog.service.UserService;
+import cn.neptu.neplog.service.mapstruct.UserMapper;
+import cn.neptu.neplog.utils.AESUtil;
 import cn.neptu.neplog.utils.JwtUtil;
-import cn.neptu.neplog.utils.RedisUtil;
-import com.wf.captcha.ArithmeticCaptcha;
-import org.apache.logging.log4j.util.Strings;
+import cn.neptu.neplog.utils.SecurityUtil;
+import cn.neptu.neplog.utils.VerificationCodeUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Resource
-    private RedisUtil redisUtil;
-    @Resource
-    private SecurityConfig authenticationConfig;
-    @Resource
-    private JwtUtil jwtUtil;
+    private final VerificationCodeUtil verificationCodeUtil;
+    private final JwtUtil jwtUtil;
+    private final AESUtil aesUtil;
+    private final SecurityUtil securityUtil;
+    private final UserMapper userMapper;
+    private final UserService userService;
 
     @AnonymousAccess
     @PostMapping("/login")
-    public BaseResponse<String> login(@Validated LoginParam param){
-        // check captcha
-        String captcha = (String) redisUtil.get(authenticationConfig.getCaptchaPrefix() + param.getUuid());
-        redisUtil.del(authenticationConfig.getCaptchaPrefix() + param.getUuid());
-        if (Strings.isBlank(captcha)) {
-//            throw new BadRequestException("验证码不存在或已过期");
+    public BaseResponse<?> login(@Validated LoginParam param){
+        if(securityUtil.getCurrentUser() != null){
+            return BaseResponse.ok("你已经登陆过了");
         }
-        if (Strings.isBlank(param.getCode()) || !param.getCode().equalsIgnoreCase(captcha)) { 
-//            throw new BadRequestException("验证码错误");
+        verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
+        String plainPassword;
+        try {
+            plainPassword = aesUtil.decrypt(param.getPassword());
+        } catch (BadPaddingException | IllegalBlockSizeException e) {
+            log.error("Error in parsing AES encrypted password: " + param.getPassword());
+            throw new BadRequestException("异常密码");
         }
+        User user = userService.findByUsername(param.getUsername()).orElseThrow(() -> new BadRequestException("用户名或密码"));
+        Assert.isTrue(BCrypt.checkpw(plainPassword,user.getPassword()),"用户名或密码错误");
+        Map<String, Object> res = new HashMap<String, Object>(2){{
+            put("user",userMapper.toDto(user));
+            put("jwt",JwtUtil.TOKEN_PREFIX + jwtUtil.generateToken(user));
+        }};
+        return BaseResponse.ok("ok",res);
+    }
 
-        // check username ppw
-
-
-//        String jwt = JwtUtil.generateToken(authentication);
-        String jwt = "";
-
-        // save token to redis
-        return new BaseResponse<>(200,"ok",JwtUtil.TOKEN_PREFIX + jwt);
+    @GetMapping("/info")
+    @RequiredLevel(1)
+    public BaseResponse<UserDTO> getUserInfo(){
+        return BaseResponse.ok("ok",userMapper.toDto(securityUtil.getCurrentUser()));
     }
 
     @PostMapping("/logout")
@@ -63,18 +81,26 @@ public class UserController {
     }
 
     @AnonymousAccess
+    @PostMapping("/register")
+    public BaseResponse<?> register(@Validated RegisterParam param){
+        verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
+        try {
+            param.setPassword(aesUtil.decrypt(param.getPassword()));
+        } catch (BadPaddingException | IllegalBlockSizeException e) {
+            log.error("Error in parsing AES encrypted password: " + param.getPassword());
+            throw new BadRequestException("异常密码");
+        }
+        userService.register(param);
+        return BaseResponse.ok();
+    }
+
+    @AnonymousAccess
     @GetMapping("/captcha")
     public BaseResponse<?> captcha(){
-        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130,48,2);
-        String verCode = captcha.text().toLowerCase();
-        if(verCode.contains(".")){
-            verCode = verCode.split("\\.")[0];
-        }
-        String uuid =  UUID.randomUUID().toString();
-        redisUtil.set(authenticationConfig.getCaptchaPrefix() + uuid, verCode, 2, TimeUnit.MINUTES);
+        VerificationCode captcha = verificationCodeUtil.generateImageCaptcha();
         Map<String, Object> imgResult = new HashMap<String, Object>(2) {{
-            put("img", captcha.toBase64());
-            put("uuid", uuid);
+            put("img", captcha.getEntity());
+            put("uuid", captcha.getUuid());
         }};
         return BaseResponse.ok("ok",imgResult);
     }

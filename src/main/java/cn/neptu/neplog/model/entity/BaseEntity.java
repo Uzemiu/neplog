@@ -31,7 +31,6 @@ public class BaseEntity {
         if (createTime == null) {
             createTime = now;
         }
-
         if (updateTime == null) {
             updateTime = now;
         }

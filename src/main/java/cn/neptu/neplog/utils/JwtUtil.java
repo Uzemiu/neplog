@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.Date;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -35,9 +35,11 @@ public class JwtUtil implements InitializingBean {
     }
 
     public String generateToken(User user) {
+        Date expire = new Date(System.currentTimeMillis() + securityConfig.getTokenExpireTime() * 3600_000);
         String jwt = jwtBuilder
                 .setId(UUID.randomUUID().toString())
                 .setSubject(user.getId())
+                .setExpiration(expire)
                 .compact();
         return jwt;
     }

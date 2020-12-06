@@ -25,6 +25,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 3MB
+  h2:
+    console:
+      enabled: true
 
 neplog:
   file:
@@ -38,3 +41,7 @@ neplog:
 
   security:
     secret: j.2_d?+bn
+    AESKey: I8KI6i+3UhXVd02N
+    captcha-prefix: captcha
+    token-expire-time: 24
+    token-refresh-time: 2
