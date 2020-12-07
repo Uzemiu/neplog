@@ -1,6 +1,5 @@
 package cn.neptu.neplog.model.entity;
 
-import cn.neptu.neplog.model.enums.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * 博客文章
@@ -21,14 +21,14 @@ public class Article extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "article_id")
     private Integer id;
 
     @Column(name = "title",length = 255,nullable = false)
     private String title;
 
     @Column(name = "summary",length = 255)
-    @ColumnDefault("")
+    @ColumnDefault("''")
     private String summary;
 
     @Column(name = "content",nullable = false)
@@ -39,17 +39,19 @@ public class Article extends BaseEntity{
     @Lob
     private String htmlContent;
 
-    @Column(name = "privacy")
-    private Boolean privacy;
-
     @Column(name = "cover",length = 1023)
-    @ColumnDefault("")
+    @ColumnDefault("''")
     private String cover;
 
     @Column(name = "priority")
     @ColumnDefault("0")
     private Integer priority;
 
+    /**
+     * 0 Draft
+     * 5 Private
+     * 10 Public
+     */
     @Column(name = "status")
     @ColumnDefault("0")
     private Integer status;
@@ -62,8 +64,8 @@ public class Article extends BaseEntity{
     @ColumnDefault("0")
     private Integer likes;
 
-    @Column(name = "category")
-    private Integer category;
+    @Column(name = "category_id", nullable = false)
+    private Integer categoryId;
 
     @Override
     public void prePersist(){
@@ -72,16 +74,13 @@ public class Article extends BaseEntity{
             title = "Untitled";
         }
         if(content == null){
-            content = "";
+            content = "Edit not";
         }
         if(htmlContent == null){
             htmlContent = "";
         }
-        if(summary == null || summary.length() == 0){
-            summary = ""; // TODO generate summary
-        }
-        if(privacy == null){
-            privacy = false;
+        if(summary == null){
+            summary = "Edit now";
         }
         if(cover == null){
             cover = ""; // TODO default cover
@@ -97,9 +96,6 @@ public class Article extends BaseEntity{
         }
         if(likes == null){
             likes = 0;
-        }
-        if(category == null){
-            category = 0;
         }
     }
 

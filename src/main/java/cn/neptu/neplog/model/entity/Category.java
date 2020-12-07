@@ -19,7 +19,7 @@ public class Category extends BaseEntity {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name",columnDefinition = "varchar(15) not null")
+    @Column(name = "name",length = 31,nullable = false)
     private String name;
 
     @Override
@@ -30,8 +30,4 @@ public class Category extends BaseEntity {
         }
     }
 
-    @Override
-    protected void preUpdate() {
-        super.preUpdate();
-    }
 }

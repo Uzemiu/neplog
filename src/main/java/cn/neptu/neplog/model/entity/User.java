@@ -35,11 +35,11 @@ public class User extends BaseEntity{
     private String nickname;
 
     @Column(name = "email",length = 127)
-    @ColumnDefault("")
+    @ColumnDefault("''")
     private String email;
 
     @Column(name = "avatar",length = 1023)
-    @ColumnDefault("")
+    @ColumnDefault("''")
     private String avatar;
 
     @Column(name = "level")
@@ -48,6 +48,7 @@ public class User extends BaseEntity{
 
     @Override
     protected void prePersist() {
+        super.prePersist();
         if(email == null){
             email = "";
         }

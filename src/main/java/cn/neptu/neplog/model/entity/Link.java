@@ -10,7 +10,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+//@Entity
 public class Link extends BaseEntity{
 
     @Id

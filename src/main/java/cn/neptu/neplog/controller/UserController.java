@@ -20,10 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -46,7 +43,7 @@ public class UserController {
 
     @AnonymousAccess
     @PostMapping("/login")
-    public BaseResponse<?> login(@Validated LoginParam param){
+    public BaseResponse<?> login(@Validated @RequestBody LoginParam param){
         if(securityUtil.getCurrentUser() != null){
             return BaseResponse.ok("你已经登陆过了");
         }
@@ -82,7 +79,7 @@ public class UserController {
 
     @AnonymousAccess
     @PostMapping("/register")
-    public BaseResponse<?> register(@Validated RegisterParam param){
+    public BaseResponse<?> register(@Validated @RequestBody RegisterParam param){
         verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
         try {
             param.setPassword(aesUtil.decrypt(param.getPassword()));
