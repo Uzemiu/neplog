@@ -2,6 +2,7 @@ package cn.neptu.neplog.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(callSuper = false)
 public class Tag extends BaseEntity{
 
     @Id
@@ -35,6 +37,6 @@ public class Tag extends BaseEntity{
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), articleId, tag);
+        return Objects.hash(articleId, tag);
     }
 }

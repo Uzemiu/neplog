@@ -17,8 +17,18 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
 
+    @Override
+    public List<Tag> findAll() {
+        return tagRepository.findAll();
+    }
+
     public List<Tag> saveAll(Iterable<Tag> tags){
         return tagRepository.saveAll(tags);
+    }
+
+    @Override
+    public Set<Tag> findByArticleId(Integer articleId) {
+        return tagRepository.findByArticleId(articleId);
     }
 
     @Override

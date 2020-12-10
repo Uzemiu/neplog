@@ -7,7 +7,7 @@ server:
       timeout: 1d
 logging:
   file:
-    path: neplog
+    path: log
     max-history: 30
 spring:
   datasource:
@@ -33,10 +33,9 @@ neplog:
   file:
     root: uploads
     options:
-      avatar: {path: [img], thumbnail:{generate: true, generateStrategy: scale, width: 60, height: 60}}
-      postCover: {path: [img], thumbnail:{generate: true, generateStrategy: scale, width: 60, height: 60}}
-      background: {path: [img], thumbnail:{generate: false}}
-      img: {path: [img], thumbnail:{generate: false}}
+      avatar: {path: [img], thumnail: true, width: 200, height: 200}
+      articleCover: {path: [img]}
+      img: {path: [img]}
       commonFile: {path: [common]}
 
   security:

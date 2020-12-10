@@ -5,10 +5,10 @@ import cn.neptu.neplog.model.entity.Tag;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Data
-public class BaseArticleDTO{
+public class ArticleBaseDTO {
 
     private Integer id;
 
@@ -24,9 +24,9 @@ public class BaseArticleDTO{
 
     private Integer comments;
 
-    private Category category;
+    private CategoryDTO category;
 
-    private Set<Tag> tags;
+    private List<String> tags;
 
     private Date createTime;
 

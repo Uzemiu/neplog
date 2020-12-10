@@ -10,5 +10,9 @@ import lombok.NoArgsConstructor;
 public class UploadFileOption {
 
     private String[] path;
-    private ThumbnailOption thumbnail;
+    private Boolean compress;
+    private Boolean thumbnail;
+    private int width;
+    private int height;
+
 }

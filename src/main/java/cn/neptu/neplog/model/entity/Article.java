@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * 博客文章
@@ -48,9 +47,8 @@ public class Article extends BaseEntity{
     private Integer priority;
 
     /**
-     * 0 Draft
-     * 5 Private
-     * 10 Public
+     * 0~3 Draft
+     * 4 Published
      */
     @Column(name = "status")
     @ColumnDefault("0")
@@ -63,6 +61,25 @@ public class Article extends BaseEntity{
     @Column(name = "likes")
     @ColumnDefault("0")
     private Integer likes;
+
+    /**
+     * 0~3 Anybody
+     * 4~7 Require review
+     * 8~15 User only
+     * >=16 Closed(Owner only)
+     */
+    @Column(name = "comment_permission")
+    @ColumnDefault("0")
+    private Integer commentPermission;
+
+    /**
+     * 0~3 Anybody
+     * 4~7 User only
+     * >=16 Private
+     */
+    @Column(name = "view_permission")
+    @ColumnDefault("0")
+    private Integer viewPermission;
 
     @Column(name = "category_id", nullable = false)
     private Integer categoryId;

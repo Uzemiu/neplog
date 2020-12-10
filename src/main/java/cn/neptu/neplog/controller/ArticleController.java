@@ -15,9 +15,8 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public BaseResponse<?> getArticle(){
-
-        return BaseResponse.ok("",articleService.find());
+    public BaseResponse<?> getArticle(Integer id){
+        return BaseResponse.ok("",articleService.findById(id));
     }
 
     @PostMapping

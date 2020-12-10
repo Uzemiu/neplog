@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "xblog.uploaded-file")
+@ConfigurationProperties(prefix = "neplog.file")
 public class UploadFileConfiguration {
 
     private Map<String, UploadFileOption> options;

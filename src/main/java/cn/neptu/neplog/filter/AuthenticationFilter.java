@@ -7,7 +7,9 @@ import cn.neptu.neplog.utils.JwtUtil;
 import cn.neptu.neplog.utils.RedisUtil;
 import cn.neptu.neplog.utils.SecurityUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -34,13 +37,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = jwtUtil.resolveToken(httpServletRequest);
         if(token != null){
-            Claims claims = jwtUtil.parseToken(token);
+            try{
+                Claims claims = jwtUtil.parseToken(token);
+                String userId = claims.getSubject();
+                User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
+                securityUtil.setCurrentUser(user);
 
-            String userId = claims.getSubject();
-            User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
-            securityUtil.setCurrentUser(user);
-
-            Date expire = claims.getExpiration();
+                Date expire = claims.getExpiration();
+            } catch (ExpiredJwtException e){
+                log.info("Received expired jwt token {}",token);
+            }
             // todo token续期
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);

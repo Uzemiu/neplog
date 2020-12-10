@@ -1,14 +1,16 @@
-package cn.neptu.neplog.handler;
+package cn.neptu.neplog.service;
 
 import cn.neptu.neplog.model.option.UploadFileOption;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface FileHandler {
+public interface FileService {
 
     MediaType IMAGE_TYPE = MediaType.valueOf("image/*");
 
-    String THUMBNAIL_SUFFIX = "-thumb";
+    String THUMBNAIL_SUFFIX = "_thumb";
+
+    String ORIGIN_SUFFIX = "_origin";
 
     static boolean isImageType(String mediaType) {
         return mediaType != null && IMAGE_TYPE.includes(MediaType.valueOf(mediaType));

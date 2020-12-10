@@ -12,6 +12,8 @@ public interface TagRepository extends JpaRepository<Tag,Integer> {
 
     Set<Tag> findByTagIn(Collection<String> tag);
 
+    Set<Tag> findByArticleId(Integer id);
+
     int deleteByArticleIdAndTagNotIn(Integer articleId, Collection<String> tag);
 
 }
