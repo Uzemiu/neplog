@@ -1,10 +1,8 @@
 package cn.neptu.neplog.config;
 
-import cn.neptu.neplog.filter.RewriteFilter;
 import cn.neptu.neplog.interceptor.AuthenticationInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -53,15 +51,6 @@ public class NeplogConfiguration implements WebMvcConfigurer {
                 .maxAge(3600)
                 .allowCredentials(true);
     }
-
-//    @Bean
-//    public FilterRegistrationBean<RewriteFilter> rewriteFilter(){
-//        FilterRegistrationBean<RewriteFilter> frb = new FilterRegistrationBean<>();
-//        frb.setFilter(new RewriteFilter());
-//        frb.addUrlPatterns("/x/*");
-//        frb.setOrder(1);
-//        return frb;
-//    }
 
     @Bean(name = "taskExecutor")
     public TaskExecutor taskExecutor() {

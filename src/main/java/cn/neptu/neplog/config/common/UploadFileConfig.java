@@ -1,4 +1,4 @@
-package cn.neptu.neplog.config;
+package cn.neptu.neplog.config.common;
 
 import cn.neptu.neplog.model.option.UploadFileOption;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "neplog.file")
-public class UploadFileConfiguration {
+public class UploadFileConfig {
 
     private Map<String, UploadFileOption> options;
 

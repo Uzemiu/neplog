@@ -1,6 +1,6 @@
 package cn.neptu.neplog.controller;
 
-import cn.neptu.neplog.config.UploadFileConfiguration;
+import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
     private final FileService fileService;
-    private final UploadFileConfiguration configuration;
+    private final UploadFileConfig configuration;
 
     @PostMapping("/avatar")
     public BaseResponse<?> uploadAvatar(@RequestBody MultipartFile file){

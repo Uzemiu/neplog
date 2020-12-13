@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",uses = {CategoryMapper.class, TagMapper.class},unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",uses = {CategoryMapper.class},unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ArticleMapper extends BaseMapper<ArticleDTO, Article>{
 
     @Override

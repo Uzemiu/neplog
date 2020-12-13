@@ -2,14 +2,10 @@ package cn.neptu.neplog.interceptor;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.annotation.RequiredLevel;
-import cn.neptu.neplog.exception.UnauthenticatedException;
 import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final SecurityUtil securityUtil;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(handler instanceof HandlerMethod){
@@ -29,7 +23,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if(method.hasMethodAnnotation(AnonymousAccess.class)){
                 return true;
             }
-            User user = securityUtil.getCurrentUser();
+            User user = SecurityUtil.getCurrentUser();
             if(user == null){
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
@@ -45,6 +39,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        securityUtil.removeCurrentUser();
+        SecurityUtil.removeCurrentUser();
     }
 }

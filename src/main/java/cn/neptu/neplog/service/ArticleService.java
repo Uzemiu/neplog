@@ -1,14 +1,22 @@
 package cn.neptu.neplog.service;
 
+import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
+import cn.neptu.neplog.model.params.query.ArticleQuery;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ArticleService {
 
     Article save(ArticleDTO article);
 
-    ArticleDTO findById(Integer id);
+    Article findById(Integer id);
+
+    ArticleDTO findDetailById(Integer id);
+
+    ArticleBaseDTO findViewById(Integer id);
+
+    List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable);
 }

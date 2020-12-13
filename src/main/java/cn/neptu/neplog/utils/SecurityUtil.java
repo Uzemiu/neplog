@@ -1,24 +1,20 @@
 package cn.neptu.neplog.utils;
 
 import cn.neptu.neplog.model.entity.User;
-import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
-@Component
 public class SecurityUtil {
 
-    private final ThreadLocal<User> currentUser = new ThreadLocal<>();
+    private final static ThreadLocal<User> currentUser = new ThreadLocal<>();
 
-    public User getCurrentUser(){
+    public static User getCurrentUser(){
         return currentUser.get();
     }
 
-    public void setCurrentUser(User user){
+    public static void setCurrentUser(User user){
         currentUser.set(user);
     }
 
-    public void removeCurrentUser(){
+    public static void removeCurrentUser(){
         currentUser.remove();
     }
 }

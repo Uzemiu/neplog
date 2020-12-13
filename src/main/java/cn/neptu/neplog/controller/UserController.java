@@ -37,14 +37,13 @@ public class UserController {
     private final VerificationCodeUtil verificationCodeUtil;
     private final JwtUtil jwtUtil;
     private final AESUtil aesUtil;
-    private final SecurityUtil securityUtil;
     private final UserMapper userMapper;
     private final UserService userService;
 
     @AnonymousAccess
     @PostMapping("/login")
     public BaseResponse<?> login(@Validated @RequestBody LoginParam param){
-        if(securityUtil.getCurrentUser() != null){
+        if(SecurityUtil.getCurrentUser() != null){
             return BaseResponse.ok("你已经登陆过了");
         }
         verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
@@ -67,7 +66,7 @@ public class UserController {
     @GetMapping("/info")
     @RequiredLevel(1)
     public BaseResponse<UserDTO> getUserInfo(){
-        return BaseResponse.ok("ok",userMapper.toDto(securityUtil.getCurrentUser()));
+        return BaseResponse.ok("ok",userMapper.toDto(SecurityUtil.getCurrentUser()));
     }
 
     @PostMapping("/logout")

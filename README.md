@@ -1,2 +1,9 @@
-# xblog-backend
-xblog backend in J
+# neplog-backend
+
+## 更新日志
+
+### [0.04] - 2020-11-xx
+
+### [0.1] - 2020-12-13
+
+- 完成文章基本保存/发布功能 

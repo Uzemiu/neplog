@@ -28,7 +28,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final RedisUtil redisUtil;
     private final JwtUtil jwtUtil;
-    private final SecurityUtil securityUtil;
     private final UserService userService;
 
     @Override
@@ -41,7 +40,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = jwtUtil.parseToken(token);
                 String userId = claims.getSubject();
                 User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
-                securityUtil.setCurrentUser(user);
+                SecurityUtil.setCurrentUser(user);
 
                 Date expire = claims.getExpiration();
             } catch (ExpiredJwtException e){
