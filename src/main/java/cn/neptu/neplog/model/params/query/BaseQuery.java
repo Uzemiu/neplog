@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 public class BaseQuery<T> {
 
-    private Boolean deleted;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private List<Date> createTime;
@@ -24,9 +23,6 @@ public class BaseQuery<T> {
     public Specification<T> toSpecification(){
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if(deleted != null){
-                predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));
-            }
             if(createTime != null && createTime.size() > 0){
                 predicates.add(createTime.size() > 1
                         ? criteriaBuilder.greaterThanOrEqualTo(root.get("createTime"),createTime.get(0))

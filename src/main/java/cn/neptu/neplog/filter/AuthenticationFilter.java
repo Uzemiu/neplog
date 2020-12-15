@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -39,9 +40,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             try{
                 Claims claims = jwtUtil.parseToken(token);
                 String userId = claims.getSubject();
-                User user = userService.findById(userId).orElseThrow(() -> new BadRequestException("User Not Found"));
-                SecurityUtil.setCurrentUser(user);
-
+                Optional<User> user = userService.findById(userId);
+                if(!user.isPresent()){
+                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,"User not found");
+                    return;
+                }
+                SecurityUtil.setCurrentUser(user.get());
                 Date expire = claims.getExpiration();
             } catch (ExpiredJwtException e){
                 log.info("Received expired jwt token {}",token);

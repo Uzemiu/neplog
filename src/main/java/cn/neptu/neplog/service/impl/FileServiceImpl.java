@@ -1,7 +1,6 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.exception.UploadFailureException;
-import cn.neptu.neplog.model.option.ThumbnailOption;
 import cn.neptu.neplog.model.option.UploadFileOption;
 import cn.neptu.neplog.service.FileService;
 import lombok.extern.slf4j.Slf4j;

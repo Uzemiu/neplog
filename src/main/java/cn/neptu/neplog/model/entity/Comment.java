@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,34 @@ public class Comment extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "content",columnDefinition = "varchar(1023) not null")
+    @Column(name = "content",length = 1023,nullable = false)
     private String content;
+
+    @Column(name = "nickname")
+    private String nickname;
+
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "article_id",nullable = false)
+    private Integer articleId;
+
+    @Column(name = "father_id")
+    private Integer fatherId;
+
+    @Column(name = "like")
+    @ColumnDefault("0")
+    private Integer like;
+
+    @Column(name = "dislike")
+    @ColumnDefault("0")
+    private Integer dislike;
+
+    @Column(name = "user_agent")
+    @ColumnDefault("Unknown")
+    private String userAgent;
+
+    @Column(name = "operating_system")
+    @ColumnDefault("Unknown")
+    private String operatingSystem;
 }

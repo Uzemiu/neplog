@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Repository
-public interface TagRepository extends JpaRepository<Tag,Integer> {
+public interface TagRepository extends BaseRepository<Tag,Integer> {
 
     Set<Tag> findByTagIn(Collection<String> tag);
 

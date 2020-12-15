@@ -52,8 +52,9 @@ public class ArticleController {
     }
 
     @PostMapping
-    public BaseResponse<Article> createArticle(){
-        return BaseResponse.ok("创建文章成功",articleService.save(new ArticleDTO()));
+    public BaseResponse<?> createArticle(){
+        articleService.save(new ArticleDTO());
+        return BaseResponse.ok("创建文章成功");
     }
 
     @PutMapping

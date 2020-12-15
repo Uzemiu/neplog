@@ -56,6 +56,8 @@ public class ArticleQuery extends BaseQuery<Article>{
 
     private Integer categoryId;
 
+    private Boolean deleted;
+
     @Override
     public Specification<Article> toSpecification() {
         Specification<Article> specification = super.toSpecification();
@@ -69,6 +71,9 @@ public class ArticleQuery extends BaseQuery<Article>{
             }
             if(categoryId != null){
                 predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));
+            }
+            if(deleted != null){
+                predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

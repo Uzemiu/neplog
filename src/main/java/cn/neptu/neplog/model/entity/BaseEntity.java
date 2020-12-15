@@ -21,12 +21,8 @@ public class BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;
 
-    @Column(name = "deleted", columnDefinition = "boolean default false")
-    private Boolean deleted;
-
     @PrePersist
     protected void prePersist(){
-        deleted = false;
         Date now = new Date();
         if (createTime == null) {
             createTime = now;

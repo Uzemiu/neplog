@@ -2,7 +2,9 @@ package cn.neptu.neplog.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,6 +12,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 //@Entity
 public class Link extends BaseEntity{
 
@@ -18,27 +21,21 @@ public class Link extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "blogger_id", columnDefinition = "char(32) not null")
-    private String bloggerId;
-
-    @Column(name = "name", columnDefinition = "varchar(32) not null")
+    @Column(name = "name", length = 127, nullable = false)
     private String name;
 
-    @Column(name = "url", columnDefinition = "varchar(1024) not null")
+    @Column(name = "url", length = 1023, nullable = false)
     private String url;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Link link = (Link) o;
-        return Objects.equals(bloggerId, link.bloggerId) &&
-                Objects.equals(name, link.name);
-    }
+    @Column(name = "description", length = 255)
+    @ColumnDefault("''")
+    private String description;
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), bloggerId, name);
+    protected void prePersist() {
+        super.prePersist();
+        if(description == null){
+            description = "";
+        }
     }
 }

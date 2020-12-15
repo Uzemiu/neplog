@@ -12,6 +12,8 @@ public interface ArticleService {
 
     Article save(ArticleDTO article);
 
+    Article save(Article article);
+
     Article findById(Integer id);
 
     ArticleDTO findDetailById(Integer id);

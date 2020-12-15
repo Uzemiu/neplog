@@ -6,8 +6,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author wchlu
+ */
+
 public enum ThumbnailGenerateStrategy {
 
+    /**
+     *
+     */
     SCALE(){
         @Override
         public BufferedImage process(BufferedImage origin, int width, int height) {

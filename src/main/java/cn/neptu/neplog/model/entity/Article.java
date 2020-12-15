@@ -81,20 +81,23 @@ public class Article extends BaseEntity{
     @ColumnDefault("0")
     private Integer viewPermission;
 
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "category_id")
     private Integer categoryId;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
 
     @Override
     public void prePersist(){
         super.prePersist();
-        if(title == null || title.equals("")){
+        if(title == null || "".equals(title)){
             title = "Untitled";
         }
         if(content == null){
-            content = "Edit not";
+            content = "### Edit now";
         }
         if(htmlContent == null){
-            htmlContent = "";
+            htmlContent = "<h3>Edit now</h3>";
         }
         if(summary == null){
             summary = "Edit now";
@@ -114,6 +117,13 @@ public class Article extends BaseEntity{
         if(likes == null){
             likes = 0;
         }
+        if(viewPermission == null){
+            viewPermission = 0;
+        }
+        if(commentPermission == null){
+            commentPermission = 0;
+        }
+        deleted = false;
     }
 
 }

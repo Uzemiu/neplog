@@ -72,7 +72,6 @@ public class UserController {
     @PostMapping("/logout")
     public BaseResponse<?> logout(HttpServletRequest request){
         String token = jwtUtil.resolveToken(request);
-//        redisUtil.del(authenticationConfig.getJwtPrefix() + token);
         return BaseResponse.ok("您已退出登录");
     }
 

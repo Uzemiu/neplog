@@ -35,13 +35,14 @@ public class ArticleServiceImpl implements ArticleService {
     private final CategoryService categoryService;
     private final TagService tagService;
 
-    public List<Article> findAll() {
-        return articleRepository.findAll();
-    }
-
     @Override
     public Article findById(Integer id) {
         return articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+    }
+
+    @Override
+    public Article save(Article article) {
+        return articleRepository.save(article);
     }
 
     @Transactional
@@ -50,7 +51,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleMapper.toEntity(articleDTO);
 
         CategoryDTO categoryDTO = articleDTO.getCategory();
-        if(categoryDTO.getId() == null){
+        if(categoryDTO != null && categoryDTO.getId() == null){
             Category category = categoryService.findByName(categoryDTO.getName())
                     .orElseGet(() -> new Category(null,categoryDTO.getName()));
             categoryService.save(category);
@@ -69,8 +70,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable) {
-        List<ArticleBaseDTO> articles = articleBaseMapper.toDto(articleRepository.findAll(query.toSpecification(),pageable).toList());
-        return articles;
+        List<Article> articles = articleRepository.findAll(query.toSpecification(),pageable).toList();
+        return articles.stream().map(article -> {
+            ArticleBaseDTO dto = articleBaseMapper.toDto(article);
+            fillProperties(dto,article);
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override

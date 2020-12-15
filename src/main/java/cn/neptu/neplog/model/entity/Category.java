@@ -25,7 +25,7 @@ public class Category extends BaseEntity {
     @Override
     protected void prePersist() {
         super.prePersist();
-        if(name == null || name.equals("")){
+        if(name == null || "".equals(name)){
             name = "未命名";
         }
     }

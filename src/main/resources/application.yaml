@@ -44,3 +44,6 @@ neplog:
     captcha-prefix: captcha
     token-expire-time: 24
     token-refresh-time: 2
+
+  blog:
+    name: Neplog
