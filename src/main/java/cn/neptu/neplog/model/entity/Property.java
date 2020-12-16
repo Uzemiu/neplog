@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper = true)
-public class Config extends BaseEntity{
+public class Property extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

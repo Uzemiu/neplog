@@ -693,4 +693,12 @@ public class RedisUtil {
         }
         long count = redisTemplate.delete(keys);
     }
+
+    public void pfadd(String key, Object value){
+        redisTemplate.opsForHyperLogLog().add(key, value);
+    }
+
+    public long pfcount(String ...key){
+        return redisTemplate.opsForHyperLogLog().size(key);
+    }
 }

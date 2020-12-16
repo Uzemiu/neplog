@@ -95,8 +95,14 @@ public class ArticleServiceImpl implements ArticleService {
         return detailDTO;
     }
 
+    @Override
+    public void increaseVisit(String id, Integer increment) {
+//        articleRepository.updateViews(id,increment);
+    }
+
     private void fillProperties(ArticleBaseDTO dto, Article article){
         dto.setTags(tagService.findByArticleId(article.getId()).stream().map(Tag::getTag).collect(Collectors.toList()));
         dto.setCategory(categoryMapper.toDto(categoryService.findById(article.getCategoryId()).get()));
     }
+
 }
