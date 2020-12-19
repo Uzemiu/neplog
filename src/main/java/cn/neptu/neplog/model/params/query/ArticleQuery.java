@@ -2,19 +2,13 @@ package cn.neptu.neplog.model.params.query;
 
 import cn.neptu.neplog.annotation.LevelRequiredParam;
 import cn.neptu.neplog.model.entity.Article;
-import cn.neptu.neplog.model.enums.PostStatus;
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.*;
 import javax.persistence.criteria.Predicate;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +60,11 @@ public class ArticleQuery extends BaseQuery<Article>{
             if(id != null){
                 predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
-            if(title != null){
+            if(title != null && !"".equals(title)){
                 predicates.add(criteriaBuilder.like(root.get("title"),title));
+            }
+            if(content != null && !"".equals(content)){
+                predicates.add(criteriaBuilder.like(root.get("content"),content));
             }
             if(categoryId != null){
                 predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));

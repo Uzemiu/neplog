@@ -55,8 +55,8 @@ public class Article extends BaseEntity{
     private Integer status;
 
     @Column(name = "views")
-    @ColumnDefault("0")
-    private Integer views;
+    @ColumnDefault("1")
+    private Long views;
 
     @Column(name = "likes")
     @ColumnDefault("0")
@@ -112,7 +112,7 @@ public class Article extends BaseEntity{
             status = 0;
         }
         if(views == null){
-            views = 1;
+            views = 1L;
         }
         if(likes == null){
             likes = 0;

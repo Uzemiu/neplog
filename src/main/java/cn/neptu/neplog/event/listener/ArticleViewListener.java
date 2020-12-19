@@ -1,6 +1,6 @@
 package cn.neptu.neplog.event.listener;
 
-import cn.neptu.neplog.event.PostViewEvent;
+import cn.neptu.neplog.event.ArticleViewEvent;
 import cn.neptu.neplog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -19,7 +19,7 @@ public class ArticleViewListener extends AbstractVisitEventListener{
 
     @Async
     @EventListener
-    public void onPostViewEvent(PostViewEvent event){
+    public void onPostViewEvent(ArticleViewEvent event){
         onApplicationEvent(event);
     }
 

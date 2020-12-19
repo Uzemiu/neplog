@@ -15,7 +15,6 @@ public class BlogVisitListener extends AbstractVisitEventListener{
         super(configService);
     }
 
-    @Async
     @EventListener
     public void onBlogVisitEvent(BlogVisitEvent event){
         onApplicationEvent(event);

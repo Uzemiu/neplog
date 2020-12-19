@@ -63,12 +63,11 @@ public class InstallServiceImpl implements InstallService {
         article.setStatus(4);
         articleService.save(article);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        propertyService.resetProperty();
         propertyService.save(BLOG_NAME, installParam.getBlogName());
         propertyService.save(INSTALL_TIME, format.format(new Date()));
-        propertyService.save(VISIT_COUNT, "0");
-        propertyService.save(INSTALL_STATUS, INSTALLED);
     }
 
 }

@@ -5,5 +5,5 @@ import org.springframework.transaction.annotation.Transactional;
 public interface VisitService {
 
     @Transactional
-    void increaseVisit(String id, Integer increment);
+    void increaseVisit(String id, Long increment);
 }

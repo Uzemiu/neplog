@@ -20,7 +20,7 @@ public class ArticleBaseDTO {
 
     private String cover;
 
-    private Integer views;
+    private Long views;
 
     private Integer likes;
 
@@ -37,5 +37,7 @@ public class ArticleBaseDTO {
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    private Boolean deleted;
 
 }

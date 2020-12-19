@@ -11,8 +11,6 @@ public class LevelValidator implements ConstraintValidator<LevelRequiredParam,Ob
 
     private int level;
 
-
-
     @Override
     public void initialize(LevelRequiredParam constraintAnnotation) {
         level = constraintAnnotation.level();

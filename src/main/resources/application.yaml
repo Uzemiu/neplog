@@ -9,6 +9,7 @@ logging:
   file:
     path: log
     max-history: 30
+
 spring:
   datasource:
     url: jdbc:h2:~/neplog

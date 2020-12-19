@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
@@ -79,6 +80,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public boolean trash(Integer id, Boolean deleted) {
+        return articleRepository.updateDeleted(id, deleted) > 0;
+    }
+
+    @Override
     public ArticleBaseDTO findViewById(Integer id) {
         Article article = findById(id);
         ArticleBaseDTO viewDTO = articleBaseMapper.toDto(article);
@@ -96,8 +102,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void increaseVisit(String id, Integer increment) {
-//        articleRepository.updateViews(id,increment);
+    public void increaseVisit(String id, Long increment) {
+        articleRepository.updateViews(Integer.valueOf(id),increment);
     }
 
     private void fillProperties(ArticleBaseDTO dto, Article article){

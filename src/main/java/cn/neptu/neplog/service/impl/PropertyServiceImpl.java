@@ -13,7 +13,7 @@ import java.util.*;
 import static cn.neptu.neplog.config.common.BlogConfigConstant.*;
 
 @Slf4j
-@Service("configService")
+@Service("propertyService")
 public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> implements PropertyService {
 
     private final PropertyRepository propertyRepository;
@@ -24,7 +24,20 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
         super(propertyRepository);
         this.propertyRepository = propertyRepository;
 
-        this.blogPropertyNames = Arrays.asList(BLOG_NAME, INSTALL_STATUS);
+        this.blogPropertyNames = Arrays.asList(
+                BLOG_NAME, INSTALL_STATUS, VISIT_COUNT, INSTALL_TIME,
+                HOME_PAGE_ARTICLE, HOME_PAGE_GLIDE, FRIEND_PAGE_COVER);
+    }
+
+    @Override
+    public void resetProperty() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(BLOG_NAME, "Neplog");
+        properties.put(HOME_PAGE_ARTICLE, "updateTime,desc");
+        properties.put(HOME_PAGE_GLIDE, "auto");
+        properties.put(VISIT_COUNT, "0");
+        properties.put(FRIEND_PAGE_COVER, "");
+        save(properties);
     }
 
     @Override
@@ -40,9 +53,16 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public List<Property> save(Map<String, String> properties) {
-        List<Property> result = new LinkedList<>();
-        properties.forEach((key,value) -> result.add(new Property(null,key,value)));
-        return propertyRepository.saveAll(result);
+        Set<Property> previous = propertyRepository.getByKeyIn(properties.keySet());
+        previous.forEach(property -> {
+            String value = properties.get(property.getKey());
+            if(value != null){
+                property.setValue(value);
+                properties.remove(property.getKey());
+            }
+        });
+        properties.forEach((k,v) -> previous.add(new Property(null,k,v)));
+        return propertyRepository.saveAll(previous);
     }
 
     @Override
@@ -52,7 +72,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public Map<String, String> listPropertiesIn(Collection<String> keys) {
-        List<Property> properties = propertyRepository.getByKeyIn(blogPropertyNames);
+        Set<Property> properties = propertyRepository.getByKeyIn(blogPropertyNames);
         Map<String, String> result = new HashMap<>(keys.size());
         properties.forEach(property -> result.put(property.getKey(), property.getValue()));
         return result;
@@ -71,11 +91,13 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public Property save(String key, String value) {
-        return propertyRepository.save(new Property(null,key,value));
+        Property property = getByKey(key).orElse(new Property(null,key,value));
+        property.setValue(value);
+        return save(property);
     }
 
     @Override
-    public void increaseVisit(String integer, Integer increment) {
+    public void increaseVisit(String integer, Long increment) {
         Property property = getNotNullByKey(VISIT_COUNT);
         long visit = Long.parseLong(property.getValue());
         visit += increment;

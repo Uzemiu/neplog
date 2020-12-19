@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(callSuper = true)
 public class Property extends BaseEntity{
 
     @Id
@@ -27,4 +27,18 @@ public class Property extends BaseEntity{
 
     @Column(name = "value", length = 1000, nullable = false)
     private String value;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Property property = (Property) o;
+        return Objects.equals(key, property.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), key);
+    }
 }

@@ -1,6 +1,6 @@
 package cn.neptu.neplog.event;
 
-public class PostViewEvent extends AbstractVisitEvent{
+public class ArticleViewEvent extends AbstractVisitEvent{
 
     /**
      * Create a new {@code ApplicationEvent}.
@@ -10,7 +10,7 @@ public class PostViewEvent extends AbstractVisitEvent{
      * @param id       the id of the target
      * @param sourceIp where the visit come from
      */
-    public PostViewEvent(Object source, String id, String sourceIp) {
+    public ArticleViewEvent(Object source, String id, String sourceIp) {
         super(source, id, sourceIp);
     }
 }

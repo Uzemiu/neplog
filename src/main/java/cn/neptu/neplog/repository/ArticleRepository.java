@@ -11,7 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface ArticleRepository extends BaseRepository<Article,Integer>, JpaSpecificationExecutor<Article> {
 
+    @Transactional
     @Modifying
     @Query("update Article a set a.views = a.views + :increment where a.id = :id")
-    int updateViews(@Param("id") Integer id, @Param("increment") Integer increment);
+    int updateViews(@Param("id") Integer id, @Param("increment") Long increment);
+
+    @Transactional
+    @Modifying
+    @Query("update Article a set a.deleted = :deleted where a.id = :id")
+    int updateDeleted(@Param("id") Integer id, @Param("deleted") Boolean deleted);
+
 }

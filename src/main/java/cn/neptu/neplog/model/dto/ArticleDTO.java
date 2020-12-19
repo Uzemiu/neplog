@@ -17,6 +17,4 @@ public class ArticleDTO extends ArticleBaseDTO{
 
     private Integer status;
 
-    private Boolean deleted;
-
 }

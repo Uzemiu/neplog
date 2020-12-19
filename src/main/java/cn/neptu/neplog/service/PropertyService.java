@@ -12,6 +12,8 @@ public interface PropertyService extends CrudService<Property, Integer>, VisitSe
 
     boolean isInstalled();
 
+    void resetProperty();
+
     Property save(Property property);
 
     List<Property> save(Map<String,String> blogConfig);

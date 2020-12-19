@@ -151,6 +151,10 @@ public class RedisUtil {
         return result;
     }
 
+    public Set<String> keys(String pattern){
+        return redisTemplate.keys(pattern);
+    }
+
     /**
      * 判断key是否存在
      *

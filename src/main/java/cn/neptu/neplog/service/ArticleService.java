@@ -20,5 +20,7 @@ public interface ArticleService extends VisitService{
 
     ArticleBaseDTO findViewById(Integer id);
 
+    boolean trash(Integer id, Boolean deleted);
+
     List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable);
 }
