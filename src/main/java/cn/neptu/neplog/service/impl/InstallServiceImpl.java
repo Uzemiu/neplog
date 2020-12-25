@@ -19,7 +19,7 @@ import javax.crypto.IllegalBlockSizeException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static cn.neptu.neplog.config.common.BlogConfigConstant.*;
+import static cn.neptu.neplog.constant.BlogPropertyConstant.*;
 
 @Slf4j
 @Service("installService")
@@ -63,11 +63,11 @@ public class InstallServiceImpl implements InstallService {
         article.setStatus(4);
         articleService.save(article);
 
-
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         propertyService.resetProperty();
         propertyService.save(BLOG_NAME, installParam.getBlogName());
         propertyService.save(INSTALL_TIME, format.format(new Date()));
+        propertyService.save(INSTALL_STATUS, INSTALLED);
     }
 
 }

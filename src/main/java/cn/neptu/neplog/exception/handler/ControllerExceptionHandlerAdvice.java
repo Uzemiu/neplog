@@ -5,6 +5,7 @@ import cn.neptu.neplog.model.support.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,12 @@ public class ControllerExceptionHandlerAdvice {
         return BaseResponse.error(exception.getAllErrors().get(0).getDefaultMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public BaseResponse<?> validExceptionHandler(MethodArgumentNotValidException exception) {
+        return BaseResponse.error(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({ResourceNotFoundException.class})
     public BaseResponse<?> resourceNotFoundExceptionHandler(Exception exception){
@@ -30,12 +37,6 @@ public class ControllerExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class,IllegalArgumentException.class})
     public BaseResponse<?> badRequestExceptionHandler(Exception exception){
-        return BaseResponse.error(exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UnauthenticatedException.class)
-    public BaseResponse<?> unauthenticatedExceptionHandler(UnauthenticatedException exception){
         return BaseResponse.error(exception.getMessage());
     }
 

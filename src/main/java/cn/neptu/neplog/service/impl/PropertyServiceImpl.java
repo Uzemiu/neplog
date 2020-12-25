@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static cn.neptu.neplog.config.common.BlogConfigConstant.*;
+import static cn.neptu.neplog.constant.BlogPropertyConstant.*;
 
 @Slf4j
 @Service("propertyService")
@@ -26,7 +26,8 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
         this.blogPropertyNames = Arrays.asList(
                 BLOG_NAME, INSTALL_STATUS, VISIT_COUNT, INSTALL_TIME,
-                HOME_PAGE_ARTICLE, HOME_PAGE_GLIDE, FRIEND_PAGE_COVER);
+                HOME_PAGE_ARTICLE, HOME_PAGE_GLIDE, FRIEND_PAGE_COVER,
+                ICP, GLOBAL_CSS);
     }
 
     @Override
@@ -35,7 +36,6 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
         properties.put(BLOG_NAME, "Neplog");
         properties.put(HOME_PAGE_ARTICLE, "updateTime,desc");
         properties.put(HOME_PAGE_GLIDE, "auto");
-        properties.put(VISIT_COUNT, "0");
         properties.put(FRIEND_PAGE_COVER, "");
         save(properties);
     }
@@ -98,7 +98,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public void increaseVisit(String integer, Long increment) {
-        Property property = getNotNullByKey(VISIT_COUNT);
+        Property property = getByKey(VISIT_COUNT).orElse(new Property(null,VISIT_COUNT,"0"));
         long visit = Long.parseLong(property.getValue());
         visit += increment;
         property.setValue(String.valueOf(visit));

@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class Link extends BaseEntity{
+public class Friend extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,18 +23,33 @@ public class Link extends BaseEntity{
     @Column(name = "name", length = 127, nullable = false)
     private String name;
 
-    @Column(name = "url", length = 1023, nullable = false)
-    private String url;
+    @Column(name = "link", length = 1023, nullable = false)
+    private String link;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "avatar", length = 1023)
     @ColumnDefault("''")
-    private String description;
+    private String avatar;
+
+    @Column(name = "introduction", length = 255)
+    @ColumnDefault("''")
+    private String introduction;
+
+    /**
+     * 0 待审核
+     * 1 公开
+     */
+    @Column(name = "status")
+    @ColumnDefault("0")
+    private Integer status;
 
     @Override
     protected void prePersist() {
         super.prePersist();
-        if(description == null){
-            description = "";
+        if(introduction == null){
+            introduction = "";
+        }
+        if(status == null){
+            status = 0;
         }
     }
 }

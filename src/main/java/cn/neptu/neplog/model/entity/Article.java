@@ -85,11 +85,11 @@ public class Article extends BaseEntity{
     private Integer categoryId;
 
     @Column(name = "deleted")
+    @ColumnDefault("false")
     private Boolean deleted;
 
     @Override
     public void prePersist(){
-        super.prePersist();
         if(title == null || "".equals(title)){
             title = "Untitled";
         }

@@ -3,7 +3,6 @@ package cn.neptu.neplog.service.impl;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
-import cn.neptu.neplog.model.dto.CategoryDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.entity.Tag;
@@ -19,9 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,11 +51,11 @@ public class ArticleServiceImpl implements ArticleService {
     public Article save(ArticleDTO articleDTO) {
         Article article = articleMapper.toEntity(articleDTO);
 
-        CategoryDTO categoryDTO = articleDTO.getCategory();
-        if(categoryDTO != null && categoryDTO.getId() == null){
-            Category category = categoryService.findByName(categoryDTO.getName())
-                    .orElseGet(() -> new Category(null,categoryDTO.getName()));
-            categoryService.save(category);
+        String categoryName = articleDTO.getCategory();
+        if(StringUtils.hasText(categoryName)){
+            Category category = categoryService
+                    .findByName(categoryName)
+                    .orElseGet(() -> categoryService.save(new Category(null,categoryName)));
             article.setCategoryId(category.getId());
         }
         articleRepository.save(article);
@@ -77,6 +77,11 @@ public class ArticleServiceImpl implements ArticleService {
             fillProperties(dto,article);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Long> countByLabel() {
+        return null;
     }
 
     @Override
@@ -108,7 +113,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void fillProperties(ArticleBaseDTO dto, Article article){
         dto.setTags(tagService.findByArticleId(article.getId()).stream().map(Tag::getTag).collect(Collectors.toList()));
-        dto.setCategory(categoryMapper.toDto(categoryService.findById(article.getCategoryId()).get()));
+        dto.setCategory(categoryService.findById(article.getCategoryId()).get().getName());
     }
-
 }

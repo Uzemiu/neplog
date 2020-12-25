@@ -1,10 +1,9 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.exception.UploadFailureException;
-import cn.neptu.neplog.model.option.UploadFileOption;
+import cn.neptu.neplog.model.support.UploadFileOption;
 import cn.neptu.neplog.service.FileService;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,7 @@ public class FileServiceImpl implements FileService {
             log.error("上传文件失败，未知错误",e);
             throw new UploadFailureException("上传文件失败，未知错误");
         }
-        return baseFilename + "." + extension;
+        return "/" + baseFilename.replaceAll("\\\\","/") + "." + extension;
     }
 
     @Override

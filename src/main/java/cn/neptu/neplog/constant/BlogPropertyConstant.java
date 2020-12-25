@@ -1,6 +1,6 @@
-package cn.neptu.neplog.config.common;
+package cn.neptu.neplog.constant;
 
-public class BlogConfigConstant {
+public class BlogPropertyConstant {
 
     public static final String INSTALL_STATUS = "installStatus";
 
@@ -20,6 +20,17 @@ public class BlogConfigConstant {
      * 首页显示文章类型（最近更新/最多阅读/随机）
      */
     public static final String HOME_PAGE_ARTICLE = "homePageArticle";
+
+    /**
+     * icp备案号
+     */
+    public static final String ICP = "icp";
+
+    public static final String GLOBAL_CSS = "globalCss";
+
+    public static final String BLOG_AVATAR = "blogAvatar";
+
+    public static final String AUTHOR_NAME = "authorName";
 
 
 }

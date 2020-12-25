@@ -1,4 +1,4 @@
-package cn.neptu.neplog.model.option;
+package cn.neptu.neplog.model.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,5 +1,6 @@
 package cn.neptu.neplog.controller;
 
+import cn.neptu.neplog.annotation.RequiredLevel;
 import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.FileService;
@@ -16,6 +17,7 @@ public class FileController {
     private final UploadFileConfig configuration;
 
     @PostMapping("/avatar")
+    @RequiredLevel(1)
     public BaseResponse<?> uploadAvatar(@RequestBody MultipartFile file){
         return BaseResponse.ok("ok",fileService.upload(file,configuration.get("avatar")));
     }
@@ -23,6 +25,16 @@ public class FileController {
     @PostMapping("/cover")
     public BaseResponse<?> uploadArticleCover(@RequestBody MultipartFile file){
         return BaseResponse.ok("ok",fileService.upload(file,configuration.get("articleCover")));
+    }
+
+    @PostMapping("/image")
+    public BaseResponse<?> uploadImage(@RequestBody MultipartFile file){
+        return BaseResponse.ok("ok",fileService.upload(file,configuration.get("image")));
+    }
+
+    @PostMapping
+    public BaseResponse<?> uploadFile(@RequestBody MultipartFile file){
+        return BaseResponse.ok("ok",fileService.upload(file,configuration.get("file")));
     }
 
     @DeleteMapping

@@ -1,11 +1,8 @@
 package cn.neptu.neplog.model.support;
 
-import cn.neptu.neplog.config.security.SecurityConfig;
-import cn.neptu.neplog.utils.RedisUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor

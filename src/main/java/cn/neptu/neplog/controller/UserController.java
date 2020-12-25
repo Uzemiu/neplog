@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    @RequiredLevel(1)
+    @AnonymousAccess
     public BaseResponse<UserDTO> getUserInfo(){
         return BaseResponse.ok("ok",userMapper.toDto(SecurityUtil.getCurrentUser()));
     }

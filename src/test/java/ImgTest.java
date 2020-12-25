@@ -1,6 +1,8 @@
 import cn.neptu.neplog.App;
+import cn.neptu.neplog.model.entity.Friend;
 import cn.neptu.neplog.model.entity.Tag;
 import cn.neptu.neplog.model.enums.ThumbnailGenerateStrategy;
+import cn.neptu.neplog.service.FriendService;
 import cn.neptu.neplog.utils.RedisUtil;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Position;
@@ -9,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Timed;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -23,19 +26,13 @@ import java.util.*;
 public class ImgTest {
 
     @Resource
-    RedisUtil redisUtil;
+    FriendService friendService;
 
     @Test
     public void visitTest(){
-        redisUtil.hset("visit","1",1);
-        redisUtil.hset("visit","2",2);
-        redisUtil.hset("visit","3",3);
-        redisUtil.hincr("visit","2",6);
-        redisUtil.hincr("visit","3",6);
-        Map<Object,Object> map = redisUtil.hmget("visit");
-        map.forEach((k,v) -> {
-            System.out.println(k);
-            System.out.println(v);
-        });
+        long start = System.currentTimeMillis();
+        friendService.countByLabel();
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
     }
 }

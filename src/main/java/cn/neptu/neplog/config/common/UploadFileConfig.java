@@ -1,6 +1,6 @@
 package cn.neptu.neplog.config.common;
 
-import cn.neptu.neplog.model.option.UploadFileOption;
+import cn.neptu.neplog.model.support.UploadFileOption;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -3,6 +3,8 @@ package cn.neptu.neplog.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,27 +15,21 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseEntity {
 
-    @Column(name = "create_time", columnDefinition = "timestamp default CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Column(name = "create_time",updatable = false)
     private Date createTime;
 
-    @Column(name = "update_time", columnDefinition = "timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    @Column(name = "update_time")
     private Date updateTime;
 
     @PrePersist
     protected void prePersist(){
-        Date now = new Date();
-        if (createTime == null) {
-            createTime = now;
-        }
-        if (updateTime == null) {
-            updateTime = now;
-        }
+
     }
 
     @PreUpdate
     protected void preUpdate() {
-        updateTime = new Date();
+
     }
 }

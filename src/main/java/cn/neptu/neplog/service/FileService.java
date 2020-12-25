@@ -1,6 +1,6 @@
 package cn.neptu.neplog.service;
 
-import cn.neptu.neplog.model.option.UploadFileOption;
+import cn.neptu.neplog.model.support.UploadFileOption;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 

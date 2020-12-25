@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class Comment extends BaseEntity{
     @Column(name = "content",length = 1023,nullable = false)
     private String content;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname",nullable = false)
     private String nickname;
 
     @Column(name = "user_id")
@@ -54,4 +55,21 @@ public class Comment extends BaseEntity{
     @Column(name = "operating_system")
     @ColumnDefault("Unknown")
     private String operatingSystem;
+
+    @Override
+    protected void prePersist() {
+        super.prePersist();
+        if(like == null){
+            like = 0;
+        }
+        if(dislike == null){
+            dislike = 0;
+        }
+        if(!StringUtils.hasText(userAgent)){
+            userAgent = "Unknown";
+        }
+        if(!StringUtils.hasText(operatingSystem)){
+            userAgent = "Unknown";
+        }
+    }
 }

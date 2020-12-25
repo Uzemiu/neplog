@@ -36,8 +36,8 @@ neplog:
     options:
       avatar: {path: [img], thumnail: true, width: 200, height: 200}
       articleCover: {path: [img]}
-      img: {path: [img]}
-      commonFile: {path: [common]}
+      image: {path: [img]}
+      file: {path: [common]}
 
   security:
     secret: j.2_d?+bn

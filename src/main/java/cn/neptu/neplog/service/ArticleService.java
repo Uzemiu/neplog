@@ -7,6 +7,7 @@ import cn.neptu.neplog.model.params.query.ArticleQuery;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ArticleService extends VisitService{
 
@@ -23,4 +24,6 @@ public interface ArticleService extends VisitService{
     boolean trash(Integer id, Boolean deleted);
 
     List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable);
+
+    Map<String, Long> countByLabel();
 }

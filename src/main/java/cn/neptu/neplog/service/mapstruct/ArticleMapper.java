@@ -12,13 +12,4 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring",uses = {CategoryMapper.class},unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ArticleMapper extends BaseMapper<ArticleDTO, Article>{
 
-    @Override
-    @Mapping(target = "categoryId",source = "category",qualifiedByName = "toCategoryId")
-    Article toEntity(ArticleDTO dto);
-
-    @Named("toCategoryId")
-    default Integer toCategoryId(CategoryDTO categoryDTO){
-        return categoryDTO == null ? null : categoryDTO.getId();
-    }
-
 }

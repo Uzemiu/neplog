@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -60,17 +61,20 @@ public class ArticleQuery extends BaseQuery<Article>{
             if(id != null){
                 predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
-            if(title != null && !"".equals(title)){
-                predicates.add(criteriaBuilder.like(root.get("title"),title));
+            if(StringUtils.hasText(title)){
+                predicates.add(criteriaBuilder.like(root.get("title"), "%" + title + "%"));
             }
-            if(content != null && !"".equals(content)){
-                predicates.add(criteriaBuilder.like(root.get("content"),content));
+            if(StringUtils.hasText(content)){
+                predicates.add(criteriaBuilder.like(root.get("content"),"%" + content + "%"));
             }
             if(categoryId != null){
                 predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));
             }
             if(deleted != null){
                 predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));
+            }
+            if(status != null){
+                predicates.add(criteriaBuilder.equal(root.get("status"),status));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

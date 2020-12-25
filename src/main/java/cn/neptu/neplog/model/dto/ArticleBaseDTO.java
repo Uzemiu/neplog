@@ -28,14 +28,14 @@ public class ArticleBaseDTO {
 
     private String htmlContent;
 
-    private CategoryDTO category;
+    private String category;
 
     private List<String> tags;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date updateTime;
 
     private Boolean deleted;

@@ -2,8 +2,10 @@ package cn.neptu.neplog.service.base;
 
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.repository.BaseRepository;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,14 +15,17 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     private final BaseRepository<ENTITY, ID> repository;
 
+    @SuppressWarnings("unchecked")
     protected AbstractCrudService(BaseRepository<ENTITY, ID> repository) {
         this.repository = repository;
+
         Class<ENTITY> actualClass = (Class<ENTITY>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         this.entityName =  actualClass.getSimpleName();
     }
 
     @Override
     public ENTITY create(ENTITY entity) {
+        Assert.notNull(entity, entityName + " must not be null");
         return repository.save(entity);
     }
 
@@ -42,11 +47,17 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     @Override
     public ENTITY update(ENTITY entity) {
+        Assert.notNull(entity, entityName + " must not be null");
         return repository.save(entity);
     }
 
     @Override
-    public ENTITY removeById(ID id) {
+    public long deleteByIdIn(Collection<ID> ids) {
+        return repository.deleteByIdIn(ids);
+    }
+
+    @Override
+    public ENTITY deleteById(ID id) {
         ENTITY entity = getNotNullById(id);
         repository.delete(entity);
         return entity;
