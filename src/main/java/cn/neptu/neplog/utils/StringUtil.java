@@ -1,6 +1,6 @@
 package cn.neptu.neplog.utils;
 
-import cn.neptu.neplog.model.support.LoginInfo;
+import cn.neptu.neplog.model.support.UserAgentInfo;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -42,10 +42,10 @@ public class StringUtil {
     }
 
 
-    public static LoginInfo getLoginInfo(HttpServletRequest request) {
+    public static UserAgentInfo getUserAgentInfo(HttpServletRequest request) {
         UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         OperatingSystem os = userAgent.getOperatingSystem();
         Browser browser = userAgent.getBrowser();
-        return new LoginInfo(os.getName(),browser.getName());
+        return new UserAgentInfo(os.getName(),browser.getName());
     }
 }

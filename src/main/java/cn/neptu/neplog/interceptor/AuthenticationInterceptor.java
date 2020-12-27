@@ -1,7 +1,7 @@
 package cn.neptu.neplog.interceptor;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
-import cn.neptu.neplog.annotation.RequiredLevel;
+import cn.neptu.neplog.annotation.RequiredLevelAccess;
 import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }
-            RequiredLevel minLevel = method.getMethodAnnotation(RequiredLevel.class);
+            RequiredLevelAccess minLevel = method.getMethodAnnotation(RequiredLevelAccess.class);
             if(user.getLevel() < (minLevel == null ? 6 : minLevel.value())){
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return false;

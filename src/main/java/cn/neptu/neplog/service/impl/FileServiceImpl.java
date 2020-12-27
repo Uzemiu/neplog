@@ -35,8 +35,8 @@ public class FileServiceImpl implements FileService {
     public String upload(MultipartFile file, UploadFileOption option) {
         Assert.notNull(option,"UploadFileOption must not be null.");
         // use currentTimeMillis + originalFilename as new filename
-        String pathPrefix = Paths.get(localFileRootPath,option.getPath()) + File.separator + System.currentTimeMillis();
-        String filename = Optional.ofNullable(file.getOriginalFilename()).orElse("empty");
+        String pathPrefix = Paths.get(localFileRootPath,option.getPath()) + File.separator + "-" + System.currentTimeMillis();
+        String filename = Optional.ofNullable(file.getOriginalFilename()).orElse("Empty");
         String extension = FileService.getFileExtension(filename);
         String baseName = FileService.getFileBaseName(filename);
 

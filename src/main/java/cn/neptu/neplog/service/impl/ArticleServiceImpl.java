@@ -1,6 +1,5 @@
 package cn.neptu.neplog.service.impl;
 
-import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
@@ -11,34 +10,40 @@ import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.service.CategoryService;
 import cn.neptu.neplog.service.TagService;
+import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.service.mapstruct.ArticleBaseMapper;
 import cn.neptu.neplog.service.mapstruct.ArticleMapper;
-import cn.neptu.neplog.service.mapstruct.CategoryMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("articleService")
-@RequiredArgsConstructor
-public class ArticleServiceImpl implements ArticleService {
+public class ArticleServiceImpl extends AbstractCrudService<Article, Integer> implements ArticleService {
 
     private final ArticleMapper articleMapper;
     private final ArticleBaseMapper articleBaseMapper;
-    private final CategoryMapper categoryMapper;
     private final ArticleRepository articleRepository;
     private final CategoryService categoryService;
     private final TagService tagService;
 
-    @Override
-    public Article findById(Integer id) {
-        return articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+    protected ArticleServiceImpl(ArticleMapper articleMapper,
+                                 ArticleBaseMapper articleBaseMapper,
+                                 ArticleRepository repository,
+                                 CategoryService categoryService,
+                                 TagService tagService) {
+        super(repository);
+        this.articleMapper = articleMapper;
+        this.articleBaseMapper = articleBaseMapper;
+        this.articleRepository = repository;
+        this.categoryService = categoryService;
+        this.tagService = tagService;
     }
 
     @Override
@@ -81,7 +86,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Map<String, Long> countByLabel() {
-        return null;
+        Map<String, Long> res = new HashMap<>();
+        res.put("published",articleRepository.countByStatus(STATUS_PUBLISHED));
+        res.put("draft",articleRepository.countByStatus(STATUS_DRAFT));
+        res.put("deleted",articleRepository.countByDeleted(true));
+        return res;
     }
 
     @Override
@@ -91,7 +100,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleBaseDTO findViewById(Integer id) {
-        Article article = findById(id);
+        Article article = getNotNullById(id);
         ArticleBaseDTO viewDTO = articleBaseMapper.toDto(article);
         viewDTO.setHtmlContent(article.getHtmlContent());
         fillProperties(viewDTO,article);
@@ -100,7 +109,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDTO findDetailById(Integer id) {
-        Article article = findById(id);
+        Article article = getNotNullById(id);
         ArticleDTO detailDTO = articleMapper.toDto(article);
         fillProperties(detailDTO,article);
         return detailDTO;

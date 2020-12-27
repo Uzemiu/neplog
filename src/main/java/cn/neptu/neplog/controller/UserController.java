@@ -1,7 +1,6 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
-import cn.neptu.neplog.annotation.RequiredLevel;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.params.LoginParam;
@@ -44,7 +43,7 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<?> login(@Validated @RequestBody LoginParam param){
         if(SecurityUtil.getCurrentUser() != null){
-            return BaseResponse.ok("你已经登陆过了");
+            throw new BadRequestException("你已经登陆过了");
         }
         verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
         String plainPassword;
@@ -54,7 +53,7 @@ public class UserController {
             log.error("Error in parsing AES encrypted password: " + param.getPassword());
             throw new BadRequestException("异常密码");
         }
-        User user = userService.findByUsername(param.getUsername()).orElseThrow(() -> new BadRequestException("用户名或密码"));
+        User user = userService.findByUsername(param.getUsername()).orElseThrow(() -> new BadRequestException("用户名或密码错误"));
         Assert.isTrue(BCrypt.checkpw(plainPassword,user.getPassword()),"用户名或密码错误");
         Map<String, Object> res = new HashMap<String, Object>(2){{
             put("user",userMapper.toDto(user));

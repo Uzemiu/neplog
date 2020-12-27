@@ -11,6 +11,10 @@ import java.util.Map;
 
 public interface FriendService extends CrudService<Friend, Integer> {
 
+    Integer STATUS_PENDING = 0;
+
+    Integer STATUS_PUBLIC = 1;
+
     Friend create(FriendDTO friend);
 
     Friend update(FriendDTO friend);

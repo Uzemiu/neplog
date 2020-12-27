@@ -47,14 +47,14 @@ public class FriendServiceImpl extends AbstractCrudService<Friend, Integer> impl
 
     @Override
     public List<FriendDTO> listFriendView() {
-        return friendMapper.toDto(friendRepository.findByStatus(1));
+        return friendMapper.toDto(friendRepository.findByStatus(STATUS_PUBLIC));
     }
 
     @Override
     public Map<String, Long> countByLabel() {
         Map<String, Long> res = new HashMap<>();
-        res.put("pending",friendRepository.countByStatus(0));
-        res.put("public",friendRepository.countByStatus(1));
+        res.put("pending",friendRepository.countByStatus(STATUS_PENDING));
+        res.put("public",friendRepository.countByStatus(STATUS_PUBLIC));
         return res;
     }
 

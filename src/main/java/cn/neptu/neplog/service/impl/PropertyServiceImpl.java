@@ -6,6 +6,7 @@ import cn.neptu.neplog.repository.PropertyRepository;
 import cn.neptu.neplog.service.PropertyService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,9 +26,9 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
         this.propertyRepository = propertyRepository;
 
         this.blogPropertyNames = Arrays.asList(
-                BLOG_NAME, INSTALL_STATUS, VISIT_COUNT, INSTALL_TIME,
+                BLOG_NAME, BLOG_AVATAR, INSTALL_STATUS, VISIT_COUNT, INSTALL_TIME,
                 HOME_PAGE_ARTICLE, HOME_PAGE_GLIDE, FRIEND_PAGE_COVER,
-                ICP, GLOBAL_CSS);
+                ICP, GLOBAL_CSS, AUTHOR_NAME);
     }
 
     @Override

@@ -21,8 +21,6 @@ public class ArticleQuery extends BaseQuery<Article>{
 
     private Integer id;
 
-    private String title;
-
     private String content;
 
     /**
@@ -49,9 +47,10 @@ public class ArticleQuery extends BaseQuery<Article>{
     @LevelRequiredParam
     private Integer viewPermission;
 
-    private Integer categoryId;
-
+    @LevelRequiredParam
     private Boolean deleted;
+
+    private Integer categoryId;
 
     @Override
     public Specification<Article> toSpecification() {
@@ -61,11 +60,9 @@ public class ArticleQuery extends BaseQuery<Article>{
             if(id != null){
                 predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
-            if(StringUtils.hasText(title)){
-                predicates.add(criteriaBuilder.like(root.get("title"), "%" + title + "%"));
-            }
             if(StringUtils.hasText(content)){
                 predicates.add(criteriaBuilder.like(root.get("content"),"%" + content + "%"));
+                predicates.add(criteriaBuilder.like(root.get("title"), "%" + content + "%"));
             }
             if(categoryId != null){
                 predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));

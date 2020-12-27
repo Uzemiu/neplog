@@ -4,18 +4,21 @@ import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.params.query.ArticleQuery;
+import cn.neptu.neplog.service.base.CrudService;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ArticleService extends VisitService{
+public interface ArticleService extends CrudService<Article, Integer> ,VisitService{
+
+    Integer STATUS_DRAFT = 0;
+
+    Integer STATUS_PUBLISHED = 4;
 
     Article save(ArticleDTO article);
 
     Article save(Article article);
-
-    Article findById(Integer id);
 
     ArticleDTO findDetailById(Integer id);
 

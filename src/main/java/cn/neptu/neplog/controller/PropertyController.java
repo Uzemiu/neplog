@@ -45,7 +45,7 @@ public class PropertyController {
     }
 
     @PutMapping
-    public BaseResponse<?> updateProperty(Map<String, String> properties){
+    public BaseResponse<?> updateProperty(@RequestBody Map<String, String> properties){
         propertyService.save(properties);
         return BaseResponse.ok("更新配置成功");
     }
