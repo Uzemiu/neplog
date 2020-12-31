@@ -2,11 +2,12 @@ package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.entity.Property;
+import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.repository.PropertyRepository;
 import cn.neptu.neplog.service.PropertyService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
+import cn.neptu.neplog.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,25 +20,26 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     private final PropertyRepository propertyRepository;
 
-    private final List<String> blogPropertyNames;
+    private final List<String> excludedBlogProperties;
 
     public PropertyServiceImpl(PropertyRepository propertyRepository) {
         super(propertyRepository);
         this.propertyRepository = propertyRepository;
 
-        this.blogPropertyNames = Arrays.asList(
-                BLOG_NAME, BLOG_AVATAR, INSTALL_STATUS, VISIT_COUNT, INSTALL_TIME,
-                HOME_PAGE_ARTICLE, HOME_PAGE_GLIDE, FRIEND_PAGE_COVER,
-                ICP, GLOBAL_CSS, AUTHOR_NAME);
+        this.excludedBlogProperties = Arrays.asList(
+                VALUE_AUTO, INSTALLED);
     }
 
     @Override
     public void resetProperty() {
+        User user = SecurityUtil.getCurrentUser();
         Map<String, String> properties = new HashMap<>();
         properties.put(BLOG_NAME, "Neplog");
+        properties.put(BLOG_AVATAR, user.getAvatar());
         properties.put(HOME_PAGE_ARTICLE, "updateTime,desc");
-        properties.put(HOME_PAGE_GLIDE, "auto");
+        properties.put(HOME_PAGE_COVER, "3");
         properties.put(FRIEND_PAGE_COVER, "");
+        properties.put(AUTHOR_NAME, user.getNickname());
         save(properties);
     }
 
@@ -68,12 +70,12 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public Map<String, String> getBlogProperty() {
-        return listPropertiesIn(blogPropertyNames);
+        return listPropertiesNotIn(excludedBlogProperties);
     }
 
     @Override
-    public Map<String, String> listPropertiesIn(Collection<String> keys) {
-        Set<Property> properties = propertyRepository.getByKeyIn(blogPropertyNames);
+    public Map<String, String> listPropertiesNotIn(Collection<String> keys) {
+        Set<Property> properties = propertyRepository.getByKeyNotIn(excludedBlogProperties);
         Map<String, String> result = new HashMap<>(keys.size());
         properties.forEach(property -> result.put(property.getKey(), property.getValue()));
         return result;

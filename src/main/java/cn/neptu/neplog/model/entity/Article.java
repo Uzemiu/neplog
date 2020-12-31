@@ -125,5 +125,4 @@ public class Article extends BaseEntity{
         }
         deleted = false;
     }
-
 }

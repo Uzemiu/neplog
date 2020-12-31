@@ -24,7 +24,7 @@ public interface PropertyService extends CrudService<Property, Integer>, VisitSe
 
     Property getNotNullByKey(String key);
 
-    Map<String,String> listPropertiesIn(Collection<String> keys);
+    Map<String,String> listPropertiesNotIn(Collection<String> keys);
 
     Map<String, String> getBlogProperty();
 

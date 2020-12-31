@@ -22,10 +22,10 @@ public class Property extends BaseEntity{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "key", length = 100, nullable = false, unique = true)
+    @Column(name = "key", length = 127, nullable = false, unique = true)
     private String key;
 
-    @Column(name = "value", length = 1000, nullable = false)
+    @Column(name = "value", length = 1023, nullable = false)
     private String value;
 
     @Override

@@ -34,13 +34,17 @@ public class User extends BaseEntity{
     @Column(name = "nickname",length = 32,unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "email",length = 127)
+    @Column(name = "email",length = 255)
     @ColumnDefault("''")
     private String email;
 
     @Column(name = "avatar",length = 1023)
     @ColumnDefault("''")
     private String avatar;
+
+    @Column(name = "link",length = 1023)
+    @ColumnDefault("''")
+    private String link;
 
     @Column(name = "level")
     @ColumnDefault("1")

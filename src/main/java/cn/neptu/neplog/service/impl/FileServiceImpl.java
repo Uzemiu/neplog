@@ -33,9 +33,10 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String upload(MultipartFile file, UploadFileOption option) {
+        Assert.notNull(file, "File must not be null.");
         Assert.notNull(option,"UploadFileOption must not be null.");
         // use currentTimeMillis + originalFilename as new filename
-        String pathPrefix = Paths.get(localFileRootPath,option.getPath()) + File.separator + "-" + System.currentTimeMillis();
+        String pathPrefix = Paths.get(localFileRootPath,option.getPath()) + File.separator + System.currentTimeMillis() + "-";
         String filename = Optional.ofNullable(file.getOriginalFilename()).orElse("Empty");
         String extension = FileService.getFileExtension(filename);
         String baseName = FileService.getFileBaseName(filename);
@@ -56,7 +57,8 @@ public class FileServiceImpl implements FileService {
                 compressedImage = Thumbnails.of(origin.getAbsoluteFile())
                         .scale(1.0)
                         .asBufferedImage();
-                ImageIO.write(compressedImage,extension,new File(baseFilename + "." + extension).getAbsoluteFile());
+                // TODO formatName为png时会反向压缩?，得去学习一个
+                ImageIO.write(compressedImage,"jpg",new File(baseFilename + "." + extension).getAbsoluteFile());
             }
             if(option.getThumbnail() != null && option.getThumbnail()){
                 (compressedImage == null

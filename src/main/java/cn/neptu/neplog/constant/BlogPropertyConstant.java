@@ -1,7 +1,5 @@
 package cn.neptu.neplog.constant;
 
-import org.springframework.beans.BeanUtils;
-
 public class BlogPropertyConstant {
 
     public static final String VALUE_AUTO = "auto";
@@ -18,7 +16,15 @@ public class BlogPropertyConstant {
 
     public static final String FRIEND_PAGE_COVER = "friendPageCover";
 
-    public static final String HOME_PAGE_GLIDE = "homePageGlide";
+    public static final String FRIEND_PAGE_TITLE = "friendPageTitle";
+
+    /**
+     * 数字表示首页显示glides数量
+     * 链接表示显示单张图片
+     */
+    public static final String HOME_PAGE_COVER = "homePageCover";
+
+    public static final String HOME_PAGE_TITLE = "homePageTitle";
 
     /**
      * 首页显示文章类型（最近更新/最多阅读/随机）
@@ -32,17 +38,7 @@ public class BlogPropertyConstant {
 
     public static final String GLOBAL_CSS = "globalCss";
 
-    /**
-     * 博客头像类型（默认用户头像/其他头像）
-     */
-    public static final String BLOG_AVATAR_TYPE = "blogAvatarType";
-
     public static final String BLOG_AVATAR = "blogAvatar";
-
-    /**
-     * 文章作者类型（默认用户昵称/其他名称）
-     */
-    public static final String AUTHOR_NAME_TYPE = "authorNameType";
 
     public static final String AUTHOR_NAME = "authorName";
 

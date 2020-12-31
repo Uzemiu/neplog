@@ -16,6 +16,8 @@ public interface PropertyRepository extends BaseRepository<Property, Integer>{
 
     Set<Property> getByKeyIn(Collection<String> key);
 
+    Set<Property> getByKeyNotIn(Collection<String> key);
+
     int deletePropertiesByKeyNotIn(Collection<String> key);
 
 }
