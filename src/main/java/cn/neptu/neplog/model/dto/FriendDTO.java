@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class FriendDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "名称不能为空")
     @Length(max = 127,message = "博主名称须在127个字符以内")

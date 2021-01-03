@@ -12,16 +12,15 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(callSuper = false)
 public class Tag extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "article_id",nullable = false)
-    private Integer articleId;
+    private Long articleId;
 
     @Column(name = "tag",length = 31,nullable = false)
     private String tag;

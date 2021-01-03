@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class ArticleBaseDTO {
 
-    private Integer id;
+    private Long id;
 
     private String title;
 
@@ -22,9 +22,9 @@ public class ArticleBaseDTO {
 
     private Long views;
 
-    private Integer likes;
+    private Long likes;
 
-    private Integer comments;
+    private Long comments;
 
     private String htmlContent;
 

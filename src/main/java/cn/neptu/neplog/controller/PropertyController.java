@@ -16,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PropertyController {
 
-    private final InstallService installService;
+//    private final InstallService installService;
     private final PropertyService propertyService;
 
     @AnonymousAccess
@@ -28,7 +28,7 @@ public class PropertyController {
     @AnonymousAccess
     @PostMapping("/install")
     public BaseResponse<?> install(@RequestBody @Validated InstallParam installParam){
-        installService.installBlog(installParam);
+//        installService.installBlog(installParam);
         return BaseResponse.ok("博客已安装成功");
     }
 

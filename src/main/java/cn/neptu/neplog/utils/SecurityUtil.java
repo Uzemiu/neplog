@@ -17,4 +17,12 @@ public class SecurityUtil {
     public static void removeCurrentUser(){
         currentUser.remove();
     }
+
+    public static boolean isLogin(){
+        return currentUser.get() != null;
+    }
+
+    public static boolean isOwner(){
+        return isLogin() && currentUser.get().getLevel().equals(6);
+    }
 }

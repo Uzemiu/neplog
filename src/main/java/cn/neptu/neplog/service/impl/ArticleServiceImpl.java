@@ -1,11 +1,13 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.entity.Tag;
-import cn.neptu.neplog.model.params.query.ArticleQuery;
+import cn.neptu.neplog.model.query.ArticleQuery;
+import cn.neptu.neplog.repository.ArticleCommentRepository;
 import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.service.CategoryService;
@@ -25,23 +27,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("articleService")
-public class ArticleServiceImpl extends AbstractCrudService<Article, Integer> implements ArticleService {
+public class ArticleServiceImpl extends AbstractCrudService<Article, Long> implements ArticleService {
 
     private final ArticleMapper articleMapper;
     private final ArticleBaseMapper articleBaseMapper;
     private final ArticleRepository articleRepository;
+    private final ArticleCommentRepository commentRepository;
     private final CategoryService categoryService;
     private final TagService tagService;
 
     protected ArticleServiceImpl(ArticleMapper articleMapper,
                                  ArticleBaseMapper articleBaseMapper,
                                  ArticleRepository repository,
+                                 ArticleCommentRepository commentRepository,
                                  CategoryService categoryService,
                                  TagService tagService) {
         super(repository);
         this.articleMapper = articleMapper;
         this.articleBaseMapper = articleBaseMapper;
         this.articleRepository = repository;
+        this.commentRepository = commentRepository;
         this.categoryService = categoryService;
         this.tagService = tagService;
     }
@@ -87,19 +92,19 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Integer> im
     @Override
     public Map<String, Long> countByLabel() {
         Map<String, Long> res = new HashMap<>();
-        res.put("published",articleRepository.countByStatus(STATUS_PUBLISHED));
-        res.put("draft",articleRepository.countByStatus(STATUS_DRAFT));
+        res.put("published",articleRepository.countByStatus(ArticleConstant.STATUS_PUBLISHED));
+        res.put("draft",articleRepository.countByStatus(ArticleConstant.STATUS_DRAFT));
         res.put("deleted",articleRepository.countByDeleted(true));
         return res;
     }
 
     @Override
-    public boolean trash(Integer id, Boolean deleted) {
+    public boolean trash(Long id, Boolean deleted) {
         return articleRepository.updateDeleted(id, deleted) > 0;
     }
 
     @Override
-    public ArticleBaseDTO findViewById(Integer id) {
+    public ArticleBaseDTO findViewById(Long id) {
         Article article = getNotNullById(id);
         ArticleBaseDTO viewDTO = articleBaseMapper.toDto(article);
         viewDTO.setHtmlContent(article.getHtmlContent());
@@ -108,7 +113,7 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Integer> im
     }
 
     @Override
-    public ArticleDTO findDetailById(Integer id) {
+    public ArticleDTO findDetailById(Long id) {
         Article article = getNotNullById(id);
         ArticleDTO detailDTO = articleMapper.toDto(article);
         fillProperties(detailDTO,article);
@@ -117,11 +122,20 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Integer> im
 
     @Override
     public void increaseVisit(String id, Long increment) {
-        articleRepository.updateViews(Integer.valueOf(id),increment);
+        articleRepository.updateViews(Long.valueOf(id),increment);
+    }
+
+    @Transactional
+    @Override
+    public Article deleteById(Long integer) {
+        Article article = super.deleteById(integer);
+        commentRepository.deleteByArticleId(article.getId());
+        return article;
     }
 
     private void fillProperties(ArticleBaseDTO dto, Article article){
         dto.setTags(tagService.findByArticleId(article.getId()).stream().map(Tag::getTag).collect(Collectors.toList()));
         dto.setCategory(categoryService.findById(article.getCategoryId()).get().getName());
+        dto.setComments(commentRepository.countByArticleId(article.getId()));
     }
 }

@@ -1,11 +1,12 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
+import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.event.ArticleViewEvent;
 import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
-import cn.neptu.neplog.model.params.query.ArticleQuery;
+import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.utils.StringUtil;
@@ -34,7 +35,7 @@ public class ArticleController {
 
     @GetMapping("/view")
     @AnonymousAccess
-    public BaseResponse<ArticleBaseDTO> getArticleView(@Validated @NotNull Integer id,
+    public BaseResponse<ArticleBaseDTO> getArticleView(@Validated @NotNull Long id,
                                                        HttpServletRequest request){
         String ip = StringUtil.getIp(request);
         eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
@@ -49,15 +50,21 @@ public class ArticleController {
         Pageable newPageable = andDefaultPageable(pageable);
         // 普通用户默认查询未被删除文章的可见文章
         query.setDeleted(false);
-        query.setStatus(ArticleService.STATUS_PUBLISHED);
+        query.setStatus(ArticleConstant.STATUS_PUBLISHED);
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
 
     @GetMapping("/detail")
-    public BaseResponse<ArticleDTO> getArticleDetail(@Validated @NotNull Integer id){
+    public BaseResponse<ArticleDTO> getArticleDetail(@Validated @NotNull Long id){
         return BaseResponse.ok("ok",articleService.findDetailById(id));
     }
 
+    /**
+     *
+     * @param query
+     * @param pageable
+     * @return
+     */
     @GetMapping("/query")
     public BaseResponse<?> privateQueryBy(ArticleQuery query,
                                           @PageableDefault(sort = {"updateTime"},

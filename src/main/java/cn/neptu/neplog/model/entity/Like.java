@@ -20,13 +20,13 @@ public class Like extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "identity",nullable = false)
     private String identity;
 
     @Column(name = "article_id",nullable = false)
-    private Integer articleId;
+    private Long articleId;
 
     @Column(name = "opinion",nullable = false)
     private Integer opinion;

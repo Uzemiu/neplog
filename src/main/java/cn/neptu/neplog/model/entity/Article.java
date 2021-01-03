@@ -21,7 +21,7 @@ public class Article extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "article_id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "title",length = 255,nullable = false)
     private String title;
@@ -60,7 +60,7 @@ public class Article extends BaseEntity{
 
     @Column(name = "likes")
     @ColumnDefault("0")
-    private Integer likes;
+    private Long likes;
 
     /**
      * 0~3 Anybody
@@ -115,7 +115,7 @@ public class Article extends BaseEntity{
             views = 1L;
         }
         if(likes == null){
-            likes = 0;
+            likes = 0L;
         }
         if(viewPermission == null){
             viewPermission = 0;

@@ -2,7 +2,7 @@ package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.model.dto.FriendDTO;
-import cn.neptu.neplog.model.params.query.FriendQuery;
+import cn.neptu.neplog.model.query.FriendQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.FriendService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FriendController {
 
     @GetMapping("/view")
     @AnonymousAccess
-    public BaseResponse<?> findFriends(){
+    public BaseResponse<?> listFriendsView(){
         return BaseResponse.ok("ok",friendService.listFriendView());
     }
 
@@ -56,7 +56,7 @@ public class FriendController {
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteFriend(@RequestBody List<Integer> ids){
+    public BaseResponse<?> deleteFriend(@RequestBody List<Long> ids){
         long count = friendService.deleteByIdIn(ids);
         return BaseResponse.ok("ok",count);
     }

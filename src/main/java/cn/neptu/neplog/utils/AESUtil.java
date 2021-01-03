@@ -22,6 +22,7 @@ public class AESUtil implements InitializingBean {
 
     @Resource
     private SecurityConfig securityConfig;
+
     private Cipher encryptor;
     private Cipher decryptor;
 

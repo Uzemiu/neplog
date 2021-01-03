@@ -1,4 +1,4 @@
-package cn.neptu.neplog.model.params.query;
+package cn.neptu.neplog.model.query;
 
 import cn.neptu.neplog.annotation.LevelRequiredParam;
 import cn.neptu.neplog.model.entity.Article;

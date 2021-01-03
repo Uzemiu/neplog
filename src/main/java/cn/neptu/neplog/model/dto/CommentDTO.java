@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class CommentDTO {
 
-    private Integer id;
+    private Long id;
 
     @NotBlank
     private String content;
@@ -31,19 +31,19 @@ public class CommentDTO {
     private String email;
 
     @NotNull(message = "评论文章不能为空")
-    private Integer articleId;
+    private Long articleId;
 
-    private Integer fatherId;
+    private Long fatherId;
 
-    private CommentAuthorDTO author;
-
-    private Integer like;
+    private Long likes;
 
     private String userAgent;
 
     private String operatingSystem;
 
     private Date createTime;
+
+    private CommentAuthorDTO father;
 
     private List<CommentDTO> children;
 

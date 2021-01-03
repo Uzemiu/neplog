@@ -27,7 +27,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
         this.propertyRepository = propertyRepository;
 
         this.excludedBlogProperties = Arrays.asList(
-                VALUE_AUTO, INSTALLED);
+                VALUE_AUTO, INSTALLED, INSTALL_STATUS);
     }
 
     @Override
@@ -35,11 +35,13 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
         User user = SecurityUtil.getCurrentUser();
         Map<String, String> properties = new HashMap<>();
         properties.put(BLOG_NAME, "Neplog");
-        properties.put(BLOG_AVATAR, user.getAvatar());
         properties.put(HOME_PAGE_ARTICLE, "updateTime,desc");
         properties.put(HOME_PAGE_COVER, "3");
         properties.put(FRIEND_PAGE_COVER, "");
-        properties.put(AUTHOR_NAME, user.getNickname());
+        if(user != null){
+            properties.put(BLOG_AVATAR, user.getAvatar());
+            properties.put(AUTHOR_NAME, user.getNickname());
+        }
         save(properties);
     }
 

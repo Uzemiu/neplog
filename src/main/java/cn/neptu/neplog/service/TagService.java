@@ -14,7 +14,7 @@ public interface TagService {
 
     Set<Tag> findTagIn(Collection<String> tags);
 
-    Set<Tag> findByArticleId(Integer articleId);
+    Set<Tag> findByArticleId(Long articleId);
 
-    int deleteTagsNotIn(Integer articleId, Collection<String> tags);
+    int deleteTagsNotIn(Long articleId, Collection<String> tags);
 }

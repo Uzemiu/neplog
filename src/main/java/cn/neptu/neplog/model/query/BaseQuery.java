@@ -1,11 +1,10 @@
-package cn.neptu.neplog.model.params.query;
+package cn.neptu.neplog.model.query;
 
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.criteria.Predicate;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

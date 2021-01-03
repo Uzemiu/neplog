@@ -2,6 +2,7 @@ package cn.neptu.neplog.config.common;
 
 import cn.neptu.neplog.model.support.UploadFileOption;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,10 @@ import java.util.Map;
 @Component
 @ConfigurationProperties(prefix = "neplog.file")
 public class UploadFileConfig {
+
+    private String root;
+
+    private String virtual;
 
     private Map<String, UploadFileOption> options;
 

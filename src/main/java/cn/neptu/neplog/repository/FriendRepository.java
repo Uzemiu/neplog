@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FriendRepository extends BaseRepository<Friend, Integer>, JpaSpecificationExecutor<Friend> {
+public interface FriendRepository extends BaseRepository<Friend, Long>, JpaSpecificationExecutor<Friend> {
 
     List<Friend> findByStatus(Integer status);
 

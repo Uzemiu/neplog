@@ -20,7 +20,7 @@ public class ArticleComment extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "content",length = 4095,nullable = false)
     private String content;
@@ -41,18 +41,18 @@ public class ArticleComment extends BaseEntity{
     private String email;
 
     @Column(name = "article_id",nullable = false)
-    private Integer articleId;
+    private Long articleId;
 
     @Column(name = "status")
     @ColumnDefault("0")
     private Integer status;
 
     @Column(name = "father_id")
-    private Integer fatherId;
+    private Long fatherId;
 
     @Column(name = "likes")
     @ColumnDefault("0")
-    private Integer likes;
+    private Long likes;
 
     @Column(name = "user_agent")
     @ColumnDefault("Unknown")
@@ -62,13 +62,17 @@ public class ArticleComment extends BaseEntity{
     @ColumnDefault("Unknown")
     private String operatingSystem;
 
+    @Column(name = "ip_address")
+    @ColumnDefault("''")
+    private String ipAddress;
+
     @Override
     protected void prePersist() {
         super.prePersist();
         if(likes == null){
-            likes = 0;
+            likes = 0L;
         }
-        if(!StringUtils.hasText(email)){
+        if(email == null){
             email = "";
         }
         if(!StringUtils.hasText(link)){
@@ -79,6 +83,9 @@ public class ArticleComment extends BaseEntity{
         }
         if(!StringUtils.hasText(operatingSystem)){
             userAgent = "Unknown";
+        }
+        if(ipAddress == null){
+            ipAddress = "";
         }
     }
 }

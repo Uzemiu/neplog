@@ -18,13 +18,13 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.neptu.xblog.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.neptu.neplog.controller"))
 //                .paths(PathSelectors.any())// 选择所有的API,如果你想只为部分API生成文档，可以配置这里
                 .build();
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("xblog api docs")
+                .title("neplog api docs")
                 .description("")
                 .version("-1.0")
                 .build();

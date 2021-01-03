@@ -1,10 +1,14 @@
 package cn.neptu.neplog.constant;
 
-public class ArticleConstant {
+public interface ArticleConstant {
 
-    public static final int STATUS_DRAFT = 0;
+    Integer STATUS_DRAFT = 0;
 
-    public static final int STATUS_PUBLISHED = 4;
+    Integer STATUS_PUBLISHED = 4;
 
-    public static final int VIEW_PERMISSION_ANYBODY = 0;
+    Integer COMMENT_PERMISSION_REQUIRE_REVIEW = 4;
+
+    Integer COMMENT_PERMISSION_USER_ONLY = 8;
+
+    Integer COMMENT_PERMISSION_CLOSED = 16;
 }

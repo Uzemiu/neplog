@@ -36,13 +36,15 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     @Override
     public Optional<ENTITY> getById(ID id) {
+        Assert.notNull(id, "Id must be null");
         return repository.findById(id);
     }
 
     @Override
     public ENTITY getNotNullById(ID id) {
+        Assert.notNull(id, "Id must be null");
         return repository.findById(id)
-                .orElseThrow(() -> new BadRequestException(entityName + "(id: " + id + ") not fount" ));
+                .orElseThrow(() -> new BadRequestException(entityName + "(id: " + id + ") could not be found"));
     }
 
     @Override
@@ -53,6 +55,7 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     @Override
     public long deleteByIdIn(Collection<ID> ids) {
+        Assert.notNull(ids, "Ids must not be null");
         return repository.deleteByIdIn(ids);
     }
 

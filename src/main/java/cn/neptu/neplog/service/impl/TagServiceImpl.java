@@ -27,7 +27,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Set<Tag> findByArticleId(Integer articleId) {
+    public Set<Tag> findByArticleId(Long articleId) {
         return tagRepository.findByArticleId(articleId);
     }
 
@@ -37,7 +37,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public int deleteTagsNotIn(Integer articleId, Collection<String> tags) {
+    public int deleteTagsNotIn(Long articleId, Collection<String> tags) {
         Assert.notNull(articleId,"Article Id must not be null");
         return tagRepository.deleteByArticleIdAndTagNotIn(articleId,tags);
     }

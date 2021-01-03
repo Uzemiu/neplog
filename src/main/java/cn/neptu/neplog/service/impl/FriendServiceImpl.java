@@ -2,7 +2,7 @@ package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.model.dto.FriendDTO;
 import cn.neptu.neplog.model.entity.Friend;
-import cn.neptu.neplog.model.params.query.FriendQuery;
+import cn.neptu.neplog.model.query.FriendQuery;
 import cn.neptu.neplog.repository.FriendRepository;
 import cn.neptu.neplog.service.FriendService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service("linkService")
-public class FriendServiceImpl extends AbstractCrudService<Friend, Integer> implements FriendService {
+public class FriendServiceImpl extends AbstractCrudService<Friend, Long> implements FriendService {
 
     private final FriendRepository friendRepository;
     private final FriendMapper friendMapper;

@@ -1,5 +1,6 @@
 package cn.neptu.neplog.config;
 
+import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.interceptor.AuthenticationInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +26,9 @@ public class NeplogConfiguration implements WebMvcConfigurer {
     @Resource
     private AuthenticationInterceptor authorizationInterceptor;
 
-    @Value("${neplog.file.root:uploads}")
-    private String localFileRootPath;
+    @Resource
+    private UploadFileConfig uploadFileConfig;
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -36,10 +38,10 @@ public class NeplogConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        File path = new File(localFileRootPath);
+        File path = new File(uploadFileConfig.getRoot());
         String realPath = "file:" + path.getAbsolutePath() + File.separator;
         log.info("Adding '{}' to mapped resource location",realPath);
-        registry.addResourceHandler("/uploads/**").addResourceLocations(realPath);
+        registry.addResourceHandler(uploadFileConfig.getVirtual() + "/**").addResourceLocations(realPath);
 
     }
 

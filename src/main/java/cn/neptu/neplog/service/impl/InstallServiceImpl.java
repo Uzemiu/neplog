@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,7 +23,7 @@ import static cn.neptu.neplog.constant.BlogPropertyConstant.*;
 @Slf4j
 @Service("installService")
 @RequiredArgsConstructor
-public class InstallServiceImpl implements InstallService {
+public class InstallServiceImpl implements InstallService{
 
     private final PropertyService propertyService;
     private final UserService userService;
@@ -34,10 +33,6 @@ public class InstallServiceImpl implements InstallService {
 
     @Override
     public void installBlog(InstallParam installParam) {
-        if(propertyService.isInstalled()){
-            throw new BadRequestException("当前博客已创建完毕，请勿重复创建");
-        }
-
         try {
             String plainPassword = aesUtil.decrypt(installParam.getPassword());
             String bcryptedPassword = BCrypt.hashpw(plainPassword,BCrypt.gensalt());
@@ -69,5 +64,4 @@ public class InstallServiceImpl implements InstallService {
         propertyService.save(INSTALL_TIME, format.format(new Date()));
         propertyService.save(INSTALL_STATUS, INSTALLED);
     }
-
 }
