@@ -1,6 +1,7 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.constant.ArticleConstant;
+import cn.neptu.neplog.constant.CommentConstant;
 import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
@@ -15,6 +16,7 @@ import cn.neptu.neplog.service.TagService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.service.mapstruct.ArticleBaseMapper;
 import cn.neptu.neplog.service.mapstruct.ArticleMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,8 +82,24 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     }
 
     @Override
+    public long updateLikes(Long id, Long increment) {
+        return articleRepository.updateLikes(id,increment);
+    }
+
+    @Override
+    public long updateComments(Long id, Long increment) {
+        return articleRepository.updateComments(id,increment);
+    }
+
+    @Override
+    public void increaseVisit(String id, Long increment) {
+        articleRepository.updateViews(Long.valueOf(id),increment);
+    }
+
+    @Override
     public List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable) {
-        List<Article> articles = articleRepository.findAll(query.toSpecification(),pageable).toList();
+        Page<Article> a = articleRepository.findAll(query.toSpecification(),pageable);
+        List<Article> articles = a.toList();
         return articles.stream().map(article -> {
             ArticleBaseDTO dto = articleBaseMapper.toDto(article);
             fillProperties(dto,article);
@@ -120,10 +138,6 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
         return detailDTO;
     }
 
-    @Override
-    public void increaseVisit(String id, Long increment) {
-        articleRepository.updateViews(Long.valueOf(id),increment);
-    }
 
     @Transactional
     @Override
@@ -133,9 +147,9 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
         return article;
     }
 
+
     private void fillProperties(ArticleBaseDTO dto, Article article){
         dto.setTags(tagService.findByArticleId(article.getId()).stream().map(Tag::getTag).collect(Collectors.toList()));
         dto.setCategory(categoryService.findById(article.getCategoryId()).get().getName());
-        dto.setComments(commentRepository.countByArticleId(article.getId()));
     }
 }

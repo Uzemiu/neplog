@@ -40,6 +40,9 @@ public class ArticleComment extends BaseEntity{
     @ColumnDefault("''")
     private String email;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Column(name = "article_id",nullable = false)
     private Long articleId;
 

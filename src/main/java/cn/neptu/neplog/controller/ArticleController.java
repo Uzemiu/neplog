@@ -9,7 +9,7 @@ import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
-import cn.neptu.neplog.utils.StringUtil;
+import cn.neptu.neplog.utils.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +37,7 @@ public class ArticleController {
     @AnonymousAccess
     public BaseResponse<ArticleBaseDTO> getArticleView(@Validated @NotNull Long id,
                                                        HttpServletRequest request){
-        String ip = StringUtil.getIp(request);
+        String ip = RequestUtil.getIp(request);
         eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
         return BaseResponse.ok("ok",articleService.findViewById(id));
     }
@@ -95,7 +95,7 @@ public class ArticleController {
 
     private Pageable andDefaultPageable(Pageable pageable){
         Sort sort = Sort.by(Sort.Direction.DESC, "priority");
-        sort.and(pageable.getSort());
-        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),sort);
+        Sort newSort = sort.and(pageable.getSort());
+        return PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(),newSort);
     }
 }

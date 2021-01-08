@@ -24,5 +24,9 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
 
     List<ArticleBaseDTO> queryBy(ArticleQuery query, Pageable pageable);
 
+    long updateLikes(Long id, Long increment);
+
+    long updateComments(Long id, Long increment);
+
     Map<String, Long> countByLabel();
 }

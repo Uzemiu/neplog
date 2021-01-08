@@ -21,8 +21,6 @@ public class FriendQuery extends BaseQuery<Friend>{
 
     private String link;
 
-    private String introduction;
-
     /**
      * 0 待审核
      * 1 公开
@@ -39,13 +37,12 @@ public class FriendQuery extends BaseQuery<Friend>{
                 predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
             if(StringUtils.hasText(name)){
-                predicates.add(criteriaBuilder.like(root.get("name"),"%" + name + "%"));
+                Predicate nLike = criteriaBuilder.like(root.get("name"),"%" + name + "%");
+                Predicate iLike = criteriaBuilder.like(root.get("introduction"),"%" + name + "%");
+                predicates.add(criteriaBuilder.or(nLike,iLike));
             }
             if(StringUtils.hasText(link)){
                 predicates.add(criteriaBuilder.like(root.get("link"),"%" + link + "%"));
-            }
-            if(StringUtils.hasText(introduction)){
-                predicates.add(criteriaBuilder.like(root.get("introduction"),"%" + introduction + "%"));
             }
             if(status != null){
                 predicates.add(criteriaBuilder.equal(root.get("status"),status));

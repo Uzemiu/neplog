@@ -89,6 +89,7 @@
             <artifactId>UserAgentUtils</artifactId>
             <version>1.21</version>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>

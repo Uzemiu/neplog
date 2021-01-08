@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,8 +62,9 @@ public class ArticleQuery extends BaseQuery<Article>{
                 predicates.add(criteriaBuilder.equal(root.get("id"),id));
             }
             if(StringUtils.hasText(content)){
-                predicates.add(criteriaBuilder.like(root.get("content"),"%" + content + "%"));
-                predicates.add(criteriaBuilder.like(root.get("title"), "%" + content + "%"));
+                Predicate cLike = criteriaBuilder.like(root.get("content"),"%" + content + "%");
+                Predicate tLike = criteriaBuilder.like(root.get("title"),"%" + content + "%");
+                predicates.add(criteriaBuilder.or(cLike,tLike));
             }
             if(categoryId != null){
                 predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));

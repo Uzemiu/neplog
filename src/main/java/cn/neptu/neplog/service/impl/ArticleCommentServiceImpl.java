@@ -6,6 +6,7 @@ import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.CommentAuthorDTO;
 import cn.neptu.neplog.model.dto.CommentDTO;
 import cn.neptu.neplog.model.entity.ArticleComment;
+import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.model.query.ArticleCommentQuery;
 import cn.neptu.neplog.repository.ArticleCommentRepository;
 import cn.neptu.neplog.service.ArticleCommentService;
@@ -41,15 +42,24 @@ public class ArticleCommentServiceImpl extends AbstractCrudService<ArticleCommen
         this.articleService = articleService;
     }
 
+    @Transactional
     @Override
     public long deleteByArticleId(Long articleId) {
-        return articleCommentRepository.deleteByArticleId(articleId);
+        long count = articleCommentRepository.deleteByArticleId(articleId);
+        articleService.updateComments(articleId,count);
+        return count;
     }
 
     @Override
     public long countByArticleId(Long articleId) {
         return articleCommentRepository.countByArticleId(articleId);
     }
+
+    @Override
+    public long countByArticleIdAndStatus(Long articleId, Integer status) {
+        return articleCommentRepository.countByArticleIdAndStatus(articleId,status);
+    }
+
 
     @Override
     public List<CommentDTO> buildSimpleCommentTree(List<CommentDTO> allComments) {
@@ -104,24 +114,41 @@ public class ArticleCommentServiceImpl extends AbstractCrudService<ArticleCommen
     }
 
     @Override
+    public List<CommentDTO> listByArticleIdAndStatus(Long articleId, Integer status) {
+        return commentMapper.toDto(articleCommentRepository.findByArticleIdAndStatus(articleId,status));
+    }
+
+    @Override
     public List<CommentDTO> queryBy(ArticleCommentQuery query, Pageable pageable) {
         List<ArticleComment> comments = articleCommentRepository.findAll(query.toSpecification(),pageable).toList();
         return commentMapper.toDto(comments);
     }
 
+    @Transactional
     @Override
     public ArticleComment create(CommentDTO commentDTO) {
         ArticleComment comment = commentMapper.toEntity(commentDTO);
-        Integer cp = articleService.getNotNullById(comment.getId()).getCommentPermission();
+        Integer cp = articleService.getNotNullById(comment.getArticleId()).getCommentPermission();
 
         Assert.isTrue( cp < ArticleConstant.COMMENT_PERMISSION_CLOSED, "该文章已关闭评论");
         if(cp >= ArticleConstant.COMMENT_PERMISSION_USER_ONLY && !SecurityUtil.isLogin()){
             throw new BadRequestException("仅登录用户可以评论该文章");
         } else {
-            comment.setStatus(cp >= ArticleConstant.COMMENT_PERMISSION_REQUIRE_REVIEW ? 1 : 0);
+            comment.setStatus(cp >= ArticleConstant.COMMENT_PERMISSION_REQUIRE_REVIEW ? 0 : 1);
         }
 
-        return articleCommentRepository.save(comment);
+        User user = SecurityUtil.getCurrentUser();
+        if(user != null){
+            comment.setUserId(user.getId());
+            comment.setNickname(user.getNickname());
+            comment.setAvatar(user.getAvatar());
+            comment.setEmail(user.getEmail());
+        }
+
+        articleCommentRepository.save(comment);
+        articleService.updateComments(comment.getArticleId(), 1L);
+
+        return comment;
     }
 
     @Transactional
@@ -137,7 +164,10 @@ public class ArticleCommentServiceImpl extends AbstractCrudService<ArticleCommen
                 .map(CommentDTO::getId)
                 .collect(Collectors.toList());
         childrenIds.add(comment.getId());
-        deleteByIdIn(childrenIds);
+
+        long count = deleteByIdIn(childrenIds);
+        articleService.updateComments(comment.getArticleId(), -count);
+
         return comment;
     }
 

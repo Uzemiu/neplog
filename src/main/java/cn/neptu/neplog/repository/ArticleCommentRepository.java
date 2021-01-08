@@ -13,11 +13,11 @@ public interface ArticleCommentRepository extends BaseRepository<ArticleComment,
 
     long countByArticleId(Long articleId);
 
+    long countByArticleIdAndStatus(Long articleId, Integer status);
+
     long deleteByArticleId(Long articleId);
 
     List<ArticleComment> findByArticleId(Long articleId);
 
     List<ArticleComment> findByArticleIdAndStatus(Long articleId, Integer status);
-
-    List<ArticleComment> findByFatherId(Long fatherId);
 }

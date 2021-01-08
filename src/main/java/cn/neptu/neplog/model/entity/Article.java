@@ -62,6 +62,10 @@ public class Article extends BaseEntity{
     @ColumnDefault("0")
     private Long likes;
 
+    @Column(name = "comments")
+    @ColumnDefault("0")
+    private Long comments;
+
     /**
      * 0~3 Anybody
      * 4~7 Require review
@@ -116,6 +120,9 @@ public class Article extends BaseEntity{
         }
         if(likes == null){
             likes = 0L;
+        }
+        if(comments == null){
+            comments = 0L;
         }
         if(viewPermission == null){
             viewPermission = 0;

@@ -29,6 +29,10 @@ spring:
   h2:
     console:
       enabled: true
+  data:
+    redis:
+      repositories:
+        enabled: false
 
 neplog:
   file:

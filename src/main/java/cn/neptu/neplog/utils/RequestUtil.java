@@ -1,8 +1,5 @@
 package cn.neptu.neplog.utils;
 
-import cn.neptu.neplog.model.support.UserAgentInfo;
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +8,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Slf4j
-public class StringUtil {
+public class RequestUtil {
 
     public static String getIp(HttpServletRequest request) {
         final String UNKNOWN = "unknown";
@@ -41,11 +38,7 @@ public class StringUtil {
         return ip;
     }
 
-
-    public static UserAgentInfo getUserAgentInfo(HttpServletRequest request) {
-        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        OperatingSystem os = userAgent.getOperatingSystem();
-        Browser browser = userAgent.getBrowser();
-        return new UserAgentInfo(os.getName(),browser.getName());
+    public static UserAgent getUserAgentInfo(HttpServletRequest request) {
+        return UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
     }
 }

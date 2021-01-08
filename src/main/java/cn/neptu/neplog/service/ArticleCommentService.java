@@ -6,6 +6,7 @@ import cn.neptu.neplog.model.query.ArticleCommentQuery;
 import cn.neptu.neplog.service.base.CrudService;
 import org.assertj.core.util.Lists;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,11 +14,15 @@ public interface ArticleCommentService extends CrudService<ArticleComment, Long>
 
     long countByArticleId(Long articleId);
 
+    long countByArticleIdAndStatus(Long articleId, Integer status);
+
     long deleteByArticleId(Long articleId);
 
     ArticleComment create(CommentDTO commentDTO);
 
     List<CommentDTO> listByArticleId(Long articleId);
+
+    List<CommentDTO> listByArticleIdAndStatus(Long articleId, Integer status);
 
     List<CommentDTO> queryBy(ArticleCommentQuery query, Pageable pageable);
 

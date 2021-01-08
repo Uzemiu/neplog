@@ -18,6 +18,16 @@ public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpec
 
     @Transactional
     @Modifying
+    @Query("update Article a set a.likes = a.likes + :increment where a.id = :id")
+    int updateLikes(@Param("id") Long id, @Param("increment") Long increment);
+
+    @Transactional
+    @Modifying
+    @Query("update Article a set a.comments = a.comments + :increment where a.id = :id")
+    int updateComments(@Param("id") Long id, @Param("increment") Long increment);
+
+    @Transactional
+    @Modifying
     @Query("update Article a set a.deleted = :deleted where a.id = :id")
     int updateDeleted(@Param("id") Long id, @Param("deleted") Boolean deleted);
 

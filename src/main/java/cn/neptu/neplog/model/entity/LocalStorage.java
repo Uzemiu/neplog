@@ -6,15 +6,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Entity
 public class LocalStorage extends BaseEntity{
 
     @Id
@@ -25,8 +23,11 @@ public class LocalStorage extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "path", nullable = false)
-    private String path;
+    @Column(name = "virtual_path", nullable = false)
+    private String virtualPath;
+
+    @Column(name = "local_path", nullable = false)
+    private String localPath;
 
     @Column(name = "size")
     @ColumnDefault("0")

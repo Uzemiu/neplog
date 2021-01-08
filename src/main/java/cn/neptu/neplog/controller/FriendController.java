@@ -45,8 +45,7 @@ public class FriendController {
     @PostMapping
     @AnonymousAccess
     public BaseResponse<?> createFriend(@RequestBody @Validated FriendDTO param){
-        friendService.create(param);
-        return BaseResponse.ok();
+        return BaseResponse.ok("ok",friendService.create(param));
     }
 
     @PutMapping
