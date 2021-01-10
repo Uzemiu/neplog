@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 
@@ -20,7 +21,11 @@ public class LocalStorage extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "fileName", nullable = false)
+    private String fileName;
+
+    @Column(name = "name")
+    @ColumnDefault("'file'")
     private String name;
 
     @Column(name = "virtual_path", nullable = false)
@@ -40,6 +45,9 @@ public class LocalStorage extends BaseEntity{
     @Override
     protected void prePersist() {
         super.prePersist();
+        if(!StringUtils.hasText(name)){
+            name = "file";
+        }
         if(size == null){
             size = 0L;
         }

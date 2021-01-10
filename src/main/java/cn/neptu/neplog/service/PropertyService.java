@@ -1,6 +1,8 @@
 package cn.neptu.neplog.service;
 
+import cn.neptu.neplog.model.property.TencentCosProperty;
 import cn.neptu.neplog.model.entity.Property;
+import cn.neptu.neplog.model.property.BlogProperty;
 import cn.neptu.neplog.service.base.CrudService;
 
 import java.util.Collection;
@@ -26,6 +28,12 @@ public interface PropertyService extends CrudService<Property, Integer>, VisitSe
 
     Map<String,String> listPropertiesNotIn(Collection<String> keys);
 
-    Map<String, String> getBlogProperty();
+    String getDefaultFileService();
+
+    BlogProperty getBlogProperty();
+
+    TencentCosProperty getTencentCosProperty();
+
+    Map<String, Object> getCosProperty();
 
 }

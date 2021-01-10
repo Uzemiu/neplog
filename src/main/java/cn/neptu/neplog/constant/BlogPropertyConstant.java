@@ -43,4 +43,12 @@ public interface BlogPropertyConstant {
     String AUTHOR_NAME = "authorName";
 
 
+    /**
+     * 默认文件存储位置
+     */
+    String DEFAULT_FILE_SERVICE = "defaultFileService";
+
+    String FILE_SERVICE_LOCAL = "local";
+
+
 }

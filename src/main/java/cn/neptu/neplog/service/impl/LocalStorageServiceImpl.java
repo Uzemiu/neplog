@@ -7,6 +7,8 @@ import cn.neptu.neplog.service.LocalStorageService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("localStorageService")
 public class LocalStorageServiceImpl extends AbstractCrudService<LocalStorage, Long> implements LocalStorageService {
 
@@ -15,5 +17,10 @@ public class LocalStorageServiceImpl extends AbstractCrudService<LocalStorage, L
     public LocalStorageServiceImpl(LocalStorageRepository localStorageRepository) {
         super(localStorageRepository);
         this.localStorageRepository = localStorageRepository;
+    }
+
+    @Override
+    public List<LocalStorage> listByName(String name) {
+        return localStorageRepository.findByName(name);
     }
 }

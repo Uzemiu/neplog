@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -27,8 +28,8 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service("fileService")
-public class FileServiceImpl implements FileService {
+@Service("local")
+public class LocalFileServiceImpl implements FileService {
 
     private final UploadFileConfig uploadFileConfig;
     private final LocalStorageService localStorageService;
@@ -79,12 +80,13 @@ public class FileServiceImpl implements FileService {
         // 包含前缀'/'
         String pathPrefix = ArrayUtil.join(option.getPath(),"/","/","/") + System.currentTimeMillis() + "-";
 
-        String filename = Optional.ofNullable(file.getOriginalFilename()).orElse("empty");
+        String filename = StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : "empty";
         String baseName = FileService.getFileBaseName(filename);
         String extension = FileService.getFileExtension(filename);
 
         boolean scalable = FileService.isImageType(file.getContentType()) && !extension.equals("svg");
         boolean compressed = scalable && (option.getCompress() == null || option.getCompress());
+
         String baseFilename = uploadFileConfig.getRoot() + pathPrefix + baseName;
         File origin = new File(baseFilename + (compressed ? ORIGIN_SUFFIX : "") + "." + extension).getAbsoluteFile();
         ensurePathExists(origin.getParent());
@@ -118,9 +120,11 @@ public class FileServiceImpl implements FileService {
         }
 
         String virtualPath = uploadFileConfig.getVirtual() + pathPrefix + baseName + "." + extension;
-        localStorage.setName(filename);
+        localStorage.setName(option.getName());
+        localStorage.setFileName(filename);
         localStorage.setVirtualPath(virtualPath);
         localStorage.setSize(file.getSize());
+
         return localStorage;
     }
 

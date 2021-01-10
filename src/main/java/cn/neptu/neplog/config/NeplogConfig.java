@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @EnableAsync
 @Configuration
-public class NeplogConfiguration implements WebMvcConfigurer {
+public class NeplogConfig implements WebMvcConfigurer {
 
     @Resource
     private AuthenticationInterceptor authorizationInterceptor;

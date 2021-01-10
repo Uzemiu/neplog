@@ -33,16 +33,18 @@ spring:
     redis:
       repositories:
         enabled: false
+  profiles:
+    active: dev
 
 neplog:
   file:
     root: .neplog/uploads
     virtual: /uploads
     options:
-      avatar: {path: [img], thumnail: true, width: 200, height: 200}
-      articleCover: {path: [img]}
-      image: {path: [img]}
-      file: {path: [common]}
+      avatar: {path: [img], name: avatar, thumnail: true, width: 200, height: 200}
+      cover: {path: [img], name: cover}
+      image: {path: [img], name: image}
+      file: {path: [common], name: file}
 
   security:
     secret: j.2_d?+bn

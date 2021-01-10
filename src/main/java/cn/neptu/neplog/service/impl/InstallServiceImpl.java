@@ -63,5 +63,6 @@ public class InstallServiceImpl implements InstallService{
         propertyService.save(BLOG_NAME, installParam.getBlogName());
         propertyService.save(INSTALL_TIME, format.format(new Date()));
         propertyService.save(INSTALL_STATUS, INSTALLED);
+        propertyService.save(VISIT_COUNT,"0");
     }
 }

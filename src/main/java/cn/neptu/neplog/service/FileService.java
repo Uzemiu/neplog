@@ -1,8 +1,12 @@
 package cn.neptu.neplog.service;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.neptu.neplog.model.support.UploadFileOption;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 public interface FileService {
 
@@ -11,6 +15,16 @@ public interface FileService {
     String THUMBNAIL_SUFFIX = "_thumb";
 
     String ORIGIN_SUFFIX = "_origin";
+
+    static StringBuilder generateBaseFileName(MultipartFile file, UploadFileOption option){
+        StringBuilder sb = new StringBuilder();
+        return sb.append(ArrayUtil.join(option.getPath(),"/","","/"))
+                .append(System.currentTimeMillis())
+                .append('-')
+                .append(StringUtils.hasText(file.getOriginalFilename())
+                            ? file.getOriginalFilename()
+                            : "empty");
+    }
 
     static boolean isImageType(String mediaType) {
         return mediaType != null && IMAGE_TYPE.includes(MediaType.valueOf(mediaType));
