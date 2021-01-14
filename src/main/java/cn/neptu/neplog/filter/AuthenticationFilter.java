@@ -1,9 +1,9 @@
 package cn.neptu.neplog.filter;
 
-import cn.neptu.neplog.exception.BadRequestException;
+import cn.neptu.neplog.config.security.SecurityConfig;
 import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.service.UserService;
-import cn.neptu.neplog.utils.JwtUtil;
+import cn.neptu.neplog.utils.TokenUtil;
 import cn.neptu.neplog.utils.RedisUtil;
 import cn.neptu.neplog.utils.SecurityUtil;
 import io.jsonwebtoken.Claims;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -28,29 +28,29 @@ import java.util.Optional;
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final RedisUtil redisUtil;
-    private final JwtUtil jwtUtil;
+    private final SecurityConfig securityConfig;
     private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.resolveToken(httpServletRequest);
+        String token = TokenUtil.resolveToken(httpServletRequest);
         if(token != null){
-            try{
-                Claims claims = jwtUtil.parseToken(token);
-                String userId = claims.getSubject();
+            String userId = (String) redisUtil.get(token);
+            if(userId != null){
                 Optional<User> user = userService.findById(userId);
                 if(!user.isPresent()){
                     httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,"User not found");
                     return;
                 }
                 SecurityUtil.setCurrentUser(user.get());
-                Date expire = claims.getExpiration();
-            } catch (ExpiredJwtException e){
-                log.info("Received expired jwt token {}",token);
+
+                long expire = redisUtil.getExpire(token);
+                if(expire < securityConfig.getTokenRefreshTime() * 3600_000){
+                    redisUtil.expire(token, securityConfig.getTokenExpireTime(), TimeUnit.HOURS);
+                }
             }
-            // todo token续期
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }

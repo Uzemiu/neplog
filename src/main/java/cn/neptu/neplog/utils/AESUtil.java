@@ -1,6 +1,8 @@
 package cn.neptu.neplog.utils;
 
 import cn.neptu.neplog.config.security.SecurityConfig;
+import cn.neptu.neplog.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
+@Slf4j
 @Component
 public class AESUtil implements InitializingBean {
 
@@ -54,7 +57,12 @@ public class AESUtil implements InitializingBean {
      * @param content Base64 encrypted string
      * @return decrypted content
      */
-    public String decrypt(String content) throws BadPaddingException, IllegalBlockSizeException {
-        return new String(decryptor.doFinal(Base64Utils.decode(content.getBytes(StandardCharsets.UTF_8))));
+    public String decrypt(String content){
+        try {
+            return new String(decryptor.doFinal(Base64Utils.decode(content.getBytes(StandardCharsets.UTF_8))));
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            log.error("Error in parsing AES encrypted password: " + content);
+            throw new BadRequestException("解析密码异常");
+        }
     }
 }

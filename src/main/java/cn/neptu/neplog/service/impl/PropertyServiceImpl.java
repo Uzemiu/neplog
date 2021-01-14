@@ -1,11 +1,12 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.neptu.neplog.model.property.TencentCosProperty;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.entity.Property;
 import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.model.property.BlogProperty;
+import cn.neptu.neplog.model.property.TencentCosProperty;
 import cn.neptu.neplog.repository.PropertyRepository;
 import cn.neptu.neplog.service.PropertyService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
@@ -13,12 +14,11 @@ import cn.neptu.neplog.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
 import static cn.neptu.neplog.constant.BlogPropertyConstant.*;
-import static cn.neptu.neplog.constant.CosPropertyConstant.*;
+import static cn.neptu.neplog.constant.CosPropertyConstant.AVAILABLE_COS_SERVICE;
 
 @Slf4j
 @Service("propertyService")
@@ -34,6 +34,11 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
         this.excludedBlogProperties = Arrays.asList(
                 VALUE_AUTO, INSTALLED, INSTALL_STATUS);
+    }
+
+    @Override
+    public Optional<String> getValueByKey(String key) {
+        return propertyRepository.findValueByKey(key);
     }
 
     @Override
@@ -65,9 +70,8 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public List<Property> save(Map<String, String> properties) {
-        properties.forEach((k,v) -> {
-            Assert.notNull(v,k + ": must not be null");
-        });
+        properties.forEach((k,v) -> Assert.notNull(v,k + ": must not be null"));
+
         Set<Property> previous = propertyRepository.findByKeyIn(properties.keySet());
         previous.forEach(property -> {
             String value = properties.get(property.getKey());
@@ -82,8 +86,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public String getDefaultFileService() {
-        String fs = propertyRepository.findValueByKey(DEFAULT_FILE_SERVICE);
-        return StringUtils.hasText(fs) ? fs : FILE_SERVICE_LOCAL;
+        return propertyRepository.findValueByKey(DEFAULT_FILE_SERVICE).orElse(FILE_SERVICE_LOCAL);
     }
 
     @Override
@@ -119,7 +122,20 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
     }
 
     @Override
-    public Map<String, Object> getCosProperty() {
+    public Set<String> updateAvailableFileService(String cos, boolean availability) {
+        Optional<String> value = propertyRepository.findValueByKey(AVAILABLE_COS_SERVICE);
+        Set<String> available = value.map(s -> new HashSet<>(Arrays.asList(s.split(";")))).orElseGet(HashSet::new);
+        if(availability){
+            available.add(cos);
+        } else {
+            available.remove(cos);
+        }
+        save(AVAILABLE_COS_SERVICE,CollectionUtil.join(available, ";"));
+        return available;
+    }
+
+    @Override
+    public Map<String, Object> getCosProperties() {
         Map<String,Object> map = new HashMap<>(1);
         map.put("tencent", getTencentCosProperty().asMap());
         return map;
@@ -128,7 +144,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
     @Override
     public TencentCosProperty getTencentCosProperty() {
         Map<String, String> properties = asMap(propertyRepository.findAll());
-        return new TencentCosProperty().fromMap(properties);
+        return new TencentCosProperty(properties);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package cn.neptu.neplog.model.property;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +11,8 @@ import java.util.Map;
 import static cn.neptu.neplog.constant.CosPropertyConstant.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class TencentCosProperty implements PropertyBean {
 
@@ -20,13 +24,11 @@ public class TencentCosProperty implements PropertyBean {
 
     private String bucketName;
 
-    @Override
-    public TencentCosProperty fromMap(Map<String, String> map) {
-        secretId = map.getOrDefault(QC_SECRET_ID, "");
-        secretKey = map.getOrDefault(QC_SECRET_KEY, "");
-        region = map.getOrDefault(QC_REGION, "");
-        bucketName = map.getOrDefault(QC_BUCKET_NAME, "");
-        return this;
+    public TencentCosProperty(Map<String, String> properties){
+        secretId = properties.getOrDefault(QC_SECRET_ID, "");
+        secretKey = properties.getOrDefault(QC_SECRET_KEY, "");
+        region = properties.getOrDefault(QC_REGION, "");
+        bucketName = properties.getOrDefault(QC_BUCKET_NAME, "");
     }
 
     @Override

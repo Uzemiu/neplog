@@ -21,9 +21,9 @@ public class PropertyController {
         return BaseResponse.ok("ok", propertyService.getBlogProperty());
     }
 
-    @GetMapping("/cos")
-    public BaseResponse<Map<String,Object>> getCosProperty(){
-        return BaseResponse.ok("ok",propertyService.getCosProperty());
+    @GetMapping
+    public BaseResponse<?> getProperty(String key){
+        return BaseResponse.ok("ok",propertyService.getValueByKey(key).orElse(""));
     }
 
     @PostMapping("/reset")

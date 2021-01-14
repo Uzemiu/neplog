@@ -10,10 +10,7 @@ import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.model.support.VerificationCode;
 import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.service.mapstruct.UserMapper;
-import cn.neptu.neplog.utils.AESUtil;
-import cn.neptu.neplog.utils.JwtUtil;
-import cn.neptu.neplog.utils.SecurityUtil;
-import cn.neptu.neplog.utils.VerificationCodeUtil;
+import cn.neptu.neplog.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
@@ -34,8 +31,9 @@ import java.util.Map;
 public class UserController {
 
     private final VerificationCodeUtil verificationCodeUtil;
-    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final AESUtil aesUtil;
+    private final TokenUtil tokenUtil;
     private final UserMapper userMapper;
     private final UserService userService;
 
@@ -46,18 +44,14 @@ public class UserController {
             throw new BadRequestException("你已经登陆过了");
         }
         verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
-        String plainPassword;
-        try {
-            plainPassword = aesUtil.decrypt(param.getPassword());
-        } catch (BadPaddingException | IllegalBlockSizeException e) {
-            log.error("Error in parsing AES encrypted password: " + param.getPassword());
-            throw new BadRequestException("异常密码");
-        }
+
+        String plainPassword = aesUtil.decrypt(param.getPassword());
         User user = userService.findByUsername(param.getUsername()).orElseThrow(() -> new BadRequestException("用户名或密码错误"));
         Assert.isTrue(BCrypt.checkpw(plainPassword,user.getPassword()),"用户名或密码错误");
+
         Map<String, Object> res = new HashMap<String, Object>(2){{
             put("user",userMapper.toDto(user));
-            put("jwt",JwtUtil.TOKEN_PREFIX + jwtUtil.generateToken(user));
+            put("token", TokenUtil.TOKEN_PREFIX + tokenUtil.generateToken(user));
         }};
         return BaseResponse.ok("ok",res);
     }
@@ -70,7 +64,8 @@ public class UserController {
 
     @PostMapping("/logout")
     public BaseResponse<?> logout(HttpServletRequest request){
-        String token = jwtUtil.resolveToken(request);
+        String token = TokenUtil.resolveToken(request);
+        redisUtil.del(token);
         return BaseResponse.ok("您已退出登录");
     }
 
@@ -78,12 +73,7 @@ public class UserController {
     @PostMapping("/register")
     public BaseResponse<?> register(@Validated @RequestBody RegisterParam param){
         verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
-        try {
-            param.setPassword(aesUtil.decrypt(param.getPassword()));
-        } catch (BadPaddingException | IllegalBlockSizeException e) {
-            log.error("Error in parsing AES encrypted password: " + param.getPassword());
-            throw new BadRequestException("异常密码");
-        }
+        param.setPassword(aesUtil.decrypt(param.getPassword()));
         userService.register(param);
         return BaseResponse.ok();
     }

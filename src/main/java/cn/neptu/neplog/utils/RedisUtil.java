@@ -698,11 +698,24 @@ public class RedisUtil {
         long count = redisTemplate.delete(keys);
     }
 
-    public void pfadd(String key, Object value){
-        redisTemplate.opsForHyperLogLog().add(key, value);
+    public long incr(String key){
+        return redisTemplate.opsForValue().increment(key);
     }
 
-    public long pfcount(String ...key){
+    public long incr(String key, long increment){
+        return redisTemplate.opsForValue().increment(key, increment);
+    }
+
+    public double incr(String key, double increment){
+        return redisTemplate.opsForValue().increment(key, increment);
+    }
+
+    public long pfAdd(String key, Object value){
+
+        return redisTemplate.opsForHyperLogLog().add(key, value);
+    }
+
+    public long pfCount(String ...key){
         return redisTemplate.opsForHyperLogLog().size(key);
     }
 }

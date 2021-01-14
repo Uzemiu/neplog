@@ -1,11 +1,16 @@
 package cn.neptu.neplog.service;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.neptu.neplog.model.dto.StorageDTO;
+import cn.neptu.neplog.model.entity.Storage;
+import cn.neptu.neplog.model.query.StorageQuery;
 import cn.neptu.neplog.model.support.UploadFileOption;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FileService {
@@ -22,8 +27,8 @@ public interface FileService {
                 .append(System.currentTimeMillis())
                 .append('-')
                 .append(StringUtils.hasText(file.getOriginalFilename())
-                            ? file.getOriginalFilename()
-                            : "empty");
+                        ? file.getOriginalFilename()
+                        : "empty");
     }
 
     static boolean isImageType(String mediaType) {
@@ -45,7 +50,8 @@ public interface FileService {
      * @return the path that can be mapped to the file or null if failure to save
      * @param option the option of file storage
      */
-    String upload(MultipartFile file, UploadFileOption option);
+    Storage upload(MultipartFile file, UploadFileOption option);
 
-    boolean delete(String path);
+    boolean delete(Storage storage);
+
 }

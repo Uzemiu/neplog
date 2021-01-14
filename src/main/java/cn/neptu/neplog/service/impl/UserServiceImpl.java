@@ -2,7 +2,6 @@ package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.model.params.RegisterParam;
 import cn.neptu.neplog.model.entity.User;
-import cn.neptu.neplog.repository.BaseRepository;
 import cn.neptu.neplog.repository.UserRepository;
 import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
@@ -44,12 +43,12 @@ public class UserServiceImpl extends AbstractCrudService<User, String> implement
 
     @Override
     public Optional<User> getByLevel(Integer level) {
-        return userRepository.getByLevel(level);
+        return userRepository.findByLevel(level);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return userRepository.getByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override

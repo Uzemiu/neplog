@@ -14,25 +14,28 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class LocalStorage extends BaseEntity{
+public class Storage extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "fileName", nullable = false)
-    private String fileName;
+    @Column(name = "filename", length = 255, nullable = false)
+    private String filename;
 
-    @Column(name = "name")
+    @Column(name = "type")
     @ColumnDefault("'file'")
-    private String name;
+    private String type;
+
+    @Column(name = "location", nullable = false)
+    private String location;
 
     @Column(name = "virtual_path", nullable = false)
     private String virtualPath;
 
-    @Column(name = "local_path", nullable = false)
-    private String localPath;
+    @Column(name = "file_path", nullable = false)
+    private String filePath;
 
     @Column(name = "size")
     @ColumnDefault("0")
@@ -42,17 +45,31 @@ public class LocalStorage extends BaseEntity{
     @ColumnDefault("''")
     private String hash;
 
+    @Column(name = "compressed")
+    @ColumnDefault("'false'")
+    private Boolean compressed;
+
+    @Column(name = "thumbnailed")
+    @ColumnDefault("'false'")
+    private Boolean thumbnail;
+
     @Override
     protected void prePersist() {
         super.prePersist();
-        if(!StringUtils.hasText(name)){
-            name = "file";
+        if(!StringUtils.hasText(type)){
+            type = "file";
         }
         if(size == null){
             size = 0L;
         }
         if(hash == null){
             hash = "";
+        }
+        if(compressed == null){
+            compressed = false;
+        }
+        if(thumbnail == null){
+            compressed = false;
         }
     }
 }

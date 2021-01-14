@@ -33,18 +33,14 @@ public class InstallServiceImpl implements InstallService{
 
     @Override
     public void installBlog(InstallParam installParam) {
-        try {
-            String plainPassword = aesUtil.decrypt(installParam.getPassword());
-            String bcryptedPassword = BCrypt.hashpw(plainPassword,BCrypt.gensalt());
-            User user = new User();
-            BeanUtils.copyProperties(installParam,user);
-            user.setLevel(6);
-            user.setPassword(bcryptedPassword);
-            userService.save(user);
-        } catch (BadPaddingException | IllegalBlockSizeException e) {
-            log.error("Error in parsing AES encrypted password: " + installParam.getPassword());
-            throw new BadRequestException("异常密码");
-        }
+
+        String plainPassword = aesUtil.decrypt(installParam.getPassword());
+        String bcryptedPassword = BCrypt.hashpw(plainPassword,BCrypt.gensalt());
+        User user = new User();
+        BeanUtils.copyProperties(installParam,user);
+        user.setLevel(6);
+        user.setPassword(bcryptedPassword);
+        userService.save(user);
 
         Category category = new Category(null,"Hello Neplog");
         categoryService.save(category);

@@ -13,6 +13,8 @@ import java.util.Set;
 @Slf4j
 public abstract class AbstractVisitEventListener {
 
+    public static final String COUNT_PREFIX = "Count_";
+
     private final VisitService visitService;
     @Resource
     private RedisUtil redisUtil;
@@ -26,21 +28,34 @@ public abstract class AbstractVisitEventListener {
     @Async
     public void onApplicationEvent(AbstractVisitEvent event) {
         String key = getVisitName() + ":" + event.getId();
-        redisUtil.pfadd(key, event.getUserId());
+        String countKey = COUNT_PREFIX + key;
+        redisUtil.incr(countKey, redisUtil.sSet(key, event.getUserId()));
     }
 
     /**
-     * 异步刷新Redis缓存的访问量数据
-     * 默认每天凌晨两点刷新
+     * 每天凌晨两点重置每个IP访问量统计
      */
     @Async
-    @Scheduled(cron = "0 0 2 * * ?")
-    protected void flush(){
+    @Scheduled(cron = "0 0 2 * * ? ")
+    protected void reset(){
         Set<String> keys = redisUtil.keys(getVisitName() + "*");
         for(String id : keys){
-            long increment = redisUtil.pfcount(id);
-            visitService.increaseVisit(id.substring(getVisitName().length() + 1),increment);
-            log.info("Counting visit of {}: {}",id,increment);
+            redisUtil.del(id);
+        }
+    }
+
+    /**
+     * 每两小时刷新一次访问量
+     */
+    @Async
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    protected void flush(){
+        String countKey = COUNT_PREFIX + getVisitName();
+        Set<String> keys = redisUtil.keys(countKey + "*");
+        for(String id : keys){
+            long count = redisUtil.incr(id, 0);
+            visitService.increaseVisit(id.substring(countKey.length() + 1), count);
+            log.info("Counting visits of {}: {}",id,count);
             redisUtil.del(id);
         }
     }

@@ -3,36 +3,31 @@ package cn.neptu.neplog.service.impl;
 import cn.hutool.core.util.ArrayUtil;
 import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.exception.UploadFailureException;
-import cn.neptu.neplog.model.entity.LocalStorage;
+import cn.neptu.neplog.model.entity.Storage;
 import cn.neptu.neplog.model.support.UploadFileOption;
 import cn.neptu.neplog.service.FileService;
-import cn.neptu.neplog.service.LocalStorageService;
+import cn.neptu.neplog.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service("local")
+@Service("localFileService")
 public class LocalFileServiceImpl implements FileService {
 
     private final UploadFileConfig uploadFileConfig;
-    private final LocalStorageService localStorageService;
 
     public static void ensurePathExists(String path){
         File file = new File(path);
@@ -42,19 +37,19 @@ public class LocalFileServiceImpl implements FileService {
     }
 
     @Override
-    public String upload(MultipartFile file, UploadFileOption option) {
-        LocalStorage localStorage = uploadLocal(file, option);
-        localStorageService.create(localStorage);
-        return localStorage.getVirtualPath();
+    public Storage upload(MultipartFile file, UploadFileOption option) {
+        return uploadLocal(file, option);
     }
 
     @Override
-    public boolean delete(String path) {
-        path = path.replace(uploadFileConfig.getVirtual(),uploadFileConfig.getRoot());
+    public boolean delete(Storage storage) {
+        String path = storage.getFilePath();
+
         File compressed = new File(path);
         int i = path.lastIndexOf('.');
         File thumb = new File(new StringBuilder(path).insert(i,THUMBNAIL_SUFFIX).toString());
         File origin = new File(new StringBuilder(path).insert(i,ORIGIN_SUFFIX).toString());
+
         if(deleteFile(thumb)){
             log.info("File deleted: {}",thumb.getAbsoluteFile());
         }
@@ -71,10 +66,11 @@ public class LocalFileServiceImpl implements FileService {
         return f.exists() && f.delete();
     }
 
-    private LocalStorage uploadLocal(MultipartFile file, UploadFileOption option) {
+    private Storage uploadLocal(MultipartFile file, UploadFileOption option) {
         Assert.notNull(file, "File must not be null.");
         Assert.notNull(option,"UploadFileOption must not be null.");
-        LocalStorage localStorage = new LocalStorage();
+        Storage storage = new Storage();
+        storage.setLocation(StorageService.LOCATION_LOCAL);
 
         // use currentTimeMillis + '-' + originalFilename as new filename
         // 包含前缀'/'
@@ -88,13 +84,13 @@ public class LocalFileServiceImpl implements FileService {
         boolean compressed = scalable && (option.getCompress() == null || option.getCompress());
 
         String baseFilename = uploadFileConfig.getRoot() + pathPrefix + baseName;
-        File origin = new File(baseFilename + (compressed ? ORIGIN_SUFFIX : "") + "." + extension).getAbsoluteFile();
+        String originFilename = baseFilename + (compressed ? ORIGIN_SUFFIX : "") + "." + extension;
+        File origin = new File(originFilename).getAbsoluteFile();
         ensurePathExists(origin.getParent());
         try {
-            // if not use getAbsoluteFile() ide will set to tomcat's path
             file.transferTo(origin);
-            localStorage.setHash(DigestUtils.md5DigestAsHex(new FileInputStream(origin)));
-            localStorage.setLocalPath(origin.getAbsolutePath());
+            storage.setHash(DigestUtils.md5DigestAsHex(new FileInputStream(origin)));
+            storage.setFilePath(originFilename);
             log.info("Successfully save file: '{}' to local storage: '{}'",filename,origin.getAbsolutePath());
 
             BufferedImage compressedImage = null;
@@ -103,9 +99,9 @@ public class LocalFileServiceImpl implements FileService {
                 compressedImage = Thumbnails.of(origin)
                         .scale(1.0)
                         .asBufferedImage();
-                // TODO formatName为png时会反向压缩?，得去学习一个
+                // TODO formatName为png时会反向压缩，得去学习一个
                 File compressedFile = new File(baseFilename + "." + extension).getAbsoluteFile();
-                ImageIO.write(compressedImage,"jpg",compressedFile);
+                ImageIO.write(compressedImage,extension,compressedFile);
             }
             if(option.getThumbnail() != null && option.getThumbnail()){
                 (compressedImage == null
@@ -115,17 +111,17 @@ public class LocalFileServiceImpl implements FileService {
                         .toFile(new File(baseFilename + THUMBNAIL_SUFFIX + "." + extension));
             }
         } catch (IOException e) {
-            log.error("上传文件失败",e);
+            log.error("上传文件至本地失败",e);
             throw new UploadFailureException(e.getMessage());
         }
 
         String virtualPath = uploadFileConfig.getVirtual() + pathPrefix + baseName + "." + extension;
-        localStorage.setName(option.getName());
-        localStorage.setFileName(filename);
-        localStorage.setVirtualPath(virtualPath);
-        localStorage.setSize(file.getSize());
+        storage.setType(option.getType());
+        storage.setFilename(filename);
+        storage.setVirtualPath(virtualPath);
+        storage.setSize(file.getSize());
 
-        return localStorage;
+        return storage;
     }
 
 }

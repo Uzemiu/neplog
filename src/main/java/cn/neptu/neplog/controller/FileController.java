@@ -4,10 +4,16 @@ import cn.neptu.neplog.annotation.LevelRequiredAccess;
 import cn.neptu.neplog.config.FileServiceFactory;
 import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.constant.LevelConstant;
+import cn.neptu.neplog.model.query.FriendQuery;
+import cn.neptu.neplog.model.query.StorageQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.FileService;
 import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.service.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,31 +23,34 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileController {
 
-    private final FileServiceFactory fileServiceFactory;
-    private final PropertyService propertyService;
-    private final UploadFileConfig configuration;
+    private final StorageService storageService;
 
     @PostMapping("/avatar")
     @LevelRequiredAccess(1)
     public BaseResponse<?> uploadAvatar(@RequestBody MultipartFile file){
-        String fs = propertyService.getDefaultFileService();
-        return BaseResponse.ok("ok", fileServiceFactory.getFileService(fs).upload(file,configuration.get("avatar")));
+        return BaseResponse.ok("ok",
+                storageService.upload(file,"avatar","default"));
+    }
+
+    @GetMapping("/{location}")
+    public BaseResponse<?> listFiles(@PathVariable String location, StorageQuery query,
+                                     @PageableDefault(sort = {"updateTime"},size = 20,
+                                             direction = Sort.Direction.DESC) Pageable pageable){
+        return BaseResponse.ok("ok",
+                storageService.listFiles(query,pageable));
     }
 
     @PostMapping("/{location}/{type}")
     public BaseResponse<?> uploadFile(@RequestBody MultipartFile file,
                                       @PathVariable String location,
                                       @PathVariable String type){
-        if(location.equalsIgnoreCase("default")){
-            location = propertyService.getDefaultFileService();
-        }
-        return BaseResponse.ok("ok", fileServiceFactory.getFileService(location).upload(file,configuration.get(type)));
+        return BaseResponse.ok("ok",
+                storageService.upload(file,location,type).getVirtualPath());
     }
 
-    @DeleteMapping("/{location}")
-    public BaseResponse<?> delete(@RequestBody String path,
-                                  @PathVariable String location){
-        fileServiceFactory.getFileService(location).delete(path);
+    @DeleteMapping
+    public BaseResponse<?> delete(@RequestBody String path){
+        storageService.delete(path);
         return BaseResponse.ok();
     }
 }

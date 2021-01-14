@@ -41,10 +41,10 @@ neplog:
     root: .neplog/uploads
     virtual: /uploads
     options:
-      avatar: {path: [img], name: avatar, thumnail: true, width: 200, height: 200}
-      cover: {path: [img], name: cover}
-      image: {path: [img], name: image}
-      file: {path: [common], name: file}
+      avatar: {path: [img], type: avatar, thumnail: true, width: 200, height: 200}
+      cover: {path: [img], type: cover}
+      image: {path: [img], type: image}
+      file: {path: [common], type: file}
 
   security:
     secret: j.2_d?+bn

@@ -1,6 +1,6 @@
 package cn.neptu.neplog.model.support;
 
-import cn.neptu.neplog.model.entity.LocalStorage;
+import cn.neptu.neplog.model.entity.Storage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +19,10 @@ public class UploadFileOption {
     private String[] path;
 
     /**
-     * 对应{@link LocalStorage#getName()}
+     * 描述存储文件的类型(头像，封面，一般文件等)
+     * 对应{@link Storage#getType()}
      */
-    private String name;
+    private String type;
 
     /**
      * 是否压缩原图

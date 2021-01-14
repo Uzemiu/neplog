@@ -15,7 +15,7 @@ public class App {
         SpringApplication.run(App.class,args);
     }
 
-    @RequestMapping
+    @RequestMapping({"","/api"})
     public String neplog(){
         return "Hello Neplog!";
     }

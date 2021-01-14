@@ -8,8 +8,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends BaseRepository<User,String> {
 
-    Optional<User> getByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-    Optional<User> getByLevel(Integer level);
+    Optional<User> findByLevel(Integer level);
 
 }

@@ -5,10 +5,7 @@ import cn.neptu.neplog.model.entity.Property;
 import cn.neptu.neplog.model.property.BlogProperty;
 import cn.neptu.neplog.service.base.CrudService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public interface PropertyService extends CrudService<Property, Integer>, VisitService {
 
@@ -16,9 +13,11 @@ public interface PropertyService extends CrudService<Property, Integer>, VisitSe
 
     void resetProperty();
 
+    Optional<String> getValueByKey(String key);
+
     Property save(Property property);
 
-    List<Property> save(Map<String,String> blogConfig);
+    List<Property> save(Map<String,String> properties);
 
     Property save(String key, String value);
 
@@ -28,12 +27,16 @@ public interface PropertyService extends CrudService<Property, Integer>, VisitSe
 
     Map<String,String> listPropertiesNotIn(Collection<String> keys);
 
+
+
     String getDefaultFileService();
 
     BlogProperty getBlogProperty();
 
     TencentCosProperty getTencentCosProperty();
 
-    Map<String, Object> getCosProperty();
+    Map<String, Object> getCosProperties();
+
+    Set<String> updateAvailableFileService(String cos, boolean availability);
 
 }
