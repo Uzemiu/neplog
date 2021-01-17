@@ -39,7 +39,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         if(token != null){
             String userId = (String) redisUtil.get(token);
             if(userId != null){
-                Optional<User> user = userService.findById(userId);
+                Optional<User> user = userService.getById(userId);
                 if(!user.isPresent()){
                     httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,"User not found");
                     return;

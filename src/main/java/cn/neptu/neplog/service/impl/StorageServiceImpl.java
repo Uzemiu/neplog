@@ -44,7 +44,7 @@ public class StorageServiceImpl extends AbstractCrudService<Storage, Long> imple
 
     @Override
     public Storage upload(MultipartFile file, String option) {
-        return upload(file, option, "default");
+        return upload(file, option, LOCATION_DEFAULT);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class StorageServiceImpl extends AbstractCrudService<Storage, Long> imple
     @Override
     public Storage delete(String path) {
         Storage storage = storageRepository.findByFilePath(path)
-                .orElseThrow(() -> new ResourceNotFoundException("File not found in database: " + path));
+                .orElseThrow(() -> new ResourceNotFoundException("无法从数据库获取文件路径: " + path));
         if(fileServiceFactory.getFileService(storage.getLocation()).delete(storage)){
             storageRepository.delete(storage);
         }

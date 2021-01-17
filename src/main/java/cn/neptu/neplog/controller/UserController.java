@@ -1,11 +1,13 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
+import cn.neptu.neplog.annotation.LevelRequiredAccess;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.params.LoginParam;
 import cn.neptu.neplog.model.params.RegisterParam;
 import cn.neptu.neplog.model.entity.User;
+import cn.neptu.neplog.model.params.ResetPasswordParam;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.model.support.VerificationCode;
 import cn.neptu.neplog.service.UserService;
@@ -18,8 +20,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,29 +31,13 @@ import java.util.Map;
 public class UserController {
 
     private final VerificationCodeUtil verificationCodeUtil;
-    private final RedisUtil redisUtil;
-    private final AESUtil aesUtil;
-    private final TokenUtil tokenUtil;
     private final UserMapper userMapper;
     private final UserService userService;
 
     @AnonymousAccess
     @PostMapping("/login")
     public BaseResponse<?> login(@Validated @RequestBody LoginParam param){
-        if(SecurityUtil.getCurrentUser() != null){
-            throw new BadRequestException("你已经登陆过了");
-        }
-        verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
-
-        String plainPassword = aesUtil.decrypt(param.getPassword());
-        User user = userService.findByUsername(param.getUsername()).orElseThrow(() -> new BadRequestException("用户名或密码错误"));
-        Assert.isTrue(BCrypt.checkpw(plainPassword,user.getPassword()),"用户名或密码错误");
-
-        Map<String, Object> res = new HashMap<String, Object>(2){{
-            put("user",userMapper.toDto(user));
-            put("token", TokenUtil.TOKEN_PREFIX + tokenUtil.generateToken(user));
-        }};
-        return BaseResponse.ok("ok",res);
+        return BaseResponse.ok("登陆成功", userService.login(param));
     }
 
     @GetMapping("/info")
@@ -64,18 +48,29 @@ public class UserController {
 
     @PostMapping("/logout")
     public BaseResponse<?> logout(HttpServletRequest request){
-        String token = TokenUtil.resolveToken(request);
-        redisUtil.del(token);
+        userService.logout(request);
         return BaseResponse.ok("您已退出登录");
     }
 
     @AnonymousAccess
     @PostMapping("/register")
     public BaseResponse<?> register(@Validated @RequestBody RegisterParam param){
-        verificationCodeUtil.verify(new VerificationCode(param.getCaptcha(),null,param.getUuid()));
-        param.setPassword(aesUtil.decrypt(param.getPassword()));
         userService.register(param);
-        return BaseResponse.ok();
+        return BaseResponse.ok("注册成功");
+    }
+
+    @LevelRequiredAccess(1)
+    @PutMapping
+    public BaseResponse<?> update(@RequestBody UserDTO userDTO){
+        userDTO.setUsername(SecurityUtil.getCurrentUser().getUsername());
+        return BaseResponse.ok("更新用户信息成功", userMapper.toDto(userService.update(userDTO)));
+    }
+
+    @LevelRequiredAccess(1)
+    @PostMapping("/resetPassword")
+    public BaseResponse<?> resetPassword(@RequestBody ResetPasswordParam param){
+        userService.resetPassword(param);
+        return BaseResponse.ok("重置密码成功");
     }
 
     @AnonymousAccess

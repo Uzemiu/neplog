@@ -43,23 +43,18 @@ public class LocalFileServiceImpl implements FileService {
 
     @Override
     public boolean delete(Storage storage) {
-        String path = storage.getFilePath();
-
-        File compressed = new File(path);
-        int i = path.lastIndexOf('.');
-        File thumb = new File(new StringBuilder(path).insert(i,THUMBNAIL_SUFFIX).toString());
-        File origin = new File(new StringBuilder(path).insert(i,ORIGIN_SUFFIX).toString());
-
-        if(deleteFile(thumb)){
-            log.info("File deleted: {}",thumb.getAbsoluteFile());
-        }
-        if(deleteFile(origin)){
-            log.info("File deleted: {}",origin.getAbsoluteFile());
-        }
-        if(deleteFile(compressed)){
-            log.info("File deleted: {}",compressed.getAbsoluteFile());
-        }
+        deleteFile(storage.getFilePath());
+        deleteFile(storage.getCompressed());
+        deleteFile(storage.getThumbnail());
         return true;
+    }
+
+    private boolean deleteFile(String path){
+        boolean deleted =  deleteFile(new File(path).getAbsoluteFile());
+        if(deleted){
+            log.info("成功删除文件：{}", path);
+        }
+        return deleted;
     }
 
     private boolean deleteFile(File f){
@@ -72,9 +67,10 @@ public class LocalFileServiceImpl implements FileService {
         Storage storage = new Storage();
         storage.setLocation(StorageService.LOCATION_LOCAL);
 
+
         // use currentTimeMillis + '-' + originalFilename as new filename
         // 包含前缀'/'
-        String pathPrefix = ArrayUtil.join(option.getPath(),"/","/","/") + System.currentTimeMillis() + "-";
+        String pathPrefix = ArrayUtil.join(option.getPath(),File.separator,File.separator,File.separator) + System.currentTimeMillis() + "-";
 
         String filename = StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : "empty";
         String baseName = FileService.getFileBaseName(filename);
@@ -86,12 +82,14 @@ public class LocalFileServiceImpl implements FileService {
         String baseFilename = uploadFileConfig.getRoot() + pathPrefix + baseName;
         String originFilename = baseFilename + (compressed ? ORIGIN_SUFFIX : "") + "." + extension;
         File origin = new File(originFilename).getAbsoluteFile();
+
         ensurePathExists(origin.getParent());
         try {
+            storage.setHash(DigestUtils.md5DigestAsHex(file.getInputStream()));
+
             file.transferTo(origin);
-            storage.setHash(DigestUtils.md5DigestAsHex(new FileInputStream(origin)));
             storage.setFilePath(originFilename);
-            log.info("Successfully save file: '{}' to local storage: '{}'",filename,origin.getAbsolutePath());
+            log.info("成功保存文件: {}'",origin.getAbsolutePath());
 
             BufferedImage compressedImage = null;
             if(compressed){
@@ -100,22 +98,29 @@ public class LocalFileServiceImpl implements FileService {
                         .scale(1.0)
                         .asBufferedImage();
                 // TODO formatName为png时会反向压缩，得去学习一个
-                File compressedFile = new File(baseFilename + "." + extension).getAbsoluteFile();
-                ImageIO.write(compressedImage,extension,compressedFile);
+                File compressedFile = new File(baseFilename + "." + extension);
+                ImageIO.write(compressedImage,extension,compressedFile.getAbsoluteFile());
+                storage.setCompressed(compressedFile.getPath());
             }
             if(option.getThumbnail() != null && option.getThumbnail()){
+                File thumb = new File(baseFilename + THUMBNAIL_SUFFIX + "." + extension);
                 (compressedImage == null
                         ? Thumbnails.of(origin)
                         : Thumbnails.of(compressedImage))
                         .size(option.getWidth(),option.getHeight())
-                        .toFile(new File(baseFilename + THUMBNAIL_SUFFIX + "." + extension));
+                        .toFile(thumb.getAbsoluteFile());
+                storage.setThumbnail(thumb.getPath());
             }
         } catch (IOException e) {
             log.error("上传文件至本地失败",e);
             throw new UploadFailureException(e.getMessage());
         }
 
-        String virtualPath = uploadFileConfig.getVirtual() + pathPrefix + baseName + "." + extension;
+        String virtualPath = (
+                uploadFileConfig.getVirtual() +
+                pathPrefix +
+                baseName + "." + extension)
+                .replaceAll("\\\\","/");
         storage.setType(option.getType());
         storage.setFilename(filename);
         storage.setVirtualPath(virtualPath);

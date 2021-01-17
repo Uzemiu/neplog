@@ -2,13 +2,18 @@ package cn.neptu.neplog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.neptu.neplog.constant.LevelConstant;
+import cn.neptu.neplog.exception.InternalException;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
+import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.entity.Property;
 import cn.neptu.neplog.model.entity.User;
 import cn.neptu.neplog.model.property.BlogProperty;
+import cn.neptu.neplog.model.property.MailProperty;
 import cn.neptu.neplog.model.property.TencentCosProperty;
 import cn.neptu.neplog.repository.PropertyRepository;
 import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +30,12 @@ import static cn.neptu.neplog.constant.CosPropertyConstant.AVAILABLE_COS_SERVICE
 public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> implements PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final UserService userService;
 
-    private final List<String> excludedBlogProperties;
-
-    public PropertyServiceImpl(PropertyRepository propertyRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, UserService userService) {
         super(propertyRepository);
         this.propertyRepository = propertyRepository;
-
-        this.excludedBlogProperties = Arrays.asList(
-                VALUE_AUTO, INSTALLED, INSTALL_STATUS);
+        this.userService = userService;
     }
 
     @Override
@@ -55,12 +57,6 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
             properties.put(AUTHOR_NAME, user.getNickname());
         }
         save(properties);
-    }
-
-    @Override
-    public boolean isInstalled() {
-        Optional<Property> config = propertyRepository.findByKey(INSTALL_STATUS);
-        return config.map(blogProperty -> blogProperty.getValue().equals(INSTALLED)).orElse(false);
     }
 
     @Override
@@ -91,7 +87,7 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public Map<String, String> listPropertiesNotIn(Collection<String> keys) {
-        return asMap(propertyRepository.findByKeyNotIn(excludedBlogProperties));
+        return asMap(propertyRepository.findByKeyNotIn(keys));
     }
 
     @Override
@@ -113,12 +109,30 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
     }
 
     @Override
+    public Map<String, String> listAsMap() {
+        return asMap(propertyRepository.findAll());
+    }
+
+    @Override
+    public Map<String, String> asMap(Collection<Property> properties){
+        Map<String, String> result = new HashMap<>(properties.size());
+        properties.forEach(property -> result.put(property.getKey(), property.getValue()));
+        return result;
+    }
+
+    @Override
     public void increaseVisit(String integer, Long increment) {
         Property property = getByKey(VISIT_COUNT).orElse(new Property(null,VISIT_COUNT,"0"));
         long visit = Long.parseLong(property.getValue());
         visit += increment;
         property.setValue(String.valueOf(visit));
         save(property);
+    }
+
+    @Override
+    public boolean isInstalled() {
+        Optional<Property> config = propertyRepository.findByKey(INSTALL_STATUS);
+        return config.map(blogProperty -> blogProperty.getValue().equals(INSTALLED)).orElse(false);
     }
 
     @Override
@@ -143,19 +157,22 @@ public class PropertyServiceImpl extends AbstractCrudService<Property,Integer> i
 
     @Override
     public TencentCosProperty getTencentCosProperty() {
-        Map<String, String> properties = asMap(propertyRepository.findAll());
-        return new TencentCosProperty(properties);
+        return new TencentCosProperty(listAsMap());
+    }
+
+    @Override
+    public MailProperty getMailProperty() {
+        return new MailProperty(listAsMap());
     }
 
     @Override
     public BlogProperty getBlogProperty() {
-        Map<String, String> properties = asMap(propertyRepository.findAll());
-        return BeanUtil.mapToBean(properties, BlogProperty.class, true);
-    }
+        BlogProperty blogProperty = new BlogProperty(listAsMap());
 
-    private Map<String, String> asMap(Collection<Property> properties){
-        Map<String, String> result = new HashMap<>(properties.size());
-        properties.forEach(property -> result.put(property.getKey(), property.getValue()));
-        return result;
+        UserDTO owner = userService.getOwner();
+        blogProperty.setAuthorName(owner.getNickname());
+        blogProperty.setBlogAvatar(owner.getAvatar());
+
+        return blogProperty;
     }
 }

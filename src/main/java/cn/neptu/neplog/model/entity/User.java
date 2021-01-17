@@ -42,9 +42,9 @@ public class User extends BaseEntity{
     @ColumnDefault("''")
     private String avatar;
 
-    @Column(name = "link",length = 1023)
+    @Column(name = "site",length = 1023)
     @ColumnDefault("''")
-    private String link;
+    private String site;
 
     @Column(name = "level")
     @ColumnDefault("1")
@@ -61,6 +61,9 @@ public class User extends BaseEntity{
         }
         if(level == null){
             level = 1;
+        }
+        if(site == null){
+            site = "";
         }
     }
 }

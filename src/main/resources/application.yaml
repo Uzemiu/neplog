@@ -34,14 +34,15 @@ spring:
       repositories:
         enabled: false
   profiles:
-    active: dev
+    active: test
 
 neplog:
   file:
-    root: .neplog/uploads
+    root: [.neplog, uploads]
+    # 必须以'/'开头
     virtual: /uploads
     options:
-      avatar: {path: [img], type: avatar, thumnail: true, width: 200, height: 200}
+      avatar: {path: [img], type: avatar, thumbnail: true, width: 200, height: 200}
       cover: {path: [img], type: cover}
       image: {path: [img], type: image}
       file: {path: [common], type: file}

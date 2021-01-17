@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface StorageService extends CrudService<Storage, Long> {
 
+    String LOCATION_DEFAULT = "default";
+
     String LOCATION_LOCAL = "local";
 
     String LOCATION_TENCENT_COS = "tencent";

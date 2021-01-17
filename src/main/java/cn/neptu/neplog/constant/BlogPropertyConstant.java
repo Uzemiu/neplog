@@ -2,8 +2,6 @@ package cn.neptu.neplog.constant;
 
 public interface BlogPropertyConstant {
 
-    String VALUE_AUTO = "auto";
-
     String INSTALL_STATUS = "installStatus";
 
     String INSTALLED = "installed";

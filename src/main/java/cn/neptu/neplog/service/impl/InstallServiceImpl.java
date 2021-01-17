@@ -40,7 +40,7 @@ public class InstallServiceImpl implements InstallService{
         BeanUtils.copyProperties(installParam,user);
         user.setLevel(6);
         user.setPassword(bcryptedPassword);
-        userService.save(user);
+        userService.create(user);
 
         Category category = new Category(null,"Hello Neplog");
         categoryService.save(category);

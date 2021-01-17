@@ -20,11 +20,11 @@ public class TokenUtil{
     private final RedisUtil redisUtil;
     private final SecurityConfig securityConfig;
 
-    public String generateToken(User user) {
+    public String generateAndSetToken(User user) {
         String key = System.currentTimeMillis() + user.getUsername();
-        String uuid = UUID.nameUUIDFromBytes(key.getBytes()).toString();
-        redisUtil.set(uuid, user.getId(), securityConfig.getTokenExpireTime(), TimeUnit.HOURS);
-        return uuid;
+        String token = UUID.nameUUIDFromBytes(key.getBytes()).toString();
+        redisUtil.set(token, user.getId(), securityConfig.getTokenExpireTime(), TimeUnit.HOURS);
+        return token;
     }
 
     public static String resolveToken(HttpServletRequest request) {

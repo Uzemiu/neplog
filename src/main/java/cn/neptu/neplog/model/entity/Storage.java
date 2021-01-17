@@ -46,12 +46,12 @@ public class Storage extends BaseEntity{
     private String hash;
 
     @Column(name = "compressed")
-    @ColumnDefault("'false'")
-    private Boolean compressed;
+    @ColumnDefault("'")
+    private String compressed;
 
-    @Column(name = "thumbnailed")
-    @ColumnDefault("'false'")
-    private Boolean thumbnail;
+    @Column(name = "thumbnail")
+    @ColumnDefault("''")
+    private String thumbnail;
 
     @Override
     protected void prePersist() {
@@ -66,10 +66,10 @@ public class Storage extends BaseEntity{
             hash = "";
         }
         if(compressed == null){
-            compressed = false;
+            compressed = "";
         }
         if(thumbnail == null){
-            compressed = false;
+            thumbnail = "";
         }
     }
 }

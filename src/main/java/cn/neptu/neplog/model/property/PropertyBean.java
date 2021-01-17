@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface PropertyBean {
 
-    Map<String, String> asMap();
+    Map<String, ?> asMap();
 }

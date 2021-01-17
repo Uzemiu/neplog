@@ -2,7 +2,6 @@ package cn.neptu.neplog.model.property;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import static cn.neptu.neplog.constant.CosPropertyConstant.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class TencentCosProperty implements PropertyBean {
 
     private String secretId;
@@ -33,7 +31,7 @@ public class TencentCosProperty implements PropertyBean {
 
     @Override
     public Map<String, String> asMap() {
-        Map<String ,String> map = new HashMap<>(4);
+        Map<String, String> map = new HashMap<>(4);
         map.put(QC_SECRET_ID, secretId);
         map.put(QC_SECRET_KEY, secretKey);
         map.put(QC_REGION, region);

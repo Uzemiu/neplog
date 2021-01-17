@@ -75,6 +75,8 @@ public class TencentCloudFileServiceImpl implements CosService {
         COSClient client = initClient(new TencentCosProperty(properties));
         try{
             return client.listBuckets();
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
         } finally {
             client.shutdown();
         }
@@ -88,6 +90,8 @@ public class TencentCloudFileServiceImpl implements CosService {
             return client.listBuckets().stream().anyMatch(
                     bucket -> bucket.getName().equals(tencentCosProperty.getBucketName())
                             && bucket.getLocation().equals(tencentCosProperty.getRegion()));
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
         } finally {
             client.shutdown();
         }
