@@ -29,7 +29,6 @@ public class NeplogConfig implements WebMvcConfigurer {
     @Resource
     private UploadFileConfig uploadFileConfig;
 
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizationInterceptor)
@@ -42,7 +41,6 @@ public class NeplogConfig implements WebMvcConfigurer {
         String realPath = "file:" + path.getAbsolutePath() + File.separator;
         log.info("Adding '{}' to mapped resource location",realPath);
         registry.addResourceHandler(uploadFileConfig.getVirtual() + "/**").addResourceLocations(realPath);
-
     }
 
     @Override

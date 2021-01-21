@@ -26,10 +26,10 @@ public class FileController {
     private final StorageService storageService;
 
     @PostMapping("/avatar")
-    @LevelRequiredAccess(1)
+//    @LevelRequiredAccess(1)
     public BaseResponse<?> uploadAvatar(@RequestBody MultipartFile file){
         return BaseResponse.ok("ok",
-                storageService.upload(file,"avatar","default"));
+                storageService.upload(file,"avatar"));
     }
 
     @GetMapping("/{location}")
@@ -45,7 +45,7 @@ public class FileController {
                                       @PathVariable String location,
                                       @PathVariable String type){
         return BaseResponse.ok("ok",
-                storageService.upload(file,location,type).getVirtualPath());
+                storageService.upload(file, type, location).getVirtualPath());
     }
 
     @DeleteMapping

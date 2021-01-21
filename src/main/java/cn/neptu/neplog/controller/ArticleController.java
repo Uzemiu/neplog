@@ -3,13 +3,13 @@ package cn.neptu.neplog.controller;
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.event.ArticleViewEvent;
-import cn.neptu.neplog.model.dto.ArticleBaseDTO;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.utils.RequestUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,38 +34,39 @@ public class ArticleController {
     private final ArticleService articleService;
     private final ApplicationEventPublisher eventPublisher;
 
+    @ApiOperation("普通用户查询文章信息")
     @GetMapping("/view")
     @AnonymousAccess
-    public BaseResponse<ArticleBaseDTO> getArticleView(@Validated @NotNull Long id,
-                                                       HttpServletRequest request){
+    public BaseResponse<ArticleDTO> getArticleView(@Validated @NotNull Long id,
+                                                   HttpServletRequest request){
         String ip = RequestUtil.getIp(request);
         eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
         return BaseResponse.ok("ok",articleService.findViewById(id));
     }
 
+    @ApiOperation("普通用户文章搜索")
     @GetMapping({"","/list"})
     @AnonymousAccess
-    public BaseResponse<List<ArticleBaseDTO>> queryBy(@Validated ArticleQuery query,
-                                                     @PageableDefault(sort = {"updateTime"},
+    public BaseResponse<List<ArticleDTO>> queryBy(@Validated ArticleQuery query,
+                                                  @PageableDefault(sort = {"updateTime"},
                                                     direction = Sort.Direction.DESC) Pageable pageable){
         Pageable newPageable = andDefaultPageable(pageable);
         // 普通用户默认查询未被删除文章的可见文章
         query.setDeleted(false);
         query.setStatus(ArticleConstant.STATUS_PUBLISHED);
+        query.setViewPermission(Arrays.asList(
+                ArticleConstant.VIEW_PERMISSION_USER_ONLY,
+                ArticleConstant.VIEW_PERMISSION_ANYBODY));
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
 
+    @ApiOperation("后台查询文章信息")
     @GetMapping("/detail")
     public BaseResponse<ArticleDTO> getArticleDetail(@Validated @NotNull Long id){
         return BaseResponse.ok("ok",articleService.findDetailById(id));
     }
 
-    /**
-     *
-     * @param query
-     * @param pageable
-     * @return
-     */
+    @ApiOperation("后台文章搜索")
     @GetMapping("/query")
     public BaseResponse<?> privateQueryBy(ArticleQuery query,
                                           @PageableDefault(sort = {"updateTime"},
@@ -76,21 +78,30 @@ public class ArticleController {
         return BaseResponse.ok("ok",res);
     }
 
+    @ApiOperation("新建文章")
     @PostMapping
     public BaseResponse<?> createArticle(){
         articleService.save(new ArticleDTO());
         return BaseResponse.ok("创建文章成功");
     }
 
+    @ApiOperation("更新文章")
     @PutMapping
     public BaseResponse<?> updateArticle(@RequestBody ArticleDTO article){
         Article a = articleService.save(article);
         return BaseResponse.ok("更新文章成功",a.getId());
     }
 
+    @ApiOperation("更新文章删除状态")
     @PutMapping("/delete")
     public BaseResponse<?> updateDeleted(@RequestBody ArticleDTO articleDTO){
-        return BaseResponse.ok("ok",articleService.trash(articleDTO.getId(), articleDTO.getDeleted()));
+        return BaseResponse.ok("ok",articleService.updateDeleted(articleDTO.getId(), articleDTO.getDeleted()));
+    }
+
+    @ApiOperation("彻底删除文章")
+    @DeleteMapping
+    public BaseResponse<?> delete(@RequestBody Long id){
+        return BaseResponse.ok("ok",articleService.deleteById(id));
     }
 
     private Pageable andDefaultPageable(Pageable pageable){

@@ -1,12 +1,17 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
+import cn.neptu.neplog.event.ArticleViewEvent;
+import cn.neptu.neplog.event.BlogVisitEvent;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.MailService;
 import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.utils.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -16,10 +21,12 @@ public class PropertyController {
 
     private final PropertyService propertyService;
     private final MailService mailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @AnonymousAccess
     @GetMapping("/blog")
-    public BaseResponse<?> getBlogProperty(){
+    public BaseResponse<?> getBlogProperty(HttpServletRequest request){
+        eventPublisher.publishEvent(new BlogVisitEvent(this,"",RequestUtil.getIp(request)));
         return BaseResponse.ok("ok", propertyService.getBlogProperty());
     }
 

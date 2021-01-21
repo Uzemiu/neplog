@@ -1,17 +1,17 @@
 package cn.neptu.neplog.service;
 
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.service.base.CrudService;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryService {
+public interface CategoryService extends CrudService<Category, Integer> {
 
-    Category save(Category category);
+    Category createByName(String name);
 
-    Optional<Category> findByName(String name);
+    Category createIfNotExist(String name);
 
-    List<Category> findAll();
+    Optional<Category> getByName(String name);
 
-    Optional<Category> findById(Integer id);
 }

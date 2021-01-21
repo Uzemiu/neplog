@@ -22,12 +22,12 @@ public class CategoryController {
     @GetMapping
     @AnonymousAccess
     public BaseResponse<List<CategoryDTO>> findAll(){
-        return BaseResponse.ok("ok",categoryMapper.toDto(categoryService.findAll()));
+        return BaseResponse.ok("ok",categoryMapper.toDto(categoryService.listAll()));
     }
 
     @PostMapping
     public BaseResponse<?> createCategory(Category category){
-        categoryService.save(category);
+        categoryService.create(category);
         return BaseResponse.ok();
     }
 

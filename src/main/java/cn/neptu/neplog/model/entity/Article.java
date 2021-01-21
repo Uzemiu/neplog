@@ -47,7 +47,7 @@ public class Article extends BaseEntity{
     private Integer priority;
 
     /**
-     * 0~3 Draft
+     * 0 Draft
      * 4 Published
      */
     @Column(name = "status")
@@ -67,19 +67,19 @@ public class Article extends BaseEntity{
     private Long comments;
 
     /**
-     * 0~3 Anybody
-     * 4~7 Require review
-     * 8~15 User only
-     * >=16 Closed(Owner only)
+     * 0 Anybody
+     * 4 Require review
+     * 8 User only
+     * 16 Closed(Owner only)
      */
     @Column(name = "comment_permission")
     @ColumnDefault("0")
     private Integer commentPermission;
 
     /**
-     * 0~3 Anybody
-     * 4~7 User only
-     * >=16 Private
+     * 0 Anybody
+     * 8 User only
+     * 16 Private
      */
     @Column(name = "view_permission")
     @ColumnDefault("0")

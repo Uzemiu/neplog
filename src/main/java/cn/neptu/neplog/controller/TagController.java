@@ -21,6 +21,7 @@ public class TagController {
     @GetMapping
     @AnonymousAccess
     public BaseResponse<?> findAllTags(){
-        return BaseResponse.ok("ok",tagService.findAll().stream().map(Tag::getTag).collect(Collectors.toList()));
+        return BaseResponse.ok("ok",tagService.findAll()
+                .stream().map(Tag::getTag).collect(Collectors.toList()));
     }
 }

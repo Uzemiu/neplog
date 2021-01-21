@@ -46,7 +46,7 @@ public class Storage extends BaseEntity{
     private String hash;
 
     @Column(name = "compressed")
-    @ColumnDefault("'")
+    @ColumnDefault("''")
     private String compressed;
 
     @Column(name = "thumbnail")
