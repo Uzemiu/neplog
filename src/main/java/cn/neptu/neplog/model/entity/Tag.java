@@ -7,35 +7,25 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 public class Tag extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "tag_id")
     private Long id;
 
-    @Column(name = "article_id",nullable = false)
-    private Long articleId;
-
-    @Column(name = "tag",length = 31,nullable = false)
+    @Column(name = "tag",length = 31,nullable = false, unique = true)
     private String tag;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tag tag1 = (Tag) o;
-        return Objects.equals(articleId, tag1.articleId) &&
-                Objects.equals(tag, tag1.tag);
-    }
+    @ManyToMany(mappedBy = "tags")
+    @org.hibernate.annotations.ForeignKey(name = "none")
+    private Set<Article> articles;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(articleId, tag);
-    }
 }

@@ -1,9 +1,12 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.exception.BadRequestException;
-import cn.neptu.neplog.model.property.MailProperty;
+import cn.neptu.neplog.model.config.MailConfig;
+import cn.neptu.neplog.repository.MailConfigRepository;
 import cn.neptu.neplog.service.MailService;
-import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.service.ConfigService;
+import cn.neptu.neplog.service.base.AbstractConfigService;
+import cn.neptu.neplog.service.base.AbstractCrudService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -15,15 +18,18 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service("mailService")
-public class MailServiceImpl implements MailService {
+public class MailServiceImpl
+        extends AbstractConfigService<MailConfig, Long>
+        implements MailService {
 
-    private final PropertyService propertyService;
+    private final MailConfigRepository mailConfigRepository;
     private final JavaMailSenderImpl mailSender;
 
-    private MailProperty mailProperty;
+    private MailConfig mailProperty;
 
-    public MailServiceImpl(PropertyService propertyService) {
-        this.propertyService = propertyService;
+    public MailServiceImpl(MailConfigRepository mailConfigRepository) {
+        super(mailConfigRepository);
+        this.mailConfigRepository = mailConfigRepository;
         this.mailSender = new JavaMailSenderImpl();
     }
 
@@ -55,7 +61,6 @@ public class MailServiceImpl implements MailService {
     @Override
     public void testConnection() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        MailProperty mailProperty = propertyService.getMailProperty();
         mailSender.setHost(mailProperty.getHost());
         mailSender.setDefaultEncoding(mailProperty.getEncoding());
         mailSender.setUsername(mailProperty.getUsername());
@@ -88,5 +93,10 @@ public class MailServiceImpl implements MailService {
             //日志信息
         } catch (MessagingException e) {
         }
+    }
+
+    @Override
+    public void resetConfig() {
+
     }
 }

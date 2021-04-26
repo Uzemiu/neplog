@@ -15,12 +15,14 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     private final BaseRepository<ENTITY, ID> repository;
 
+    protected final Class<ENTITY> entityClass;
+
     @SuppressWarnings("unchecked")
     protected AbstractCrudService(BaseRepository<ENTITY, ID> repository) {
         this.repository = repository;
 
-        Class<ENTITY> actualClass = (Class<ENTITY>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        this.entityName =  actualClass.getSimpleName();
+        this.entityClass = (Class<ENTITY>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.entityName = entityClass.getSimpleName();
     }
 
     @Override

@@ -22,13 +22,9 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findAll();
     }
 
+    @Override
     public List<Tag> saveAll(Iterable<Tag> tags){
         return tagRepository.saveAll(tags);
-    }
-
-    @Override
-    public Set<Tag> findByArticleId(Long articleId) {
-        return tagRepository.findByArticleId(articleId);
     }
 
     @Override
@@ -36,9 +32,4 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findByTagIn(tags);
     }
 
-    @Override
-    public int deleteTagsNotIn(Long articleId, Collection<String> tags) {
-        Assert.notNull(articleId,"Article Id must not be null");
-        return tagRepository.deleteByArticleIdAndTagNotIn(articleId,tags);
-    }
 }

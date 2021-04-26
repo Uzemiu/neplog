@@ -4,8 +4,6 @@ import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
-import cn.neptu.neplog.model.entity.Category;
-import cn.neptu.neplog.model.entity.Tag;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.repository.ArticleCommentRepository;
 import cn.neptu.neplog.repository.ArticleRepository;
@@ -19,12 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("articleService")
@@ -59,22 +55,17 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public Article save(ArticleDTO articleDTO) {
         Article article = articleMapper.toEntity(articleDTO);
 
-        if(StringUtils.hasText(articleDTO.getCategory())){
-            Category category = categoryService.createIfNotExist(articleDTO.getCategory());
-            article.setCategoryId(category.getId());
-        }
-
         articleRepository.save(article);
 
-        List<Tag> newTags = articleDTO.getTags()
-                .stream()
-                .map(tag -> new Tag(null, article.getId(), tag))
-                .collect(Collectors.toList());
-        Set<Tag> exist = tagRepository.findByArticleId(article.getId());
-        exist.addAll(newTags);
-        tagRepository.saveAll(exist);
-        tagRepository.deleteByArticleIdAndTagNotIn(article.getId(),
-                exist.stream().map(Tag::getTag).collect(Collectors.toList()));
+//        List<Tag> newTags = articleDTO.getTags()
+//                .stream()
+//                .map(tag -> new Tag(null, article.getId(), tag))
+//                .collect(Collectors.toList());
+//        Set<Tag> exist = tagRepository.findByArticleId(article.getId());
+//        exist.addAll(newTags);
+//        tagRepository.saveAll(exist);
+//        tagRepository.deleteByArticleIdAndTagNotIn(article.getId(),
+//                exist.stream().map(Tag::getTag).collect(Collectors.toList()));
 
         return article;
     }
@@ -98,11 +89,7 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public List<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable) {
         Page<Article> a = articleRepository.findAll(query.toSpecification(), pageable);
         List<Article> articles = a.toList();
-        return articles.stream().map(article -> {
-            ArticleDTO dto = articleMapper.toDto(article);
-            fillProperties(dto, article);
-            return dto;
-        }).collect(Collectors.toList());
+        return articles.stream().map(articleMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -125,7 +112,6 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
 
         ArticleDTO viewDTO = articleMapper.toDto(article);
         viewDTO.setHtmlContent(article.getHtmlContent());
-        fillProperties(viewDTO, article);
         // 检查是否有阅读权限
         if(!SecurityUtil.isOwner()){
             if (article.getDeleted()
@@ -147,9 +133,18 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public ArticleDTO findDetailById(Long id) {
         Article article = getNotNullById(id);
         ArticleDTO detailDTO = articleMapper.toDto(article);
+
+        // 检查是否有阅读权限
+        if(!SecurityUtil.isOwner()){
+            if (article.getDeleted()
+                    || article.getStatus().equals(ArticleConstant.STATUS_DRAFT)
+                    || article.getViewPermission().equals(ArticleConstant.VIEW_PERMISSION_PRIVATE)) {
+                throw new ResourceNotFoundException("该文章已被删除或未公开");
+            }
+        }
+
         detailDTO.setContent(article.getContent());
         detailDTO.setHtmlContent(article.getHtmlContent());
-        fillProperties(detailDTO, article);
         return detailDTO;
     }
 
@@ -158,16 +153,7 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public Article deleteById(Long integer) {
         Article article = super.deleteById(integer);
         commentRepository.deleteByArticleId(article.getId());
-        tagRepository.findByArticleId(article.getId());
         return article;
     }
 
-    private void fillProperties(ArticleDTO dto, Article article) {
-        dto.setTags(tagRepository.findByArticleId(article.getId())
-                .stream().map(Tag::getTag).collect(Collectors.toList()));
-        if(article.getCategoryId() != null){
-            dto.setCategory(categoryService.getById(article.getCategoryId())
-                    .map(Category::getName).orElse("未命名"));
-        }
-    }
 }

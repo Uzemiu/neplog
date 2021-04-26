@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 @MappedSuperclass
 public class BaseLike extends BaseEntity{
 
@@ -19,12 +19,19 @@ public class BaseLike extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
+    /**
+     * UserId or ip
+     */
     @Column(name = "identity",nullable = false)
     private String identity;
 
     @Column(name = "target_id",nullable = false)
     private Long targetId;
 
+    /**
+     * 0 反对
+     * 1 赞成
+     */
     @Column(name = "opinion",nullable = false)
     private Integer opinion;
 }

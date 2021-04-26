@@ -28,8 +28,10 @@ public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> 
 
     @Override
     public Category createByName(String name) {
+        Category newCategory = new Category();
         if(StringUtils.hasText(name)){
-            return categoryRepository.save(new Category(null, name));
+            newCategory.setName(name);
+            return categoryRepository.save(newCategory);
         }
         List<Category> categories = categoryRepository.findByNameLike("未命名%");
         int max = 0;
@@ -40,7 +42,8 @@ public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> 
                 } catch (Exception ignored){}
             }
         }
-        return categoryRepository.save(new Category(null, "未命名" + (max + 1)));
+        newCategory.setName("未命名" + (max + 1));
+        return categoryRepository.save(newCategory);
     }
 
     @Override

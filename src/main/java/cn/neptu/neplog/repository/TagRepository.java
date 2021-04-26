@@ -12,8 +12,5 @@ public interface TagRepository extends BaseRepository<Tag,Long> {
 
     Set<Tag> findByTagIn(Collection<String> tag);
 
-    Set<Tag> findByArticleId(Long id);
-
-    int deleteByArticleIdAndTagNotIn(Long articleId, Collection<String> tag);
 
 }

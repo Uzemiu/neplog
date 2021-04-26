@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * 博客文章
@@ -16,120 +17,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class Article extends BaseEntity{
+public class Article extends BaseArticle{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
-    private Long id;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT,name = "none"))
+    private Category category;
 
-    @Column(name = "title",length = 255,nullable = false)
-    private String title;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "article_tag",
+            joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "article_id"),
+            foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "tag_id"),
+            inverseForeignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    private Set<Tag> tags;
 
-    @Column(name = "summary",length = 255)
-    @ColumnDefault("''")
-    private String summary;
 
-    @Column(name = "content",nullable = false)
-    @Lob
-    private String content;
-
-    @Column(name = "html_content",nullable = false)
-    @Lob
-    private String htmlContent;
-
-    @Column(name = "cover",length = 1023)
-    @ColumnDefault("''")
-    private String cover;
-
-    @Column(name = "priority")
-    @ColumnDefault("0")
-    private Integer priority;
-
-    /**
-     * 0 Draft
-     * 4 Published
-     */
-    @Column(name = "status")
-    @ColumnDefault("0")
-    private Integer status;
-
-    @Column(name = "views")
-    @ColumnDefault("1")
-    private Long views;
-
-    @Column(name = "likes")
-    @ColumnDefault("0")
-    private Long likes;
-
-    @Column(name = "comments")
-    @ColumnDefault("0")
-    private Long comments;
-
-    /**
-     * 0 Anybody
-     * 4 Require review
-     * 8 User only
-     * 16 Closed(Owner only)
-     */
-    @Column(name = "comment_permission")
-    @ColumnDefault("0")
-    private Integer commentPermission;
-
-    /**
-     * 0 Anybody
-     * 8 User only
-     * 16 Private
-     */
-    @Column(name = "view_permission")
-    @ColumnDefault("0")
-    private Integer viewPermission;
-
-    @Column(name = "category_id")
-    private Integer categoryId;
-
-    @Column(name = "deleted")
-    @ColumnDefault("false")
-    private Boolean deleted;
-
-    @Override
-    public void prePersist(){
-        if(title == null || "".equals(title)){
-            title = "Untitled";
-        }
-        if(content == null){
-            content = "### Edit now";
-        }
-        if(htmlContent == null){
-            htmlContent = "<h3>Edit now</h3>";
-        }
-        if(summary == null){
-            summary = "Edit now";
-        }
-        if(cover == null){
-            cover = ""; // TODO default cover
-        }
-        if(priority == null){
-            priority = 0;
-        }
-        if(status == null){
-            status = 0;
-        }
-        if(views == null){
-            views = 1L;
-        }
-        if(likes == null){
-            likes = 0L;
-        }
-        if(comments == null){
-            comments = 0L;
-        }
-        if(viewPermission == null){
-            viewPermission = 0;
-        }
-        if(commentPermission == null){
-            commentPermission = 0;
-        }
-        deleted = false;
-    }
 }

@@ -3,7 +3,7 @@ package cn.neptu.neplog.controller;
 import cn.neptu.neplog.config.FileServiceFactory;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.support.BaseResponse;
-import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.service.ConfigService;
 import cn.neptu.neplog.service.CosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +16,10 @@ import java.util.Map;
 public class CosController {
 
     private final FileServiceFactory fileServiceFactory;
-    private final PropertyService propertyService;
 
     @GetMapping
     public BaseResponse<Map<String, Object>> getCosProperties(){
-        return BaseResponse.ok("ok",propertyService.getCosProperties());
+        return BaseResponse.ok("ok");
     }
 
     @GetMapping("/{cos}/buckets")
@@ -32,14 +31,14 @@ public class CosController {
     @PutMapping("/{cos}")
     public BaseResponse<?> update(@PathVariable String cos,
                                   @RequestBody Map<String, String> properties){
-        CosService cosService = fileServiceFactory.getAsCosService(cos);
-        boolean isValid = cosService.isValid(properties);
-        propertyService.updateAvailableFileService(cos, isValid);
-        if(isValid){
-            propertyService.save(properties);
-        } else {
-            throw new BadRequestException("无效的地区或桶名称");
-        }
+//        CosService cosService = fileServiceFactory.getAsCosService(cos);
+//        boolean isValid = cosService.isValid(properties);
+//        configService.updateAvailableFileService(cos, isValid);
+//        if(isValid){
+//            configService.save(properties);
+//        } else {
+//            throw new BadRequestException("无效的地区或桶名称");
+//        }
         return BaseResponse.ok("ok");
     }
 }

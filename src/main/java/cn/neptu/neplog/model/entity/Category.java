@@ -6,11 +6,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 public class Category extends BaseEntity {
 
@@ -21,6 +22,13 @@ public class Category extends BaseEntity {
 
     @Column(name = "name",length = 31,nullable = false)
     private String name;
+
+    @Column(name = "parent_id")
+    private Integer parent_id;
+
+    @OneToMany(mappedBy = "category")
+    @org.hibernate.annotations.ForeignKey(name = "none")
+    private List<Article> articles;
 
     @Override
     protected void prePersist() {

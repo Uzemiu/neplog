@@ -1,9 +1,9 @@
 package cn.neptu.neplog.event.listener;
 
 import cn.neptu.neplog.event.BlogVisitEvent;
-import cn.neptu.neplog.service.PropertyService;
+import cn.neptu.neplog.service.BlogConfigService;
+import cn.neptu.neplog.service.ConfigService;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,8 +11,8 @@ public class BlogVisitListener extends AbstractVisitEventListener{
 
     public static final String VISIT_NAME  = "BlogVisit";
 
-    public BlogVisitListener(PropertyService configService) {
-        super(configService);
+    public BlogVisitListener(BlogConfigService blogConfigService) {
+        super(blogConfigService);
     }
 
     @EventListener

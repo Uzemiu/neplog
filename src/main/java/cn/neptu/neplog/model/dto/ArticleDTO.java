@@ -1,5 +1,6 @@
 package cn.neptu.neplog.model.dto;
 
+import cn.neptu.neplog.model.entity.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -37,10 +38,9 @@ public class ArticleDTO {
 
     private Integer viewPermission;
 
-    @NotBlank(message = "分类不能为空")
-    private String category;
+    private CategoryDTO category;
 
-    private List<String> tags;
+    private List<TagDTO> tags;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
