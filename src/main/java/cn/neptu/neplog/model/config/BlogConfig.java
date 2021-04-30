@@ -79,14 +79,21 @@ public class BlogConfig extends BaseEntity {
 
     //-----------
 
-    @Column(name = "file_service")
+    @Column(name = "default_file_service")
     @ColumnDefault("'default'")
-    private String fileService;
+    private String defaultFileService;
+
+    @Column(name = "available_file_service")
+    @ColumnDefault("''")
+    private String availableFileService;
 
     @Override
     protected void prePersist() {
         super.prePersist();
         if(blogName == null){
+            blogName = "Neplog";
+        }
+        if(blogAvatar == null){
             blogAvatar = "";
         }
         if(visitCount == null){
@@ -122,8 +129,11 @@ public class BlogConfig extends BaseEntity {
 //        if(authorName == null){
 //            authorName = "";
 //        }
-        if(fileService == null){
-            fileService = "default";
+        if(defaultFileService == null){
+            defaultFileService = "default";
+        }
+        if(availableFileService == null){
+            defaultFileService = "";
         }
     }
 }

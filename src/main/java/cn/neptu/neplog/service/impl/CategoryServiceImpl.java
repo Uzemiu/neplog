@@ -1,24 +1,35 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.model.dto.CategoryDTO;
+import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.model.query.CategoryQuery;
+import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.repository.CategoryRepository;
+import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.service.CategoryService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
+import cn.neptu.neplog.service.mapstruct.CategoryMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.*;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ArticleRepository articleRepository;
+    private final CategoryMapper mapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               CategoryMapper mapper,
+                               ArticleRepository articleRepository) {
         super(categoryRepository);
         this.categoryRepository = categoryRepository;
+        this.mapper = mapper;
+        this.articleRepository = articleRepository;
     }
 
     @Override
@@ -51,4 +62,38 @@ public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> 
         return getByName(name).orElseGet(() -> createByName(name));
     }
 
+    @Override
+    public List<CategoryDTO> queryBy(CategoryQuery query) {
+        return mapper.toDto(categoryRepository.findAll(query.toSpecification()));
+    }
+
+    @Override
+    @Transactional
+    public List<Category> deleteByParentId(Integer parentId) {
+        List<Category> categories = categoryRepository.deleteByParentId(parentId);
+        categories.forEach(category -> deleteByParentId(category.getId()));
+        return categories;
+    }
+
+    @Override
+    @Transactional
+    public Category deleteById(Integer id) {
+        Category parent = getNotNullById(id);
+
+        List<Category> toBeDeleted = new LinkedList<>();
+        toBeDeleted.add(parent);
+        findChildren(parent, toBeDeleted);
+        toBeDeleted.forEach(articleRepository::unlinkCategory);
+        categoryRepository.deleteAll(toBeDeleted);
+
+        return parent;
+    }
+
+    private void findChildren(Category category, List<Category> res){
+        List<Category> children = categoryRepository.findByParentId(category.getId());
+        children.forEach(c -> {
+            res.add(c);
+            findChildren(c, res);
+        });
+    }
 }

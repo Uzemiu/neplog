@@ -8,6 +8,8 @@ public interface CrudService<ENTITY, ID> {
 
     ENTITY create(ENTITY entity);
 
+    Collection<ENTITY> create(Collection<ENTITY> entities);
+
     List<ENTITY> listAll();
 
     Optional<ENTITY> getById(ID id);
@@ -15,6 +17,8 @@ public interface CrudService<ENTITY, ID> {
     ENTITY getNotNullById(ID id);
 
     ENTITY update(ENTITY entity);
+
+    Collection<ENTITY> update(Collection<ENTITY> entities);
 
     ENTITY deleteById(ID id);
 

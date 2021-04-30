@@ -1,11 +1,12 @@
 package cn.neptu.neplog.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.neptu.neplog.annotation.AnonymousAccess;
-import cn.neptu.neplog.config.ConfigFactory;
+import cn.neptu.neplog.factory.ConfigFactory;
 import cn.neptu.neplog.event.BlogVisitEvent;
+import cn.neptu.neplog.model.config.BlogConfig;
 import cn.neptu.neplog.model.support.BaseResponse;
-import cn.neptu.neplog.service.MailService;
-import cn.neptu.neplog.service.ConfigService;
+import cn.neptu.neplog.model.vo.BlogConfigVO;
 import cn.neptu.neplog.utils.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/property")
+@RequestMapping("/api/config")
 @RequiredArgsConstructor
 public class ConfigController {
 
@@ -26,7 +27,10 @@ public class ConfigController {
     @GetMapping("/blog")
     public BaseResponse<?> getBlogConfig(HttpServletRequest request){
         eventPublisher.publishEvent(new BlogVisitEvent(this,"",RequestUtil.getIp(request)));
-        return BaseResponse.ok("ok", configFactory.getConfigService("blog").getConfig());
+        BlogConfig blogConfig = (BlogConfig) configFactory.getConfigService("blog").getConfig();
+        BlogConfigVO vo = new BlogConfigVO();
+        BeanUtil.copyProperties(blogConfig, vo, true);
+        return BaseResponse.ok("ok", vo);
     }
 
     @GetMapping("/pluto/{config}")

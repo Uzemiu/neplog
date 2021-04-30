@@ -2,6 +2,7 @@ package cn.neptu.neplog.service;
 
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.entity.Article;
+import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.service.base.CrudService;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,5 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
     long updateComments(Long id, Long increment);
 
     Map<String, Long> countByLabel();
+
 }

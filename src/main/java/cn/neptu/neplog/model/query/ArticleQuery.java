@@ -2,6 +2,7 @@ package cn.neptu.neplog.model.query;
 
 import cn.neptu.neplog.annotation.LevelRequiredParam;
 import cn.neptu.neplog.model.entity.Article;
+import cn.neptu.neplog.model.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -50,7 +52,7 @@ public class ArticleQuery extends BaseQuery<Article>{
     @LevelRequiredParam
     private Boolean deleted;
 
-    private Integer categoryId;
+    private List<Integer> categoryId;
 
     @Override
     public Specification<Article> toSpecification() {
@@ -62,8 +64,14 @@ public class ArticleQuery extends BaseQuery<Article>{
                 Predicate tLike = criteriaBuilder.like(root.get("title"),"%" + content + "%");
                 predicates.add(criteriaBuilder.or(cLike,tLike));
             }
-            if(categoryId != null){
-                predicates.add(criteriaBuilder.equal(root.get("categoryId"),categoryId));
+            if(categoryId != null && !categoryId.isEmpty()){
+                CriteriaBuilder.In<Category> in = criteriaBuilder.in(root.get("category"));
+                categoryId.forEach(id -> {
+                    Category category = new Category();
+                    category.setId(id);
+                    in.value(category);
+                });
+                predicates.add(criteriaBuilder.and(in));
             }
             if(deleted != null){
                 predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));

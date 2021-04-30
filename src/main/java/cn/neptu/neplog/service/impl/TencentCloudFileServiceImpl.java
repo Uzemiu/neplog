@@ -7,12 +7,8 @@ import cn.neptu.neplog.model.entity.Storage;
 import cn.neptu.neplog.model.config.TencentCosConfig;
 import cn.neptu.neplog.model.support.UploadFileOption;
 import cn.neptu.neplog.repository.TencentCosConfigRepository;
-import cn.neptu.neplog.service.CosService;
-import cn.neptu.neplog.service.FileService;
-import cn.neptu.neplog.service.ConfigService;
-import cn.neptu.neplog.service.StorageService;
+import cn.neptu.neplog.service.*;
 import cn.neptu.neplog.service.base.AbstractConfigService;
-import cn.neptu.neplog.service.base.AbstractCrudService;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -23,6 +19,7 @@ import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,10 +32,13 @@ public class TencentCloudFileServiceImpl
         implements CosService, ConfigService<TencentCosConfig, Long> {
 
     private final TencentCosConfigRepository repository;
+    private final BlogConfigService blogConfigService;
 
-    protected TencentCloudFileServiceImpl(TencentCosConfigRepository repository) {
+    protected TencentCloudFileServiceImpl(TencentCosConfigRepository repository,
+                                          BlogConfigService blogConfigService) {
         super(repository);
         this.repository = repository;
+        this.blogConfigService = blogConfigService;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TencentCloudFileServiceImpl
     }
 
     @Override
-    public boolean isValid(Map<String,String> properties) {
+    public boolean validate(Map<String,String> properties) {
         TencentCosConfig config = BeanUtil.mapToBean(properties, TencentCosConfig.class, true);
         COSClient client = initClient(config);
         try{
@@ -97,9 +97,23 @@ public class TencentCloudFileServiceImpl
                     bucket -> bucket.getName().equals(config.getBucketName())
                             && bucket.getLocation().equals(config.getRegion()));
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            log.error("无效的腾讯云COS配置：", e);
+            return false;
         } finally {
             client.shutdown();
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updateConfig(Map<String, String> configMap) {
+        // 检查配置是否有效
+        if(validate(configMap)){
+            super.updateConfig(configMap);
+            blogConfigService.updateAvailableFileService("tencent", true);
+        } else {
+            blogConfigService.updateAvailableFileService("tencent", false);
+            throw new BadRequestException("无效的腾讯云COS配置，请检查日志查看详细信息");
         }
     }
 

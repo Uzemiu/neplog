@@ -8,6 +8,8 @@ public interface ConfigService<CONFIG, ID> extends CrudService<CONFIG, ID>{
 
     void resetConfig();
 
+    void updateConfig(String key, String value);
+
     void updateConfig(Map<String, String> configMap);
 
     CONFIG getConfig();

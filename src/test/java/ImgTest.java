@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SpringBootTest(classes = App.class)
 @RunWith(SpringRunner.class)
@@ -18,7 +20,6 @@ public class ImgTest {
     @Test
     public void visitTest() throws JsonProcessingException {
         long start = System.currentTimeMillis();
-
 
         long end = System.currentTimeMillis();
         System.out.println(end - start);

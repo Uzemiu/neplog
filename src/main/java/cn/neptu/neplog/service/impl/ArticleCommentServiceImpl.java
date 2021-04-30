@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("commentServiceImpl")
-public class ArticleCommentServiceImpl extends AbstractCrudService<ArticleComment, Long> implements ArticleCommentService {
+public class ArticleCommentServiceImpl
+        extends AbstractCrudService<ArticleComment, Long>
+        implements ArticleCommentService {
 
     private final ArticleCommentRepository articleCommentRepository;
     private final CommentMapper commentMapper;

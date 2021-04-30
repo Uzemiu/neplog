@@ -25,7 +25,7 @@ spring:
       ddl-auto: update
   servlet:
     multipart:
-      max-file-size: 3MB
+      max-file-size: 1MB
   h2:
     console:
       enabled: true

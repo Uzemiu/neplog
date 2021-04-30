@@ -11,4 +11,5 @@ public interface BaseRepository<ENTITY, ID> extends JpaRepository<ENTITY, ID> {
 
     @Transactional
     long deleteByIdIn(Collection<ID> ids);
+
 }

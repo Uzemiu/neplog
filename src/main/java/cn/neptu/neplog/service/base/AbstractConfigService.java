@@ -7,6 +7,7 @@ import cn.neptu.neplog.model.config.TencentCosConfig;
 import cn.neptu.neplog.repository.BaseRepository;
 import cn.neptu.neplog.service.ConfigService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,13 @@ public abstract class AbstractConfigService<CONFIG, ID>
         CONFIG old = getConfig();
         BeanUtil.fillBeanWithMap(configMap, old, true);
         repository.save(old);
+    }
+
+    @Override
+    public void updateConfig(String key, String value) {
+        Map<String, String> hashMap = new HashMap<>(1);
+        hashMap.put(key,value);
+        updateConfig(hashMap);
     }
 
     @Override

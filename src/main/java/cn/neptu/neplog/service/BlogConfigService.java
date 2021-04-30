@@ -6,4 +6,6 @@ import jdk.nashorn.internal.runtime.regexp.joni.Config;
 public interface BlogConfigService extends ConfigService<BlogConfig, Long>, VisitService {
 
     String getDefaultFileService();
+
+    void updateAvailableFileService(String name, boolean valid);
 }

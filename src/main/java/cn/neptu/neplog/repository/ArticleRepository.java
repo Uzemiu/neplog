@@ -1,6 +1,7 @@
 package cn.neptu.neplog.repository;
 
 import cn.neptu.neplog.model.entity.Article;
+import cn.neptu.neplog.model.entity.Category;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +36,10 @@ public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpec
     long countByStatus(@Param("status")Integer status);
 
     long countByDeleted(Boolean deleted);
+
+    @Transactional
+    @Modifying
+    @Query("update Article a set a.category = null where a.category = :cate")
+    void unlinkCategory(@Param("cate")Category cate);
 
 }

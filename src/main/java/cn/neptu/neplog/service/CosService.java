@@ -9,7 +9,7 @@ public interface CosService extends FileService{
      * @param properties COS配置
      * @return 是否通过验证
      */
-    boolean isValid(Map<String, String> properties);
+    boolean validate(Map<String, String> properties);
 
     Object listBuckets(Map<String, String> properties);
 

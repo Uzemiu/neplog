@@ -1,4 +1,4 @@
-package cn.neptu.neplog.config;
+package cn.neptu.neplog.factory;
 
 import cn.neptu.neplog.service.ConfigService;
 import cn.neptu.neplog.service.FileService;

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,7 +25,8 @@ public class Category extends BaseEntity {
     private String name;
 
     @Column(name = "parent_id")
-    private Integer parent_id;
+    @ColumnDefault("0")
+    private Integer parentId;
 
     @OneToMany(mappedBy = "category")
     @org.hibernate.annotations.ForeignKey(name = "none")
@@ -35,6 +37,9 @@ public class Category extends BaseEntity {
         super.prePersist();
         if(name == null || "".equals(name)){
             name = "未命名";
+        }
+        if(parentId == null){
+            parentId = 0;
         }
     }
 

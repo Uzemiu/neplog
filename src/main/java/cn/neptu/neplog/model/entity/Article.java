@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 public class Article extends BaseArticle{
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT,name = "none"))
     private Category category;
 

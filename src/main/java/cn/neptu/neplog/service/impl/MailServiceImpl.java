@@ -95,8 +95,4 @@ public class MailServiceImpl
         }
     }
 
-    @Override
-    public void resetConfig() {
-
-    }
 }

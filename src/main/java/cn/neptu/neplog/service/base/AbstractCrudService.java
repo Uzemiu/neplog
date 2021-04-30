@@ -32,6 +32,12 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
     }
 
     @Override
+    public Collection<ENTITY> create(Collection<ENTITY> entities) {
+        Assert.notNull(entities, entityName + " must not be null");
+        return repository.saveAll(entities);
+    }
+
+    @Override
     public List<ENTITY> listAll() {
         return repository.findAll();
     }
@@ -56,6 +62,12 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
     }
 
     @Override
+    public Collection<ENTITY> update(Collection<ENTITY> entities) {
+        Assert.notNull(entities, entityName + " must not be null");
+        return repository.saveAll(entities);
+    }
+
+    @Override
     public long deleteByIdIn(Collection<ID> ids) {
         Assert.notNull(ids, "Ids must not be null");
         return repository.deleteByIdIn(ids);
@@ -63,7 +75,7 @@ public abstract class AbstractCrudService<ENTITY, ID> implements CrudService<ENT
 
     @Override
     public ENTITY deleteById(ID id) {
-        Assert.notNull(id, "Id must not be nul");
+        Assert.notNull(id, "Id must not be null");
         ENTITY entity = getNotNullById(id);
         repository.delete(entity);
         return entity;
