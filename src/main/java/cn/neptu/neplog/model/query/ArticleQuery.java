@@ -65,13 +65,18 @@ public class ArticleQuery extends BaseQuery<Article>{
                 predicates.add(criteriaBuilder.or(cLike,tLike));
             }
             if(categoryId != null && !categoryId.isEmpty()){
-                CriteriaBuilder.In<Category> in = criteriaBuilder.in(root.get("category"));
-                categoryId.forEach(id -> {
-                    Category category = new Category();
-                    category.setId(id);
-                    in.value(category);
-                });
-                predicates.add(criteriaBuilder.and(in));
+                if(categoryId.get(0).equals(0)){
+                    // 查询category为null的文章
+                    predicates.add(criteriaBuilder.isNull(root.get("category")));
+                } else {
+                    CriteriaBuilder.In<Category> in = criteriaBuilder.in(root.get("category"));
+                    categoryId.forEach(id -> {
+                        Category category = new Category();
+                        category.setId(id);
+                        in.value(category);
+                    });
+                    predicates.add(criteriaBuilder.and(in));
+                }
             }
             if(deleted != null){
                 predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));

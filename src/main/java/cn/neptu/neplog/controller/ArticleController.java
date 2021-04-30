@@ -9,6 +9,7 @@ import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.utils.RequestUtil;
+import cn.neptu.neplog.utils.SecurityUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -52,11 +53,14 @@ public class ArticleController {
                                                     direction = Sort.Direction.DESC) Pageable pageable){
         Pageable newPageable = andDefaultPageable(pageable);
         // 普通用户默认查询未被删除文章的可见文章
-        query.setDeleted(false);
-        query.setStatus(ArticleConstant.STATUS_PUBLISHED);
-        query.setViewPermission(Arrays.asList(
-                ArticleConstant.VIEW_PERMISSION_USER_ONLY,
-                ArticleConstant.VIEW_PERMISSION_ANYBODY));
+        if(!SecurityUtil.isOwner()){
+            query.setDeleted(false);
+            query.setStatus(ArticleConstant.STATUS_PUBLISHED);
+            query.setViewPermission(Arrays.asList(
+                    ArticleConstant.VIEW_PERMISSION_USER_ONLY,
+                    ArticleConstant.VIEW_PERMISSION_ANYBODY));
+
+        }
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
 

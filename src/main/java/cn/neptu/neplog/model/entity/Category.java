@@ -25,7 +25,6 @@ public class Category extends BaseEntity {
     private String name;
 
     @Column(name = "parent_id")
-    @ColumnDefault("0")
     private Integer parentId;
 
     @OneToMany(mappedBy = "category")
@@ -37,9 +36,6 @@ public class Category extends BaseEntity {
         super.prePersist();
         if(name == null || "".equals(name)){
             name = "未命名";
-        }
-        if(parentId == null){
-            parentId = 0;
         }
     }
 

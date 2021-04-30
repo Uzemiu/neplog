@@ -33,19 +33,19 @@ public class CategoryController {
     }
 
     @PostMapping
-    public BaseResponse<?> createCategory(Category category){
+    public BaseResponse<?> createCategory(@RequestBody Category category){
         categoryService.create(category);
         return BaseResponse.ok("创建分类成功");
     }
 
     @PutMapping
-    public BaseResponse<?> updateCategory(Category category){
+    public BaseResponse<?> updateCategory(@RequestBody Category category){
         categoryService.update(category);
         return BaseResponse.ok("更新分类成功");
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteCategory(Integer id){
+    public BaseResponse<?> deleteCategory(@RequestBody Integer id){
         categoryService.deleteById(id);
         return BaseResponse.ok("删除分类成功");
     }
