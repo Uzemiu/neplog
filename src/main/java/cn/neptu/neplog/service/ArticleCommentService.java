@@ -29,7 +29,7 @@ public interface ArticleCommentService extends CrudService<ArticleComment, Long>
     /**
      * 构建评论树结构并注入父评论作者信息
      * @param allComments 文章下所有的评论
-     * @return 顶层评论（直接回复文章的论文）
+     * @return 顶层评论（直接回复文章的评论）
      */
     List<CommentDTO> buildSimpleCommentTree(List<CommentDTO> allComments);
 

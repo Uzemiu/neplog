@@ -5,8 +5,10 @@ import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.factory.ConfigFactory;
 import cn.neptu.neplog.event.BlogVisitEvent;
 import cn.neptu.neplog.model.config.BlogConfig;
+import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.model.vo.BlogConfigVO;
+import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.utils.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +24,7 @@ public class ConfigController {
 
     private final ConfigFactory configFactory;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserService userService;
 
     @AnonymousAccess
     @GetMapping("/blog")
@@ -30,6 +33,11 @@ public class ConfigController {
         BlogConfig blogConfig = (BlogConfig) configFactory.getConfigService("blog").getConfig();
         BlogConfigVO vo = new BlogConfigVO();
         BeanUtil.copyProperties(blogConfig, vo, true);
+
+        UserDTO owner = userService.getOwner();
+        vo.setAuthorName(owner.getNickname());
+        vo.setBlogAvatar(owner.getAvatar());
+
         return BaseResponse.ok("ok", vo);
     }
 

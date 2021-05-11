@@ -27,6 +27,7 @@ public class ArticleCommentController {
     @AnonymousAccess
     public BaseResponse<?> listByArticleId(Long id){
         List<CommentDTO> all = articleCommentService.listByArticleIdAndStatus(id, CommentConstant.STATUS_PUBLIC);
+
         // 没flatMap
         return BaseResponse.ok("ok",articleCommentService.buildSimpleCommentTree(all));
     }
@@ -46,5 +47,11 @@ public class ArticleCommentController {
 
         articleCommentService.create(commentDTO);
         return BaseResponse.ok();
+    }
+
+    @DeleteMapping
+    public BaseResponse<?> deleteComment(@RequestBody Long id){
+        articleCommentService.deleteById(id);
+        return BaseResponse.ok("删除评论成功");
     }
 }

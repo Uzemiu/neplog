@@ -52,7 +52,7 @@ public class ArticleQuery extends BaseQuery<Article>{
     @LevelRequiredParam
     private Boolean deleted;
 
-    private List<Integer> categoryId;
+    private List<Long> categoryId;
 
     @Override
     public Specification<Article> toSpecification() {
@@ -65,7 +65,7 @@ public class ArticleQuery extends BaseQuery<Article>{
                 predicates.add(criteriaBuilder.or(cLike,tLike));
             }
             if(categoryId != null && !categoryId.isEmpty()){
-                if(categoryId.get(0).equals(0)){
+                if(categoryId.get(0).equals(0L)){
                     // 查询category为null的文章
                     predicates.add(criteriaBuilder.isNull(root.get("category")));
                 } else {

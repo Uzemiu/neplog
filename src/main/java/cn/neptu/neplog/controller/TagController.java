@@ -4,6 +4,7 @@ import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.model.entity.Tag;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.TagService;
+import cn.neptu.neplog.service.mapstruct.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 public class TagController {
 
     private final TagService tagService;
+    private final TagMapper tagMapper;
 
     @GetMapping
     @AnonymousAccess
-    public BaseResponse<?> findAllTags(){
-        return BaseResponse.ok("ok",tagService.findAll()
-                .stream().map(Tag::getTag).collect(Collectors.toList()));
+    public BaseResponse<?> listAllTags(){
+        return BaseResponse.ok("ok",tagMapper.toDto(tagService.listAll()));
     }
 }

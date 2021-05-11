@@ -25,7 +25,11 @@ public class CategoryQuery extends BaseQuery<Category>{
         return specification.and((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if(parentId != null){
-                predicates.add(criteriaBuilder.equal(root.get("parentId"),parentId));
+                if(parentId == 0){
+                    predicates.add(criteriaBuilder.isNull(root.get("parentId")));
+                } else {
+                    predicates.add(criteriaBuilder.equal(root.get("parentId"),parentId));
+                }
             }
             if(StringUtils.hasText(name)){
                 predicates.add(criteriaBuilder.like(root.get("name"),"%" + name + "%"));

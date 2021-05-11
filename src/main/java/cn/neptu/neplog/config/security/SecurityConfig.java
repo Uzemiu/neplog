@@ -34,4 +34,9 @@ public class SecurityConfig {
      */
     private int tokenRefreshTime;
 
+    /**
+     * 如果设置为true，启动时会将博客密码设置为neplog
+     */
+    private boolean resetPassword;
+
 }

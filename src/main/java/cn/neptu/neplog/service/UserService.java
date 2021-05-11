@@ -27,4 +27,6 @@ public interface UserService extends CrudService<User, String> {
 
     void resetPassword(ResetPasswordParam param);
 
+    void resetBlogPassword();
+
 }

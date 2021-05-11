@@ -17,14 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
-
-//    @GetMapping
-//    @AnonymousAccess
-//    public BaseResponse<List<CategoryDTO>> findAll(){
-//        return BaseResponse.ok("ok",categoryMapper.toDto(categoryService.listAll()));
-//    }
 
     @GetMapping
     @AnonymousAccess
@@ -34,8 +27,7 @@ public class CategoryController {
 
     @PostMapping
     public BaseResponse<?> createCategory(@RequestBody Category category){
-        categoryService.create(category);
-        return BaseResponse.ok("创建分类成功");
+        return BaseResponse.ok("创建分类成功", categoryService.create(category));
     }
 
     @PutMapping
@@ -45,7 +37,7 @@ public class CategoryController {
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteCategory(@RequestBody Integer id){
+    public BaseResponse<?> deleteCategory(@RequestBody Long id){
         categoryService.deleteById(id);
         return BaseResponse.ok("删除分类成功");
     }

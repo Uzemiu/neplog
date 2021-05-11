@@ -3,7 +3,9 @@ package cn.neptu.neplog.service.impl;
 import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.dto.ArticleDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Article;
+import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.repository.ArticleCommentRepository;
 import cn.neptu.neplog.repository.ArticleRepository;
@@ -18,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service("articleService")
 public class ArticleServiceImpl extends AbstractCrudService<Article, Long> implements ArticleService {
@@ -55,17 +54,21 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public Article save(ArticleDTO articleDTO) {
         Article article = articleMapper.toEntity(articleDTO);
 
+        if(article.getCategory() != null
+                && article.getCategory().getId() == null){
+            // 防止category重名
+            categoryService.getByName(article.getCategory().getName()).ifPresent(article::setCategory);
+        }
+        if(article.getTags() != null){
+            article.getTags().forEach(tag -> {
+                if(tag.getId() == null){
+                    // 防止tag重名
+                    tagRepository.findByTag(tag.getTag())
+                            .ifPresent(old -> tag.setId(old.getId()));
+                }
+            });
+        }
         articleRepository.save(article);
-
-//        List<Tag> newTags = articleDTO.getTags()
-//                .stream()
-//                .map(tag -> new Tag(null, article.getId(), tag))
-//                .collect(Collectors.toList());
-//        Set<Tag> exist = tagRepository.findByArticleId(article.getId());
-//        exist.addAll(newTags);
-//        tagRepository.saveAll(exist);
-//        tagRepository.deleteByArticleIdAndTagNotIn(article.getId(),
-//                exist.stream().map(Tag::getTag).collect(Collectors.toList()));
 
         return article;
     }
@@ -86,10 +89,9 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     }
 
     @Override
-    public List<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable) {
+    public PageDTO<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable) {
         Page<Article> a = articleRepository.findAll(query.toSpecification(), pageable);
-        List<Article> articles = a.toList();
-        return articles.stream().map(articleMapper::toDto).collect(Collectors.toList());
+        return new PageDTO<>(a.map(articleMapper::toDto));
     }
 
     @Override
@@ -104,6 +106,11 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     @Override
     public boolean updateDeleted(Long id, Boolean deleted) {
         return articleRepository.updateDeleted(id, deleted) > 0;
+    }
+
+    @Override
+    public boolean updateCategory(Long id, Category category) {
+        return articleRepository.updateCategory(id, category) > 0;
     }
 
     @Override
@@ -150,10 +157,17 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
 
     @Transactional
     @Override
-    public Article deleteById(Long integer) {
-        Article article = super.deleteById(integer);
+    public Article deleteById(Long id) {
+        Article article = super.deleteById(id);
         commentRepository.deleteByArticleId(article.getId());
         return article;
     }
 
+    @Transactional
+    @Override
+    public long deleteByIdIn(Collection<Long> ids) {
+        long count = super.deleteByIdIn(ids);
+        commentRepository.deleteByArticleIdIn(ids);
+        return count;
+    }
 }

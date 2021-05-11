@@ -36,7 +36,7 @@ public class CommentDTO {
     private Long articleId;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long fatherId;
+    private Long parentId;
 
     private Long likes;
 
@@ -50,7 +50,7 @@ public class CommentDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String ipAddress;
 
-    private CommentAuthorDTO father;
+    private CommentAuthorDTO parent;
 
     private List<CommentDTO> children;
 

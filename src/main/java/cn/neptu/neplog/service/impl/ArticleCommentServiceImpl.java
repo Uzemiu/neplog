@@ -48,7 +48,7 @@ public class ArticleCommentServiceImpl
     @Override
     public long deleteByArticleId(Long articleId) {
         long count = articleCommentRepository.deleteByArticleId(articleId);
-        articleService.updateComments(articleId,count);
+        articleService.updateComments(articleId, count);
         return count;
     }
 
@@ -69,12 +69,12 @@ public class ArticleCommentServiceImpl
 
         List<CommentDTO> topComments = new ArrayList<>();
         allComments.forEach(comment -> {
-            if(comment.getFatherId() == null){
+            if(comment.getParentId() == null){
                topComments.add(comment);
             } else {
-                CommentDTO father = map.get(comment.getFatherId());
+                CommentDTO father = map.get(comment.getParentId());
                 if(father != null) {
-                    comment.setFather(new CommentAuthorDTO(father.getAvatar(),father.getNickname(),father.getLink()));
+                    comment.setParent(new CommentAuthorDTO(father.getAvatar(),father.getNickname(),father.getLink()));
                     father.getChildren().add(comment);
                 }
             }
@@ -183,9 +183,9 @@ public class ArticleCommentServiceImpl
         List<CommentDTO> allComments = listByArticleId(comment.getArticleId());
         Map<Long, CommentDTO> map = buildCommentMap(allComments);
         allComments.forEach(co -> {
-            CommentDTO father = map.get(co.getFatherId());
+            CommentDTO father = map.get(co.getParentId());
             if(father != null) {
-                co.setFather(new CommentAuthorDTO(father.getAvatar(),father.getNickname(),father.getLink()));
+                co.setParent(new CommentAuthorDTO(father.getAvatar(),father.getNickname(),father.getLink()));
                 father.getChildren().add(co);
             }
         });

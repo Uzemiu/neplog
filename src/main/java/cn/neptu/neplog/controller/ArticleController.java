@@ -4,10 +4,12 @@ import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.event.ArticleViewEvent;
 import cn.neptu.neplog.model.dto.ArticleDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
+import cn.neptu.neplog.service.mapstruct.CategoryMapper;
 import cn.neptu.neplog.utils.RequestUtil;
 import cn.neptu.neplog.utils.SecurityUtil;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +36,7 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final ApplicationEventPublisher eventPublisher;
+    private final CategoryMapper categoryMapper;
 
     @ApiOperation("普通用户查询文章信息")
     @GetMapping("/view")
@@ -48,8 +51,8 @@ public class ArticleController {
     @ApiOperation("普通用户文章搜索")
     @GetMapping({"","/list"})
     @AnonymousAccess
-    public BaseResponse<List<ArticleDTO>> queryBy(@Validated ArticleQuery query,
-                                                  @PageableDefault(sort = {"updateTime"},
+    public BaseResponse<PageDTO<ArticleDTO>> queryBy(@Validated ArticleQuery query,
+                                                     @PageableDefault(sort = {"updateTime"},
                                                     direction = Sort.Direction.DESC) Pageable pageable){
         Pageable newPageable = andDefaultPageable(pageable);
         // 普通用户默认查询未被删除文章的可见文章
@@ -100,6 +103,13 @@ public class ArticleController {
     @PutMapping("/delete")
     public BaseResponse<?> updateDeleted(@RequestBody ArticleDTO articleDTO){
         return BaseResponse.ok("ok",articleService.updateDeleted(articleDTO.getId(), articleDTO.getDeleted()));
+    }
+
+    @ApiOperation("更新文章分类")
+    @PutMapping("/category")
+    public BaseResponse<?> updateCategory(@RequestBody ArticleDTO articleDTO){
+        boolean res = articleService.updateCategory(articleDTO.getId(), categoryMapper.toEntity(articleDTO.getCategory()));
+        return BaseResponse.ok("ok", res);
     }
 
     @ApiOperation("彻底删除文章")

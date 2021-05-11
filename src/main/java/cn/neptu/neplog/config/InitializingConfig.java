@@ -1,9 +1,11 @@
 package cn.neptu.neplog.config;
 
+import cn.neptu.neplog.config.security.SecurityConfig;
 import cn.neptu.neplog.model.params.InstallParam;
 import cn.neptu.neplog.service.BlogConfigService;
 import cn.neptu.neplog.service.InstallService;
 import cn.neptu.neplog.service.ConfigService;
+import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.utils.AESUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -16,6 +18,8 @@ public class InitializingConfig {
 
     private final BlogConfigService blogConfigService;
     private final InstallService installService;
+    private final SecurityConfig securityConfig;
+    private final UserService userService;
     private final AESUtil aesUtil;
 
     @EventListener
@@ -28,6 +32,10 @@ public class InitializingConfig {
             installParam.setUsername("neplog");
             installParam.setPassword(aesUtil.encrypt("neplog"));
             installService.installBlog(installParam);
+        }
+
+        if(securityConfig.isResetPassword()){
+            userService.resetBlogPassword();
         }
     }
 }

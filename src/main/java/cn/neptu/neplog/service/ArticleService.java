@@ -1,6 +1,7 @@
 package cn.neptu.neplog.service;
 
 import cn.neptu.neplog.model.dto.ArticleDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.query.ArticleQuery;
@@ -22,7 +23,9 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
 
     boolean updateDeleted(Long id, Boolean deleted);
 
-    List<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable);
+    boolean updateCategory(Long id, Category category);
+
+    PageDTO<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable);
 
     long updateLikes(Long id, Long increment);
 

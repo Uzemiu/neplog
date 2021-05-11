@@ -1,30 +1,29 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.model.dto.TagDTO;
 import cn.neptu.neplog.model.entity.Tag;
 import cn.neptu.neplog.repository.TagRepository;
 import cn.neptu.neplog.service.TagService;
+import cn.neptu.neplog.service.base.AbstractCrudService;
+import cn.neptu.neplog.service.mapstruct.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 @Service("tagService")
-@RequiredArgsConstructor
-public class TagServiceImpl implements TagService {
+public class TagServiceImpl extends AbstractCrudService<Tag, Long> implements TagService {
 
     private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
-    @Override
-    public List<Tag> findAll() {
-        return tagRepository.findAll();
-    }
-
-    @Override
-    public List<Tag> saveAll(Iterable<Tag> tags){
-        return tagRepository.saveAll(tags);
+    protected TagServiceImpl(TagRepository tagRepository,
+                             TagMapper tagMapper) {
+        super(tagRepository);
+        this.tagRepository = tagRepository;
+        this.tagMapper = tagMapper;
     }
 
     @Override

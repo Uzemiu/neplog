@@ -19,13 +19,13 @@ public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
-    @Column(name = "name",length = 31,nullable = false)
+    @Column(name = "name",length = 31,nullable = false,unique = true)
     private String name;
 
     @Column(name = "parent_id")
-    private Integer parentId;
+    private Long parentId;
 
     @OneToMany(mappedBy = "category")
     @org.hibernate.annotations.ForeignKey(name = "none")

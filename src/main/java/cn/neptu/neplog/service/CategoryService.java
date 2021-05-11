@@ -8,7 +8,7 @@ import cn.neptu.neplog.service.base.CrudService;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryService extends CrudService<Category, Integer> {
+public interface CategoryService extends CrudService<Category, Long> {
 
     Category createByName(String name);
 
@@ -16,7 +16,7 @@ public interface CategoryService extends CrudService<Category, Integer> {
 
     Optional<Category> getByName(String name);
 
-    List<Category> deleteByParentId(Integer parentId);
+    List<Category> deleteByParentId(Long parentId);
 
     List<CategoryDTO> queryBy(CategoryQuery query);
 

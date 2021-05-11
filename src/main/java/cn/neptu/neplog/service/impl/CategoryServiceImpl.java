@@ -17,7 +17,9 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 
 @Service("categoryService")
-public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> implements CategoryService {
+public class CategoryServiceImpl
+        extends AbstractCrudService<Category, Long>
+        implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
@@ -64,12 +66,15 @@ public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> 
 
     @Override
     public List<CategoryDTO> queryBy(CategoryQuery query) {
-        return mapper.toDto(categoryRepository.findAll(query.toSpecification()));
+        List<CategoryDTO> categoryDTOS = mapper.toDto(categoryRepository.findAll(query.toSpecification()));
+        categoryDTOS.forEach(categoryDTO -> categoryDTO.setArticleCount(
+                categoryRepository.getArticleCount(categoryDTO.getId())));
+        return categoryDTOS;
     }
 
     @Override
     @Transactional
-    public List<Category> deleteByParentId(Integer parentId) {
+    public List<Category> deleteByParentId(Long parentId) {
         List<Category> categories = categoryRepository.deleteByParentId(parentId);
         categories.forEach(category -> deleteByParentId(category.getId()));
         return categories;
@@ -77,13 +82,13 @@ public class CategoryServiceImpl extends AbstractCrudService<Category, Integer> 
 
     @Override
     @Transactional
-    public Category deleteById(Integer id) {
+    public Category deleteById(Long id) {
         Category parent = getNotNullById(id);
 
         List<Category> toBeDeleted = new LinkedList<>();
         toBeDeleted.add(parent);
         findChildren(parent, toBeDeleted);
-        toBeDeleted.forEach(articleRepository::unlinkCategory);
+        articleRepository.unlinkCategory(toBeDeleted);
         categoryRepository.deleteAll(toBeDeleted);
 
         return parent;
