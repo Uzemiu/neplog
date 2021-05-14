@@ -55,8 +55,8 @@ public class ArticleController {
                                                      @PageableDefault(sort = {"updateTime"},
                                                     direction = Sort.Direction.DESC) Pageable pageable){
         Pageable newPageable = andDefaultPageable(pageable);
-        // 普通用户默认查询未被删除文章的可见文章
         if(!SecurityUtil.isOwner()){
+            // 普通用户默认查询未被删除文章的可见文章
             query.setDeleted(false);
             query.setStatus(ArticleConstant.STATUS_PUBLISHED);
             query.setViewPermission(Arrays.asList(

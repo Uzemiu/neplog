@@ -1,21 +1,23 @@
 package cn.neptu.neplog.model.query;
 
-import cn.neptu.neplog.annotation.LevelRequiredParam;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.model.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.criterion.Subqueries;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
-import java.lang.reflect.Array;
+import javax.persistence.criteria.Subquery;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -29,27 +31,23 @@ public class ArticleQuery extends BaseQuery<Article>{
      * 0 Draft
      * 4 Published
      */
-    @LevelRequiredParam
     private Integer status;
 
     /**
      * 0 Anybody
-     * 4 Require review
-     * 8 User only
-     * > Closed(Owner only)
+     * // 4 Require review
+     * // 8 User only
+     * 16 Closed(Owner only)
      */
-    @LevelRequiredParam
     private Integer commentPermission;
 
     /**
      * 0 Anybody
-     * 8 User only
+     * // 8 User only
      * 16 Private
      */
-    @LevelRequiredParam
     private List<Integer> viewPermission;
 
-    @LevelRequiredParam
     private Boolean deleted;
 
     private List<Long> categoryId;
@@ -64,7 +62,7 @@ public class ArticleQuery extends BaseQuery<Article>{
                 Predicate tLike = criteriaBuilder.like(root.get("title"),"%" + content + "%");
                 predicates.add(criteriaBuilder.or(cLike,tLike));
             }
-            if(categoryId != null && !categoryId.isEmpty()){
+            if(!CollectionUtil.isEmpty(categoryId)){
                 if(categoryId.get(0).equals(0L)){
                     // 查询category为null的文章
                     predicates.add(criteriaBuilder.isNull(root.get("category")));

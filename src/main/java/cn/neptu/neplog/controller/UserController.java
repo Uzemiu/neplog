@@ -2,6 +2,7 @@ package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.annotation.LevelRequiredAccess;
+import cn.neptu.neplog.constant.LevelConstant;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.params.LoginParam;
@@ -62,7 +63,10 @@ public class UserController {
     @LevelRequiredAccess(1)
     @PutMapping
     public BaseResponse<?> update(@RequestBody UserDTO userDTO){
-        userDTO.setUsername(SecurityUtil.getCurrentUser().getUsername());
+        if(!SecurityUtil.isOwner()){
+            // 非博主不能修改用户名
+            userDTO.setUsername(SecurityUtil.getCurrentUser().getUsername());
+        }
         return BaseResponse.ok("更新用户信息成功", userMapper.toDto(userService.update(userDTO)));
     }
 

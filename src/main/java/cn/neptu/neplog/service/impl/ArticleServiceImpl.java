@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static cn.neptu.neplog.constant.ArticleConstant.STATUS_PUBLISHED;
+import static cn.neptu.neplog.constant.ArticleConstant.VIEW_PERMISSION_PRIVATE;
+
 @Service("articleService")
 public class ArticleServiceImpl extends AbstractCrudService<Article, Long> implements ArticleService {
 
@@ -95,9 +98,15 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     }
 
     @Override
+    public long countInvisibleArticlesByTag(Long tagId) {
+        return articleRepository.countByTags(
+                tagId, STATUS_PUBLISHED, VIEW_PERMISSION_PRIVATE, false);
+    }
+
+    @Override
     public Map<String, Long> countByLabel() {
         Map<String, Long> res = new HashMap<>();
-        res.put("published", articleRepository.countByStatus(ArticleConstant.STATUS_PUBLISHED));
+        res.put("published", articleRepository.countByStatus(STATUS_PUBLISHED));
         res.put("draft", articleRepository.countByStatus(ArticleConstant.STATUS_DRAFT));
         res.put("deleted", articleRepository.countByDeleted(true));
         return res;

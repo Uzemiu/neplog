@@ -1,6 +1,5 @@
 package cn.neptu.neplog.model.query;
 
-import cn.neptu.neplog.annotation.LevelRequiredParam;
 import cn.neptu.neplog.model.entity.Friend;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +24,6 @@ public class FriendQuery extends BaseQuery<Friend>{
      * 0 待审核
      * 1 公开
      */
-    @LevelRequiredParam
     private Integer status;
 
     @Override

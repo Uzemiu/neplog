@@ -9,7 +9,6 @@ import javax.validation.constraints.Email;
 @Data
 public class UserDTO {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String username;
 
     @Length(min = 1,max = 32,

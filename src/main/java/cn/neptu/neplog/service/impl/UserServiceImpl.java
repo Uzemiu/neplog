@@ -122,6 +122,8 @@ public class UserServiceImpl extends AbstractCrudService<User, String> implement
     @Override
     public User update(UserDTO userDTO) {
         User user = SecurityUtil.getCurrentUser();
+
+        user.setUsername(userDTO.getUsername());
         user.setAvatar(userDTO.getAvatar());
         user.setNickname(userDTO.getNickname());
         user.setSite(userDTO.getSite());

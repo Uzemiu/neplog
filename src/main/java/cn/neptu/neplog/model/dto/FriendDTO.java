@@ -1,6 +1,5 @@
 package cn.neptu.neplog.model.dto;
 
-import cn.neptu.neplog.annotation.LevelRequiredParam;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -27,6 +26,5 @@ public class FriendDTO {
     private String introduction;
 
     @Range(min = 0, max = 1,message = "状态只能是0(待审核)或1(公开)")
-    @LevelRequiredParam(message = "非法参数")
     private Integer status;
 }

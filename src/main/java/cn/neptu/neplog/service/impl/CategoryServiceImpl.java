@@ -1,8 +1,10 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.model.dto.CategoryDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.query.CategoryQuery;
 import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.repository.CategoryRepository;
@@ -10,6 +12,7 @@ import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.service.CategoryService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.service.mapstruct.CategoryMapper;
+import cn.neptu.neplog.utils.SecurityUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -67,8 +70,20 @@ public class CategoryServiceImpl
     @Override
     public List<CategoryDTO> queryBy(CategoryQuery query) {
         List<CategoryDTO> categoryDTOS = mapper.toDto(categoryRepository.findAll(query.toSpecification()));
-        categoryDTOS.forEach(categoryDTO -> categoryDTO.setArticleCount(
-                categoryRepository.getArticleCount(categoryDTO.getId())));
+
+        // 用于查询数量
+        ArticleQuery articleQuery = new ArticleQuery();
+        if(!SecurityUtil.isOwner()){
+            articleQuery.setStatus(ArticleConstant.STATUS_PUBLISHED);
+            articleQuery.setDeleted(false);
+            articleQuery.setViewPermission(Collections.singletonList(
+                    ArticleConstant.VIEW_PERMISSION_ANYBODY));
+        }
+        categoryDTOS.forEach(categoryDTO -> {
+            articleQuery.setCategoryId(Collections.singletonList(categoryDTO.getId()));
+            categoryDTO.setArticleCount(articleRepository.count(articleQuery.toSpecification()));
+        });
+
         return categoryDTOS;
     }
 

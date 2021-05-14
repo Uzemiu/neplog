@@ -8,4 +8,6 @@ public class TagDTO {
     private Long id;
 
     private String tag;
+
+    private Long articleCount;
 }

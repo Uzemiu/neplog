@@ -2,6 +2,7 @@ package cn.neptu.neplog.repository;
 
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.model.entity.Tag;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Repository
 public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpecificationExecutor<Article> {
@@ -45,6 +47,17 @@ public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpec
     long countByDeleted(Boolean deleted);
 
     long countByCategory(Category category);
+
+    @Query("select count(a) from Article a " +
+            "left join a.tags tag " +
+            "where a.status = :status " +
+            "and a.viewPermission = :vp " +
+            "and a.deleted= :deleted " +
+            "and tag.id = :tagId")
+    long countByTags(@Param("tagId") Long tagId,
+                     @Param("status") Integer status,
+                     @Param("vp") Integer viewPermission,
+                     @Param("deleted") Boolean deleted);
 
     @Transactional
     @Modifying

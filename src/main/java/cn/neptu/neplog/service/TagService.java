@@ -12,4 +12,5 @@ public interface TagService extends CrudService<Tag, Long> {
 
     Set<Tag> findTagIn(Collection<String> tags);
 
+    List<TagDTO> listAllDTO();
 }

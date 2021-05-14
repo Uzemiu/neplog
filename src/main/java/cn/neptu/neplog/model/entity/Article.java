@@ -19,11 +19,11 @@ import java.util.Set;
 @Entity
 public class Article extends BaseArticle{
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT,name = "none"))
     private Category category;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "article_tag",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "article_id"),
             foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"),
