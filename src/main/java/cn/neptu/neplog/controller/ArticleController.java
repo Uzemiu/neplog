@@ -44,12 +44,13 @@ public class ArticleController {
     public BaseResponse<ArticleDTO> getArticleView(@Validated @NotNull Long id,
                                                    HttpServletRequest request){
         String ip = RequestUtil.getIp(request);
+        ArticleDTO articleDTO = articleService.findViewById(id);
         eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
-        return BaseResponse.ok("ok",articleService.findViewById(id));
+        return BaseResponse.ok("ok", articleDTO);
     }
 
     @ApiOperation("普通用户文章搜索")
-    @GetMapping({"","/list"})
+    @GetMapping({"","/query"})
     @AnonymousAccess
     public BaseResponse<PageDTO<ArticleDTO>> queryBy(@Validated ArticleQuery query,
                                                      @PageableDefault(sort = {"updateTime"},
@@ -59,10 +60,7 @@ public class ArticleController {
             // 普通用户默认查询未被删除文章的可见文章
             query.setDeleted(false);
             query.setStatus(ArticleConstant.STATUS_PUBLISHED);
-            query.setViewPermission(Arrays.asList(
-                    ArticleConstant.VIEW_PERMISSION_USER_ONLY,
-                    ArticleConstant.VIEW_PERMISSION_ANYBODY));
-
+            query.setViewPermission(ArticleConstant.VIEW_PERMISSION_ANYBODY);
         }
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
@@ -73,16 +71,11 @@ public class ArticleController {
         return BaseResponse.ok("ok",articleService.findDetailById(id));
     }
 
-    @ApiOperation("后台文章搜索")
-    @GetMapping("/query")
-    public BaseResponse<?> privateQueryBy(ArticleQuery query,
-                                          @PageableDefault(sort = {"updateTime"},
-                                                  direction = Sort.Direction.DESC) Pageable pageable){
-        Pageable newPageable = andDefaultPageable(pageable);
-        Map<String, Object> res = new HashMap<>();
-        res.put("articles",articleService.queryBy(query,newPageable));
-        res.put("count",articleService.countByLabel());
-        return BaseResponse.ok("ok",res);
+
+    @ApiOperation("查询发布/草稿/删除文章数量")
+    @GetMapping("/count")
+    public BaseResponse<Map<String, Long>> countByLabel(){
+        return BaseResponse.ok("ok", articleService.countByLabel());
     }
 
     @ApiOperation("新建文章")

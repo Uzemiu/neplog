@@ -1,6 +1,7 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.constant.ArticleConstant;
+import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.CategoryDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
@@ -38,6 +39,18 @@ public class CategoryServiceImpl
     }
 
     @Override
+    public Category update(Category category) {
+        categoryRepository.findByName(category.getName())
+                .ifPresent(c -> {throw new BadRequestException("分类名已存在");});
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category create(Category category) {
+        return update(category);
+    }
+
+    @Override
     public Optional<Category> getByName(String name) {
         return categoryRepository.findByName(name);
     }
@@ -72,17 +85,18 @@ public class CategoryServiceImpl
         List<CategoryDTO> categoryDTOS = mapper.toDto(categoryRepository.findAll(query.toSpecification()));
 
         // 用于查询数量
-        ArticleQuery articleQuery = new ArticleQuery();
-        if(!SecurityUtil.isOwner()){
-            articleQuery.setStatus(ArticleConstant.STATUS_PUBLISHED);
+        if(query.isShowCount()){
+            ArticleQuery articleQuery = new ArticleQuery();
             articleQuery.setDeleted(false);
-            articleQuery.setViewPermission(Collections.singletonList(
-                    ArticleConstant.VIEW_PERMISSION_ANYBODY));
+            if(!SecurityUtil.isOwner()){
+                articleQuery.setStatus(ArticleConstant.STATUS_PUBLISHED);
+                articleQuery.setViewPermission(ArticleConstant.VIEW_PERMISSION_ANYBODY);
+            }
+            categoryDTOS.forEach(categoryDTO -> {
+                articleQuery.setCategoryId(Collections.singletonList(categoryDTO.getId()));
+                categoryDTO.setArticleCount(articleRepository.count(articleQuery.toSpecification()));
+            });
         }
-        categoryDTOS.forEach(categoryDTO -> {
-            articleQuery.setCategoryId(Collections.singletonList(categoryDTO.getId()));
-            categoryDTO.setArticleCount(articleRepository.count(articleQuery.toSpecification()));
-        });
 
         return categoryDTOS;
     }

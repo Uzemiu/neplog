@@ -21,6 +21,7 @@ spring:
       validation-query: SELECT 1 FROM DUAL
   jpa:
     show-sql: true
+
     hibernate:
       ddl-auto: update
   servlet:

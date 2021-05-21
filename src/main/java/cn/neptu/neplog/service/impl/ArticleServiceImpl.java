@@ -4,8 +4,10 @@ import cn.neptu.neplog.constant.ArticleConstant;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.model.dto.ArticleDTO;
 import cn.neptu.neplog.model.dto.PageDTO;
+import cn.neptu.neplog.model.dto.TagDTO;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
+import cn.neptu.neplog.model.entity.Tag;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.repository.ArticleCommentRepository;
 import cn.neptu.neplog.repository.ArticleRepository;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -55,21 +58,34 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     @Transactional
     @Override
     public Article save(ArticleDTO articleDTO) {
+
+        if(articleDTO.getTags() != null){
+            for(TagDTO tag: articleDTO.getTags()){
+                if(tag.getId() == null && StringUtils.hasText(tag.getTag())){
+                    Tag newTag = new Tag();
+                    newTag.setTag(tag.getTag());
+
+                    // 防止tag重名
+                    tagRepository.findByTag(tag.getTag())
+                            .orElseGet(() -> tagRepository.save(newTag));
+                    tag.setId(newTag.getId());
+                }
+            }
+        }
+
         Article article = articleMapper.toEntity(articleDTO);
+
+        article.getTags().remove(new Tag()); // 删除id为null的tag
 
         if(article.getCategory() != null
                 && article.getCategory().getId() == null){
-            // 防止category重名
-            categoryService.getByName(article.getCategory().getName()).ifPresent(article::setCategory);
-        }
-        if(article.getTags() != null){
-            article.getTags().forEach(tag -> {
-                if(tag.getId() == null){
-                    // 防止tag重名
-                    tagRepository.findByTag(tag.getTag())
-                            .ifPresent(old -> tag.setId(old.getId()));
-                }
-            });
+            if(StringUtils.hasText(article.getCategory().getName())){
+                // 防止category重名
+                Category newCategory = categoryService.createIfNotExist(article.getCategory().getName());
+                article.setCategory(newCategory);
+            } else {
+                article.setCategory(null);
+            }
         }
         articleRepository.save(article);
 

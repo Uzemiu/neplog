@@ -12,9 +12,7 @@ import org.hibernate.criterion.Subqueries;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,14 +41,15 @@ public class ArticleQuery extends BaseQuery<Article>{
 
     /**
      * 0 Anybody
-     * // 8 User only
      * 16 Private
      */
-    private List<Integer> viewPermission;
+    private Integer viewPermission;
 
     private Boolean deleted;
 
     private List<Long> categoryId;
+
+    private List<Long> tagId;
 
     @Override
     public Specification<Article> toSpecification() {
@@ -76,16 +75,20 @@ public class ArticleQuery extends BaseQuery<Article>{
                     predicates.add(criteriaBuilder.and(in));
                 }
             }
+            if(!CollectionUtil.isEmpty(tagId)){
+                Join<Article, Tag> join = root.join("tags", JoinType.INNER);
+                CriteriaBuilder.In<Long> tagsIn = criteriaBuilder.in(join.get("id"));
+                tagId.forEach(tagsIn::value);
+                predicates.add(criteriaBuilder.and(tagsIn));
+            }
             if(deleted != null){
                 predicates.add(criteriaBuilder.equal(root.get("deleted"),deleted));
             }
             if(status != null){
                 predicates.add(criteriaBuilder.equal(root.get("status"),status));
             }
-            if(viewPermission != null && !viewPermission.isEmpty()){
-                CriteriaBuilder.In<Integer> in = criteriaBuilder.in(root.get("viewPermission"));
-                viewPermission.forEach(in::value);
-                predicates.add(criteriaBuilder.and(in));
+            if(viewPermission != null){
+                predicates.add(criteriaBuilder.equal(root.get("viewPermission"), viewPermission));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

@@ -19,6 +19,8 @@ public class CategoryQuery extends BaseQuery<Category>{
 
     private Integer parentId;
 
+    private boolean showCount;
+
     @Override
     public Specification<Category> toSpecification() {
         Specification<Category> specification = super.toSpecification();

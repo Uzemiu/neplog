@@ -14,6 +14,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "key", callSuper = false)
 @Entity
 public class Property extends BaseEntity{
 
@@ -28,17 +29,4 @@ public class Property extends BaseEntity{
     @Column(name = "value", length = 1023, nullable = false)
     private String value;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Property property = (Property) o;
-        return Objects.equals(key, property.key);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), key);
-    }
 }

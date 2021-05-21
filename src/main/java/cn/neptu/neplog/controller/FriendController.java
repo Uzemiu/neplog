@@ -30,7 +30,7 @@ public class FriendController {
                                    @PageableDefault(sort = {"updateTime"},size = 9527,
                                            direction = Sort.Direction.DESC) Pageable pageable){
         if(!SecurityUtil.isOwner()){
-            query.setStatus(1);
+            query.setStatus(FriendService.STATUS_PUBLIC);
         }
         Map<String, Object> res = new HashMap<>(2);
         res.put("friends",friendService.queryBy(query,pageable));

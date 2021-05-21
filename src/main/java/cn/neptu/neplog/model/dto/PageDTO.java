@@ -14,10 +14,10 @@ public class PageDTO<DTO> {
 
     private List<DTO> content;
 
-    private Integer total;
+    private Long total;
 
     public PageDTO(Page<DTO> page){
         content = page.getContent();
-        total = page.getNumberOfElements();
+        total = page.getTotalElements();
     }
 }

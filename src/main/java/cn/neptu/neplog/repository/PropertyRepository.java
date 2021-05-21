@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface PropertyRepository extends BaseRepository<Property, Integer>{
+public interface PropertyRepository extends BaseRepository<Property, Long>{
 
     Optional<Property> findByKey(String key);
 
@@ -22,6 +22,6 @@ public interface PropertyRepository extends BaseRepository<Property, Integer>{
 
     Set<Property> findByKeyNotIn(Collection<String> key);
 
-    int deletePropertiesByKeyNotIn(Collection<String> key);
+    long deletePropertiesByKeyNotIn(Collection<String> key);
 
 }

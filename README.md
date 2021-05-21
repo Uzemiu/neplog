@@ -35,3 +35,6 @@
 	- 增加Base实体类，Article都改为继承Base类
 - 删除LevelRequiredParam注解
 - 以及各种小修小改
+
+-[ ] 点赞功能
+-[ ] 完善评论

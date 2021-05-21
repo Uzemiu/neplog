@@ -71,12 +71,6 @@ public class BlogConfig extends BaseEntity {
     @ColumnDefault("''")
     private String globalCss;
 
-    @Column(name = "blog_avatar")
-    private String blogAvatar;
-
-    @Column(name = "author_name")
-    private String authorName;
-
     //-----------
 
     @Column(name = "default_file_service")
@@ -87,14 +81,13 @@ public class BlogConfig extends BaseEntity {
     @ColumnDefault("''")
     private String availableFileService;
 
+
+
     @Override
     protected void prePersist() {
         super.prePersist();
         if(blogName == null){
             blogName = "Neplog";
-        }
-        if(blogAvatar == null){
-            blogAvatar = "";
         }
         if(visitCount == null){
             visitCount = 0L;
@@ -123,12 +116,6 @@ public class BlogConfig extends BaseEntity {
         if(globalCss == null){
             globalCss = "";
         }
-//        if(blogAvatar == null){
-//            blogAvatar = "";
-//        }
-//        if(authorName == null){
-//            authorName = "";
-//        }
         if(defaultFileService == null){
             defaultFileService = "default";
         }
