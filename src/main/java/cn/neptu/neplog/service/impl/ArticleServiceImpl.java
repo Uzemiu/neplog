@@ -19,10 +19,12 @@ import cn.neptu.neplog.service.mapstruct.ArticleMapper;
 import cn.neptu.neplog.utils.SecurityUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.*;
 import java.util.*;
 
 import static cn.neptu.neplog.constant.ArticleConstant.STATUS_PUBLISHED;
@@ -111,6 +113,27 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     public PageDTO<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable) {
         Page<Article> a = articleRepository.findAll(query.toSpecification(), pageable);
         return new PageDTO<>(a.map(articleMapper::toDto));
+    }
+
+    @Override
+    public PageDTO<ArticleDTO> search(String content) {
+
+        Specification<Article> specification = (Specification<Article>) (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if(StringUtils.hasText(content)){
+                Predicate cLike = criteriaBuilder.like(root.get("content"),"%" + content + "%");
+                Predicate tLike = criteriaBuilder.like(root.get("title"),"%" + content + "%");
+                predicates.add(criteriaBuilder.or(cLike,tLike));
+
+                Join<Article, Tag> join = root.join("tags", JoinType.INNER);
+                Predicate tagsLike = criteriaBuilder.like(join.get("tag"), "%"+content+"%");
+                predicates.add(criteriaBuilder.or(tagsLike));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return null;
     }
 
     @Override

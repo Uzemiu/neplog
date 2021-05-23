@@ -21,7 +21,7 @@ public interface CategoryRepository extends BaseRepository<Category,Long>, JpaSp
 
     List<Category> deleteByParentId(Long parentId);
 
-    @Query("select c.articles.size from Category c where c.id = :id")
+    @Query("select size(c.articles) from Category c where c.id = :id")
     long getArticleCount(@Param("id") Long id);
 
 }

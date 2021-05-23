@@ -1,13 +1,17 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.annotation.AnonymousAccess;
+import cn.neptu.neplog.model.entity.Property;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.PropertyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,6 +26,11 @@ public class PropertyController {
     }
 
     @PostMapping
+    public BaseResponse<?> createProperty(@RequestBody Map<String, String> properties){
+        propertyService.save(properties);
+        return BaseResponse.ok();
+    }
+
     @PutMapping
     public BaseResponse<?> updateProperty(@RequestBody Map<String, String> properties){
         propertyService.save(properties);
@@ -37,8 +46,12 @@ public class PropertyController {
     @GetMapping("/about")
     @AnonymousAccess
     public BaseResponse<?> getAboutProperty(){
-
-        return BaseResponse.ok();
+        List<Property> properties = propertyService
+                .listByKeyLike("about_%")
+                .stream()
+                .filter(property -> StringUtils.hasText(property.getValue()))
+                .collect(Collectors.toList());
+        return BaseResponse.ok("ok", propertyService.asMap(properties));
     }
 
 }

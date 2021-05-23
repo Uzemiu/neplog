@@ -18,6 +18,8 @@ public interface PropertyRepository extends BaseRepository<Property, Long>{
     @Query("select p.value from Property p where p.key = :key")
     Optional<String> findValueByKey(@Param("key") String key);
 
+    List<Property> findByKeyLike(String key);
+
     Set<Property> findByKeyIn(Collection<String> key);
 
     Set<Property> findByKeyNotIn(Collection<String> key);

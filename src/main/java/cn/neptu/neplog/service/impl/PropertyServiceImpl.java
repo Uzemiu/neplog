@@ -33,19 +33,20 @@ public class PropertyServiceImpl
     }
 
     @Override
-    public Property save(String key, String value) {
-        return save(new Property(null, key, value));
+    public List<Property> listByKeyLike(String key) {
+        return propertyRepository.findByKeyLike(key);
     }
 
     @Override
-    public Property save(Property property) {
+    public Property save(String key, String value) {
+        Property property = propertyRepository.findByKey(key).orElse(new Property(null,key,value));
+        property.setValue(value);
         return propertyRepository.save(property);
     }
 
     @Override
     public List<Property> save(Map<String, String> properties) {
         properties.forEach((k,v) -> Assert.notNull(v,k + ": must not be null"));
-
 
         Set<Property> previous = propertyRepository.findByKeyIn(properties.keySet());
 
@@ -58,7 +59,6 @@ public class PropertyServiceImpl
         });
         properties.forEach((k,v) -> previous.add(new Property(null,k,v)));
 
-        
         return propertyRepository.saveAll(previous);
     }
 

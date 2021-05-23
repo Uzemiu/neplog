@@ -3,10 +3,7 @@ package cn.neptu.neplog.service;
 import cn.neptu.neplog.model.entity.Property;
 import cn.neptu.neplog.service.base.CrudService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public interface PropertyService extends CrudService<Property, Long> {
 
@@ -14,9 +11,9 @@ public interface PropertyService extends CrudService<Property, Long> {
 
     Optional<String> getValueByKey(String key);
 
-    Property save(String key, String value);
+    List<Property> listByKeyLike(String key);
 
-    Property save(Property property);
+    Property save(String key, String value);
 
     List<Property> save(Map<String,String> properties);
 

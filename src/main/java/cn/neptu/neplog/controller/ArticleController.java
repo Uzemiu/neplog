@@ -52,8 +52,8 @@ public class ArticleController {
     @ApiOperation("普通用户文章搜索")
     @GetMapping({"","/query"})
     @AnonymousAccess
-    public BaseResponse<PageDTO<ArticleDTO>> queryBy(@Validated ArticleQuery query,
-                                                     @PageableDefault(sort = {"updateTime"},
+    public BaseResponse<PageDTO<ArticleDTO>> queryBy(ArticleQuery query,
+                                                     @PageableDefault(sort = {"createTime"},
                                                     direction = Sort.Direction.DESC) Pageable pageable){
         Pageable newPageable = andDefaultPageable(pageable);
         if(!SecurityUtil.isOwner()){

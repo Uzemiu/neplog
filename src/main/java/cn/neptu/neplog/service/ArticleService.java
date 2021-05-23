@@ -27,6 +27,8 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
 
     PageDTO<ArticleDTO> queryBy(ArticleQuery query, Pageable pageable);
 
+    PageDTO<ArticleDTO> search(String content);
+
     long updateLikes(Long id, Long increment);
 
     long updateComments(Long id, Long increment);
