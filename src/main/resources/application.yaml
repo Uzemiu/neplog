@@ -25,7 +25,8 @@ spring:
       ddl-auto: update
   servlet:
     multipart:
-      max-file-size: 3MB
+      max-file-size: 30MB
+      max-request-size: 50MB
   h2:
     console:
       enabled: true
@@ -34,7 +35,7 @@ spring:
       repositories:
         enabled: false
   profiles:
-    active: test
+    active: dev
 
 neplog:
   file:
@@ -42,10 +43,10 @@ neplog:
     # 必须以'/'开头
     virtual: /uploads
     options:
-      avatar: {path: [img], type: avatar, thumbnail: true, width: 200, height: 200}
-      cover: {path: [img], type: cover}
-      image: {path: [img], type: image}
-      file: {path: [common], type: file}
+      avatar: {path: [img], type: avatar, maxSize: 3,thumbnail: true, width: 200, height: 200}
+      cover: {path: [img], type: cover, maxSize: 3}
+      image: {path: [img], type: image, maxSize: 3}
+      file: {path: [common], type: file, maxSize: 30}
 
   security:
     secret: j.2_d?+bn

@@ -53,7 +53,7 @@ public class TagServiceImpl extends AbstractCrudService<Tag, Long> implements Ta
 
     @Override
     public List<TagDTO> listAllDTO() {
-        List<TagDTO> tags = tagMapper.toDto(super.listAll());
+        List<TagDTO> tags = tagMapper.toDto(listAll());
 
         if(SecurityUtil.isOwner()){
             for(TagDTO t : tags){

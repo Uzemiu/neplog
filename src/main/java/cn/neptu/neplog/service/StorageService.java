@@ -1,5 +1,6 @@
 package cn.neptu.neplog.service;
 
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Storage;
 import cn.neptu.neplog.model.query.StorageQuery;
 import cn.neptu.neplog.model.support.UploadFileOption;
@@ -18,13 +19,11 @@ public interface StorageService extends CrudService<Storage, Long> {
 
     String LOCATION_TENCENT_COS = "tencent";
 
-    Page<Storage> listFiles(StorageQuery query, Pageable pageable);
+    PageDTO<Storage> queryBy(StorageQuery query, Pageable pageable);
 
     Storage upload(MultipartFile file);
 
     Storage upload(MultipartFile file, String option);
 
     Storage upload(MultipartFile file, String option, String location);
-
-    Storage delete(String path);
 }

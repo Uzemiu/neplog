@@ -15,8 +15,6 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
 
     Article save(ArticleDTO article);
 
-    Article save(Article article);
-
     ArticleDTO findDetailById(Long id);
 
     ArticleDTO findViewById(Long id);

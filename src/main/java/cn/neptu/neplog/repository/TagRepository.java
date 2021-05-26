@@ -19,7 +19,7 @@ public interface TagRepository extends BaseRepository<Tag,Long> {
 
     Optional<Tag> findByTag(String tag);
 
-    @Query("select size(t.articles) from Tag t where t.id = :id")
+    @Query("select t.articles.size from Tag t where t.id = :id")
     long getArticleCount(@Param("id") Long id);
 
     @Transactional

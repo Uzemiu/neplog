@@ -40,8 +40,10 @@ public class CategoryServiceImpl
 
     @Override
     public Category update(Category category) {
-        categoryRepository.findByName(category.getName())
-                .ifPresent(c -> {throw new BadRequestException("分类名已存在");});
+        if(category.getId() == null){
+            categoryRepository.findByName(category.getName())
+                    .ifPresent(c -> {throw new BadRequestException("分类名已存在");});
+        }
         return categoryRepository.save(category);
     }
 
@@ -83,7 +85,12 @@ public class CategoryServiceImpl
     @Override
     public List<CategoryDTO> queryBy(CategoryQuery query) {
         List<CategoryDTO> categoryDTOS = mapper.toDto(categoryRepository.findAll(query.toSpecification()));
-
+        if(query.isShowUncategorized()){
+            CategoryDTO uncategorized = new CategoryDTO();
+            uncategorized.setId(0L);
+            uncategorized.setName("未分类文章");
+            categoryDTOS.add(uncategorized);
+        }
         // 用于查询数量
         if(query.isShowCount()){
             ArticleQuery articleQuery = new ArticleQuery();

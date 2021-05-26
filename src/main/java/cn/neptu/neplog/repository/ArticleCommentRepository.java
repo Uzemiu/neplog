@@ -20,6 +20,8 @@ public interface ArticleCommentRepository extends BaseRepository<ArticleComment,
 
     long deleteByArticleIdIn(Collection<Long> articleId);
 
+    List<ArticleComment> findByParentId(Long parentId);
+
     List<ArticleComment> findByArticleId(Long articleId);
 
     List<ArticleComment> findByArticleIdAndStatus(Long articleId, Integer status);

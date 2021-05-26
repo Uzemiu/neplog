@@ -3,12 +3,18 @@ package cn.neptu.neplog.controller;
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.constant.CommentConstant;
 import cn.neptu.neplog.model.dto.CommentDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
+import cn.neptu.neplog.model.query.ArticleCommentQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.model.support.UserAgentInfo;
 import cn.neptu.neplog.service.ArticleCommentService;
 import cn.neptu.neplog.utils.RequestUtil;
+import cn.neptu.neplog.utils.SecurityUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +31,25 @@ public class ArticleCommentController {
 
     @GetMapping
     @AnonymousAccess
-    public BaseResponse<?> listByArticleId(Long id){
-        List<CommentDTO> all = articleCommentService.listByArticleIdAndStatus(id, CommentConstant.STATUS_PUBLIC);
-
+    public BaseResponse<?> listByArticleId(ArticleCommentQuery query,
+                                           @PageableDefault(
+                                                   sort = "createTime",
+                                                   direction = Sort.Direction.DESC,
+                                                   size = 20) Pageable pageable){
+        query.setStatus(CommentConstant.STATUS_PUBLIC);
+        query.setParentId(0L); // 查询顶层评论
+        PageDTO<CommentDTO> all = articleCommentService.queryBy(query, pageable);
+        articleCommentService.fillChildren(all.getContent(), query.getArticleId());
+        articleCommentService.setUserInfo(all.getContent());
         // 没flatMap
-        return BaseResponse.ok("ok",articleCommentService.buildSimpleCommentTree(all));
+        return BaseResponse.ok("ok", all);
+    }
+
+    @GetMapping("/query")
+    public BaseResponse<PageDTO<CommentDTO>> queryBy(ArticleCommentQuery query,
+                                   @PageableDefault(sort = "createTime",
+                                           direction = Sort.Direction.DESC) Pageable pageable){
+        return BaseResponse.ok("ok", articleCommentService.queryByWithArticle(query, pageable));
     }
 
     @PostMapping
@@ -50,8 +70,8 @@ public class ArticleCommentController {
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteComment(@RequestBody Long id){
-        articleCommentService.deleteById(id);
+    public BaseResponse<?> deleteComment(@RequestBody List<Long> id){
+        articleCommentService.deleteByIdIn(id);
         return BaseResponse.ok("删除评论成功");
     }
 }

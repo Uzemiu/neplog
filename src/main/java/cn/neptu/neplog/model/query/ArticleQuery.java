@@ -63,7 +63,7 @@ public class ArticleQuery extends BaseQuery<Article>{
             }
             if(!CollectionUtil.isEmpty(categoryId)){
                 if(categoryId.get(0).equals(0L)){
-                    // 查询category为null的文章
+                    // 查询category为null的未分类文章
                     predicates.add(criteriaBuilder.isNull(root.get("category")));
                 } else {
                     CriteriaBuilder.In<Category> in = criteriaBuilder.in(root.get("category"));

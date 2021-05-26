@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class UploadFileOption {
 
@@ -30,6 +29,11 @@ public class UploadFileOption {
     private Boolean compress;
 
     /**
+     * 允许的文件最大大小(MB)，默认3MB
+     */
+    private double maxSize;
+
+    /**
      * 是否生成缩略图
      */
     private Boolean thumbnail;
@@ -44,4 +48,13 @@ public class UploadFileOption {
      */
     private int height;
 
+    public UploadFileOption() {
+        path = new String[]{"common"};
+        type = "file";
+        compress = false;
+        maxSize = 3.0;
+        thumbnail = false;
+        width = 0;
+        height = 0;
+    }
 }

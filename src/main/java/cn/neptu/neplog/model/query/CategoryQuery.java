@@ -19,7 +19,15 @@ public class CategoryQuery extends BaseQuery<Category>{
 
     private Integer parentId;
 
+    /**
+     * 是否显示分类下文章数量
+     */
     private boolean showCount;
+
+    /**
+     * 是否显示'未分类文章'分类
+     */
+    private boolean showUncategorized;
 
     @Override
     public Specification<Category> toSpecification() {

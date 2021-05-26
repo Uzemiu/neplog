@@ -50,7 +50,7 @@ public class CommentDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String ipAddress;
 
-    private CommentAuthorDTO parent;
+    private ArticleDTO article;
 
     private List<CommentDTO> children;
 

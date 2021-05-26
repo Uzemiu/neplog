@@ -2,6 +2,7 @@ package cn.neptu.neplog.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.neptu.neplog.config.common.UploadFileConfig;
+import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.exception.UploadFailureException;
 import cn.neptu.neplog.model.entity.Storage;
 import cn.neptu.neplog.model.support.UploadFileOption;
@@ -64,9 +65,13 @@ public class LocalFileServiceImpl implements FileService {
     private Storage uploadLocal(MultipartFile file, UploadFileOption option) {
         Assert.notNull(file, "File must not be null.");
         Assert.notNull(option,"UploadFileOption must not be null.");
+
+        if(file.getSize()/1024.0/1024.0 > option.getMaxSize()){
+            throw new BadRequestException("文件大小不能超过 "+option.getMaxSize()+"MB");
+        }
+
         Storage storage = new Storage();
         storage.setLocation(StorageService.LOCATION_LOCAL);
-
 
         // use currentTimeMillis + '-' + originalFilename as new filename
         // 包含前缀'/'

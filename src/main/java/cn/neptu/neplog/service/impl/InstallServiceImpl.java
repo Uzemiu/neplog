@@ -46,7 +46,7 @@ public class InstallServiceImpl implements InstallService{
         article.setHtmlContent("<p>开始写起第一篇博客吧</p>");
         article.setSummary("开始写起第一篇博客吧");
         article.setStatus(4);
-        articleService.save(article);
+        articleService.create(article);
 
         blogConfigService.resetConfig();
     }

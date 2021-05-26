@@ -3,6 +3,7 @@ package cn.neptu.neplog.service.impl;
 import cn.neptu.neplog.factory.FileServiceFactory;
 import cn.neptu.neplog.config.common.UploadFileConfig;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Storage;
 import cn.neptu.neplog.model.query.StorageQuery;
 import cn.neptu.neplog.repository.StorageRepository;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collection;
 
 @Service("storageService")
 public class StorageServiceImpl extends AbstractCrudService<Storage, Long> implements StorageService {
@@ -30,8 +33,9 @@ public class StorageServiceImpl extends AbstractCrudService<Storage, Long> imple
     }
 
     @Override
-    public Page<Storage> listFiles(StorageQuery query, Pageable pageable) {
-        return storageRepository.findAll(query.toSpecification(),pageable);
+    public PageDTO<Storage> queryBy(StorageQuery query, Pageable pageable) {
+        Page<Storage> storage = storageRepository.findAll(query.toSpecification(),pageable);
+        return new PageDTO<>(storage);
     }
 
     @Override
@@ -51,12 +55,20 @@ public class StorageServiceImpl extends AbstractCrudService<Storage, Long> imple
     }
 
     @Override
-    public Storage delete(String path) {
-        Storage storage = storageRepository.findByFilePath(path)
-                .orElseThrow(() -> new ResourceNotFoundException("无法从数据库获取文件路径: " + path));
+    public Storage deleteById(Long id) {
+        Storage storage = getNotNullById(id);
         if(fileServiceFactory.getFileService(storage.getLocation()).delete(storage)){
             storageRepository.delete(storage);
         }
         return storage;
+    }
+
+    @Override
+    public long deleteByIdIn(Collection<Long> longs) {
+        long count = 0;
+        for (Long aLong : longs) {
+           count += deleteById(aLong) == null ? 0 : 1;
+        }
+        return count;
     }
 }

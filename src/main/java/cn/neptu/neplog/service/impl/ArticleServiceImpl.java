@@ -52,11 +52,6 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
         this.tagRepository = tagRepository;
     }
 
-    @Override
-    public Article save(Article article) {
-        return articleRepository.save(article);
-    }
-
     @Transactional
     @Override
     public Article save(ArticleDTO articleDTO) {
@@ -187,7 +182,6 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     @Override
     public ArticleDTO findDetailById(Long id) {
         Article article = getNotNullById(id);
-        ArticleDTO detailDTO = articleMapper.toDto(article);
 
         // 检查是否有阅读权限
         if(!SecurityUtil.isOwner()){
@@ -198,6 +192,7 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
             }
         }
 
+        ArticleDTO detailDTO = articleMapper.toDto(article);
         detailDTO.setContent(article.getContent());
         detailDTO.setHtmlContent(article.getHtmlContent());
         return detailDTO;
