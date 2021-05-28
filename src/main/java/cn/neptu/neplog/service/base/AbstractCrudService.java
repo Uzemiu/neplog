@@ -3,7 +3,6 @@ package cn.neptu.neplog.service.base;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.exception.ResourceNotFoundException;
 import cn.neptu.neplog.repository.BaseRepository;
-import jdk.management.resource.ResourceRequestDeniedException;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;

@@ -1,7 +1,7 @@
 package cn.neptu.neplog.utils;
 
 import cn.hutool.core.util.CharUtil;
-import com.qcloud.cos.utils.StringUtils;
+import org.springframework.util.StringUtils;
 
 public class StringUtil {
 
@@ -13,5 +13,9 @@ public class StringUtil {
             }
         }
         return -1;
+    }
+
+    public static String trim(String s, char c){
+        return StringUtils.trimTrailingCharacter(StringUtils.trimLeadingCharacter(s,c),c);
     }
 }

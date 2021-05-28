@@ -1,5 +1,6 @@
 package cn.neptu.neplog.model.entity;
 
+import cn.neptu.neplog.repository.ArticleRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,39 +46,45 @@ public class BaseArticle extends BaseEntity{
     private Integer priority;
 
     /**
-     * 0 Draft
-     * 4 Published
+     * 0 草稿
+     * 4 公开
      */
     @Column(name = "status")
     @ColumnDefault("0")
     private Integer status;
 
-    @Column(name = "views")
+    /**
+     * 只能通过{@link ArticleRepository#updateViews}修改
+     */
+    @Column(name = "views", updatable = false)
     @ColumnDefault("1")
     private Long views;
 
-    @Column(name = "likes")
+    /**
+     * 只能通过{@link ArticleRepository#updateLikes}修改
+     */
+    @Column(name = "likes", updatable = false)
     @ColumnDefault("0")
     private Long likes;
 
-    @Column(name = "comments")
+    /**
+     * 只能通过{@link ArticleRepository#updateComments}修改
+     */
+    @Column(name = "comments", updatable = false)
     @ColumnDefault("0")
     private Long comments;
 
     /**
-     * 0 Anybody
-     * 4 Require review
-     * 8 User only
-     * 16 Closed(Owner only)
+     * 0 任何人
+     * 16 关闭(仅限博主)
      */
     @Column(name = "comment_permission")
     @ColumnDefault("0")
     private Integer commentPermission;
 
     /**
-     * 0 Anybody
-     * 8 User only
-     * 16 Private
+     * 0 任何人
+     * 16 私有
      */
     @Column(name = "view_permission")
     @ColumnDefault("0")

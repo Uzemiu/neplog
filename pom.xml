@@ -6,7 +6,7 @@
 
     <groupId>cn.neptu</groupId>
     <artifactId>neplog</artifactId>
-    <version>0.2</version>
+    <version>0.31</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -135,6 +135,13 @@
             <artifactId>cos_api</artifactId>
             <version>5.6.24</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>

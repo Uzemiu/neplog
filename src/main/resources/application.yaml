@@ -55,3 +55,10 @@ neplog:
     token-expire-time: 24
     token-refresh-time: 2
     reset-password: false
+
+  seo:
+    sitemap:
+      enabled: true
+      base-url: https://neptu.cn
+      target-folder: .
+
