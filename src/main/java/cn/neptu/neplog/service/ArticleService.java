@@ -31,8 +31,6 @@ public interface ArticleService extends CrudService<Article, Long> ,VisitService
 
     long updateComments(Long id, Long increment);
 
-    long countInvisibleArticlesByTag(Long tagId);
-
     Map<String, Long> countByLabel();
 
 }

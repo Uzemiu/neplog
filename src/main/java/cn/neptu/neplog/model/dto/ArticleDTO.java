@@ -42,6 +42,10 @@ public class ArticleDTO {
 
     private List<TagDTO> tags;
 
+    private ArticleDTO prev;
+
+    private ArticleDTO next;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
 

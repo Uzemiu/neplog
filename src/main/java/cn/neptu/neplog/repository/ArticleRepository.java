@@ -3,6 +3,8 @@ package cn.neptu.neplog.repository;
 import cn.neptu.neplog.model.entity.Article;
 import cn.neptu.neplog.model.entity.Category;
 import cn.neptu.neplog.model.entity.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,9 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpecificationExecutor<Article> {
@@ -59,6 +59,12 @@ public interface ArticleRepository extends BaseRepository<Article,Long>, JpaSpec
                      @Param("status") Integer status,
                      @Param("vp") Integer viewPermission,
                      @Param("deleted") Boolean deleted);
+
+    Page<Article> getByStatusAndViewPermissionAndDeletedAndCreateTimeAfterOrderByCreateTimeAsc(
+            Integer status, Integer viewPermission, Boolean deleted, Date createTime, Pageable pageable);
+
+    Page<Article> getByStatusAndViewPermissionAndDeletedAndCreateTimeBeforeOrderByCreateTimeDesc(
+            Integer status, Integer viewPermission, Boolean deleted, Date createTime, Pageable pageable);
 
     @Transactional
     @Modifying

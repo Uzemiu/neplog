@@ -1,6 +1,7 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.model.entity.ArticleLike;
+import cn.neptu.neplog.model.entity.BaseLike;
 import cn.neptu.neplog.repository.ArticleLikeRepository;
 import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.service.base.AbstractLikeService;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
 
 @Service("articleLikeService")
 public class ArticleLikeServiceImpl
@@ -33,5 +36,24 @@ public class ArticleLikeServiceImpl
             articleRepository.updateLikes(like.getTargetId(), (long)scoreChange);
         }
         return scoreChange;
+    }
+
+    @Transactional
+    @Override
+    public ArticleLike deleteById(Long aLong) {
+        ArticleLike like = getNotNullById(aLong);
+        articleRepository.updateLikes(like.getTargetId(), (long)-like.getOpinion());
+        likeRepository.delete(like);
+        return like;
+    }
+
+    @Transactional
+    @Override
+    public long deleteByIdIn(Collection<Long> longs) {
+        long count = 0;
+        for (Long aLong : longs) {
+           count += deleteById(aLong) == null ? 0 : 1;
+        }
+        return count;
     }
 }

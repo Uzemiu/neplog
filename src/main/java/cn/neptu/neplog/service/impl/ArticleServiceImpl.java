@@ -18,17 +18,18 @@ import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.service.mapstruct.ArticleMapper;
 import cn.neptu.neplog.utils.SecurityUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
 import java.util.*;
 
-import static cn.neptu.neplog.constant.ArticleConstant.STATUS_PUBLISHED;
-import static cn.neptu.neplog.constant.ArticleConstant.VIEW_PERMISSION_PRIVATE;
+import static cn.neptu.neplog.constant.ArticleConstant.*;
 
 @Service("articleService")
 public class ArticleServiceImpl extends AbstractCrudService<Article, Long> implements ArticleService {
@@ -132,12 +133,6 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
     }
 
     @Override
-    public long countInvisibleArticlesByTag(Long tagId) {
-        return articleRepository.countByTags(
-                tagId, STATUS_PUBLISHED, VIEW_PERMISSION_PRIVATE, false);
-    }
-
-    @Override
     public Map<String, Long> countByLabel() {
         Map<String, Long> res = new HashMap<>();
         res.put("published", articleRepository.countByStatus(STATUS_PUBLISHED));
@@ -161,7 +156,7 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
         Article article = getNotNullById(id);
 
         ArticleDTO viewDTO = articleMapper.toDto(article);
-        viewDTO.setHtmlContent(article.getHtmlContent());
+        viewDTO.setHtmlContent(article.getHtmlContent()); // mapper.toDto默认不设置content和htmlContent
         // 检查是否有阅读权限
         if(!SecurityUtil.isOwner()){
             if (article.getDeleted()
@@ -176,6 +171,21 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
             }
         }
 
+        Pageable page = PageRequest.of(0, 1);
+        List<Article> next = articleRepository
+                .getByStatusAndViewPermissionAndDeletedAndCreateTimeAfterOrderByCreateTimeAsc(
+                        STATUS_PUBLISHED, VIEW_PERMISSION_ANYBODY, false, article.getCreateTime(),page)
+                .getContent();
+        List<Article> prev = articleRepository
+                .getByStatusAndViewPermissionAndDeletedAndCreateTimeBeforeOrderByCreateTimeDesc(
+                        STATUS_PUBLISHED, VIEW_PERMISSION_ANYBODY, false, article.getCreateTime(),page)
+                .getContent();
+        if(!CollectionUtils.isEmpty(next)){
+            viewDTO.setNext(articleMapper.toDto(next.get(0)));
+        }
+        if(!CollectionUtils.isEmpty(prev)){
+            viewDTO.setPrev(articleMapper.toDto(prev.get(0)));
+        }
         return viewDTO;
     }
 

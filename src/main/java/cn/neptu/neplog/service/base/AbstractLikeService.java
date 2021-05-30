@@ -31,9 +31,9 @@ public abstract class AbstractLikeService<LIKE extends BaseLike>
         LIKE prev = likeRepository.findByTargetIdAndIdentity(like.getTargetId(), like.getIdentity());
         int opinionScoreChange = like.getOpinion();
         if(prev != null){
+            opinionScoreChange -= prev.getOpinion();
             like.setId(prev.getId());
             prev.setOpinion(like.getOpinion());
-            opinionScoreChange -= prev.getOpinion();
         }
         likeRepository.save(like);
         return opinionScoreChange;

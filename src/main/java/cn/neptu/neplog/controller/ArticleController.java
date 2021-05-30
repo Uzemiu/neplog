@@ -65,6 +65,11 @@ public class ArticleController {
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
 
+    public BaseResponse<?> nextprevArticle(){
+
+        return BaseResponse.ok();
+    }
+
     @ApiOperation("后台查询文章信息")
     @GetMapping("/detail")
     public BaseResponse<ArticleDTO> getArticleDetail(@Validated @NotNull Long id){
