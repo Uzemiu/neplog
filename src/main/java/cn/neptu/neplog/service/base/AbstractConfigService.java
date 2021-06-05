@@ -2,8 +2,6 @@ package cn.neptu.neplog.service.base;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.neptu.neplog.exception.InternalException;
-import cn.neptu.neplog.model.config.BlogConfig;
-import cn.neptu.neplog.model.config.TencentCosConfig;
 import cn.neptu.neplog.repository.BaseRepository;
 import cn.neptu.neplog.service.ConfigService;
 
