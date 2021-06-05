@@ -25,3 +25,6 @@ hs_err_pid*
 uploads/
 target/
 log/
+
+# test
+sitemap.xml

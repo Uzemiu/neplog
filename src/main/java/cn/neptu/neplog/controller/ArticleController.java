@@ -24,10 +24,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static cn.neptu.neplog.constant.ArticleConstant.STATUS_PUBLISHED;
 
 @RestController
 @RequestMapping("/api/article")
@@ -45,7 +44,10 @@ public class ArticleController {
                                                    HttpServletRequest request){
         String ip = RequestUtil.getIp(request);
         ArticleDTO articleDTO = articleService.findViewById(id);
-        eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
+        if(articleDTO.getStatus() != null
+                && articleDTO.getStatus().equals(STATUS_PUBLISHED)){
+            eventPublisher.publishEvent(new ArticleViewEvent(this,id.toString(),ip));
+        }
         return BaseResponse.ok("ok", articleDTO);
     }
 
@@ -59,16 +61,12 @@ public class ArticleController {
         if(!SecurityUtil.isOwner()){
             // 普通用户默认查询未被删除文章的可见文章
             query.setDeleted(false);
-            query.setStatus(ArticleConstant.STATUS_PUBLISHED);
+            query.setStatus(STATUS_PUBLISHED);
             query.setViewPermission(ArticleConstant.VIEW_PERMISSION_ANYBODY);
         }
         return BaseResponse.ok("ok",articleService.queryBy(query,newPageable));
     }
 
-    public BaseResponse<?> nextprevArticle(){
-
-        return BaseResponse.ok();
-    }
 
     @ApiOperation("后台查询文章信息")
     @GetMapping("/detail")

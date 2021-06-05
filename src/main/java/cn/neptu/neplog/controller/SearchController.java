@@ -1,10 +1,13 @@
 package cn.neptu.neplog.controller;
 
 import cn.neptu.neplog.constant.ArticleConstant;
+import cn.neptu.neplog.model.dto.ArticleDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.ArticleService;
 import cn.neptu.neplog.utils.SecurityUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +24,10 @@ public class SearchController {
 
     private final ArticleService articleService;
 
+    @ApiOperation("搜索文章")
     @GetMapping
-    public BaseResponse<?> search(String content,
-                                  @PageableDefault(sort = "createTime",
+    public BaseResponse<PageDTO<ArticleDTO>> search(String content,
+                                                    @PageableDefault(sort = "createTime",
                                           direction = Sort.Direction.DESC) Pageable pageable){
         ArticleQuery query = new ArticleQuery();
         query.setContent(content);

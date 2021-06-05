@@ -1,11 +1,13 @@
 package cn.neptu.neplog.service;
 
 import cn.neptu.neplog.model.dto.FriendDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Friend;
 import cn.neptu.neplog.model.query.FriendQuery;
 import cn.neptu.neplog.service.base.CrudService;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,9 @@ public interface FriendService extends CrudService<Friend, Long> {
 
     Friend update(FriendDTO friend);
 
-    List<FriendDTO> queryBy(FriendQuery query, Pageable pageable);
+    PageDTO<FriendDTO> queryBy(FriendQuery query, Pageable pageable);
+
+    void updateStatusByIdIn(Collection<Long> ids, Integer status);
 
     List<FriendDTO> listFriendView();
 

@@ -1,5 +1,6 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.entity.ArticleLike;
 import cn.neptu.neplog.model.entity.BaseLike;
 import cn.neptu.neplog.repository.ArticleLikeRepository;
@@ -31,6 +32,8 @@ public class ArticleLikeServiceImpl
     @Transactional
     @Override
     public int updateLike(ArticleLike like, HttpServletRequest request) {
+        articleRepository.findById(like.getTargetId())
+                .orElseThrow(() -> new BadRequestException("文章不存在"));
         int scoreChange = super.updateLike(like, request);
         if(scoreChange != 0){
             articleRepository.updateLikes(like.getTargetId(), (long)scoreChange);

@@ -1,8 +1,8 @@
 package cn.neptu.neplog.service;
 
-import cn.neptu.neplog.model.config.MailConfig;
+import cn.neptu.neplog.config.MailConfig;
 
-public interface MailService extends ConfigService<MailConfig, Long>{
+public interface MailService{
 
     void sendSimpleMail(String to, String subject, String content);
 

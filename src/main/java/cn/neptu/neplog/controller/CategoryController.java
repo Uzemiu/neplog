@@ -7,6 +7,8 @@ import cn.neptu.neplog.model.query.CategoryQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
 import cn.neptu.neplog.service.CategoryService;
 import cn.neptu.neplog.service.mapstruct.CategoryMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +21,27 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @ApiOperation("查询所有分类")
     @GetMapping
     @AnonymousAccess
     public BaseResponse<List<CategoryDTO>> queryBy(CategoryQuery query){
         return BaseResponse.ok("ok", categoryService.queryBy(query));
     }
 
+    @ApiOperation("创建分类")
     @PostMapping
-    public BaseResponse<?> createCategory(@RequestBody Category category){
+    public BaseResponse<Category> createCategory(@RequestBody Category category){
         return BaseResponse.ok("创建分类成功", categoryService.create(category));
     }
 
+    @ApiOperation("更新分类")
     @PutMapping
     public BaseResponse<?> updateCategory(@RequestBody Category category){
         categoryService.update(category);
         return BaseResponse.ok("更新分类成功");
     }
 
+    @ApiOperation("删除分类")
     @DeleteMapping
     public BaseResponse<?> deleteCategory(@RequestBody Long id){
         categoryService.deleteById(id);

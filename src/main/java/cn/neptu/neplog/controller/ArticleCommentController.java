@@ -6,11 +6,10 @@ import cn.neptu.neplog.model.dto.CommentDTO;
 import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.query.ArticleCommentQuery;
 import cn.neptu.neplog.model.support.BaseResponse;
-import cn.neptu.neplog.model.support.UserAgentInfo;
 import cn.neptu.neplog.service.ArticleCommentService;
 import cn.neptu.neplog.utils.RequestUtil;
-import cn.neptu.neplog.utils.SecurityUtil;
 import eu.bitwalker.useragentutils.UserAgent;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +28,7 @@ public class ArticleCommentController {
 
     private final ArticleCommentService articleCommentService;
 
+    @ApiOperation("用户查询文章下顶层评论")
     @GetMapping
     @AnonymousAccess
     public BaseResponse<?> listByArticleId(ArticleCommentQuery query,
@@ -45,6 +45,7 @@ public class ArticleCommentController {
         return BaseResponse.ok("ok", all);
     }
 
+    @ApiOperation("后台查询文章评论")
     @GetMapping("/query")
     public BaseResponse<PageDTO<CommentDTO>> queryBy(ArticleCommentQuery query,
                                    @PageableDefault(sort = "createTime",
@@ -52,6 +53,7 @@ public class ArticleCommentController {
         return BaseResponse.ok("ok", articleCommentService.queryByWithArticle(query, pageable));
     }
 
+    @ApiOperation("发布评论")
     @PostMapping
     @AnonymousAccess
     public BaseResponse<?> postComment(@RequestBody @Validated CommentDTO commentDTO, HttpServletRequest request){
@@ -69,6 +71,7 @@ public class ArticleCommentController {
         return BaseResponse.ok();
     }
 
+    @ApiOperation("删除评论")
     @DeleteMapping
     public BaseResponse<?> deleteComment(@RequestBody List<Long> id){
         articleCommentService.deleteByIdIn(id);

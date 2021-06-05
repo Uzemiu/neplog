@@ -13,6 +13,10 @@ logging:
 #    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  mail:
+    host: smtp.exmail.qq.com
+    port: 465
+
   datasource:
     url: jdbc:h2:~/.neplog/neplog
     username: neplog

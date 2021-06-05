@@ -1,16 +1,19 @@
 package cn.neptu.neplog.service.impl;
 
 import cn.neptu.neplog.model.dto.FriendDTO;
+import cn.neptu.neplog.model.dto.PageDTO;
 import cn.neptu.neplog.model.entity.Friend;
 import cn.neptu.neplog.model.query.FriendQuery;
 import cn.neptu.neplog.repository.FriendRepository;
 import cn.neptu.neplog.service.FriendService;
 import cn.neptu.neplog.service.base.AbstractCrudService;
 import cn.neptu.neplog.service.mapstruct.FriendMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +44,16 @@ public class FriendServiceImpl extends AbstractCrudService<Friend, Long> impleme
     }
 
     @Override
-    public List<FriendDTO> queryBy(FriendQuery query, Pageable pageable) {
-        return friendMapper.toDto(friendRepository.findAll(query.toSpecification(),pageable).toList());
+    public PageDTO<FriendDTO> queryBy(FriendQuery query, Pageable pageable) {
+        Page<Friend> friends = friendRepository.findAll(query.toSpecification(),pageable);
+        return new PageDTO<>(friends.map(friendMapper::toDto));
+    }
+
+    @Override
+    public void updateStatusByIdIn(Collection<Long> ids, Integer status) {
+        Assert.notNull(ids, "Ids must not be null");
+        Assert.notNull(status, "Status must not be null");
+        friendRepository.updateStatusByIdIn(ids, status);
     }
 
     @Override

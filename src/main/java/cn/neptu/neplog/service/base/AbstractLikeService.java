@@ -7,7 +7,6 @@ import cn.neptu.neplog.utils.RequestUtil;
 import cn.neptu.neplog.utils.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 public abstract class AbstractLikeService<LIKE extends BaseLike>
         extends AbstractCrudService<LIKE, Long>

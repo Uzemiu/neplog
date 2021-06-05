@@ -1,4 +1,4 @@
-package cn.neptu.neplog.model.config;
+package cn.neptu.neplog.config;
 
 import cn.neptu.neplog.model.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -6,51 +6,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Entity
-public class MailConfig extends BaseEntity {
+@Primary
+@Component
+public class MailConfig extends MailProperties {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Map<String, String> properties;
 
-    @Column(name = "host")
-    @ColumnDefault("''")
-    private String host;
-
-    @Column(name = "username")
-    @ColumnDefault("''")
-    private String username;
-
-    @Column(name = "password")
-    @ColumnDefault("''")
-    private String password;
-
-    @Column(name = "port")
-    @ColumnDefault("0")
-    private Integer port;
-
-    @Column(name = "from_user")
-    @ColumnDefault("''")
-    private String from;
-
-    @Column(name = "protocol")
-    @ColumnDefault("''")
-    private String protocol;
-
-    @Column(name = "encoding")
-    @ColumnDefault("''")
-    private String encoding;
-
-    @Override
-    protected void prePersist() {
-        super.prePersist();
+    public MailConfig() {
+        properties = new HashMap<>();
+        properties.put("mail.smtp.auth", Boolean.TRUE.toString());
+        properties.put("mail.smtp.ssl.enable", Boolean.TRUE.toString());
+        properties.put("mail.smtp.timeout", "10000");
     }
+
+
 }

@@ -10,6 +10,8 @@ import cn.neptu.neplog.model.support.SitemapEntry;
 import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.repository.CategoryRepository;
 import cn.neptu.neplog.repository.TagRepository;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
@@ -25,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class SitemapUtil implements InitializingBean {
 
@@ -136,6 +139,7 @@ public class SitemapUtil implements InitializingBean {
         try {
             XMLWriter writer = new XMLWriter(new FileOutputStream(sitemap), format);
             writer.write(urlset);
+            log.info("成功生成站点地图: {}", sitemap.getAbsoluteFile());
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();

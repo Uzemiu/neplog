@@ -1,12 +1,10 @@
 package cn.neptu.neplog.service.impl;
 
+import cn.neptu.neplog.config.MailConfig;
 import cn.neptu.neplog.exception.BadRequestException;
-import cn.neptu.neplog.model.config.MailConfig;
-import cn.neptu.neplog.repository.MailConfigRepository;
 import cn.neptu.neplog.service.MailService;
-import cn.neptu.neplog.service.ConfigService;
-import cn.neptu.neplog.service.base.AbstractConfigService;
-import cn.neptu.neplog.service.base.AbstractCrudService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -16,27 +14,38 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.Properties;
 
+@Slf4j
 @Service("mailService")
-public class MailServiceImpl
-        extends AbstractConfigService<MailConfig, Long>
-        implements MailService {
+public class MailServiceImpl implements MailService, InitializingBean {
 
-    private final MailConfigRepository mailConfigRepository;
     private final JavaMailSenderImpl mailSender;
+    private final MailConfig mailConfig;
 
-    private MailConfig mailProperty;
-
-    public MailServiceImpl(MailConfigRepository mailConfigRepository) {
-        super(mailConfigRepository);
-        this.mailConfigRepository = mailConfigRepository;
+    public MailServiceImpl(MailConfig mailConfig) {
+        this.mailConfig = mailConfig;
         this.mailSender = new JavaMailSenderImpl();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        mailSender.setHost(mailConfig.getHost());
+        mailSender.setUsername(mailConfig.getUsername());
+        mailSender.setPassword(mailConfig.getPassword());
+        mailSender.setPort(mailConfig.getPort());
+        mailSender.setProtocol(mailConfig.getProtocol());
+        mailSender.setDefaultEncoding(mailConfig.getDefaultEncoding().toString());
+        Properties properties = new Properties();
+        properties.putAll(mailConfig.getProperties());
+        mailSender.setJavaMailProperties(properties);
+//        mailSender.testConnection();
     }
 
     @Override
     public void sendSimpleMail(String to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailProperty.getFrom());
+        message.setFrom(mailConfig.getUsername());
         message.setTo(to);
         message.setSubject(subject);
         message.setText(content);
@@ -49,29 +58,30 @@ public class MailServiceImpl
         MimeMessageHelper messageHelper;
         try {
             messageHelper = new MimeMessageHelper(message, true);
-            messageHelper.setFrom(mailProperty.getFrom());
+            messageHelper.setFrom(mailConfig.getUsername());
             messageHelper.setTo(subject);
             message.setSubject(subject);
             messageHelper.setText(content, true);
             mailSender.send(message);
         } catch (MessagingException e) {
+            log.error("发送邮件失败", e);
         }
     }
 
     @Override
     public void testConnection() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailProperty.getHost());
-        mailSender.setDefaultEncoding(mailProperty.getEncoding());
-        mailSender.setUsername(mailProperty.getUsername());
-        mailSender.setPassword(mailProperty.getPassword());
-        mailSender.setProtocol(mailProperty.getProtocol());
-        mailSender.setPort(mailProperty.getPort());
+        mailSender.setHost(mailConfig.getHost());
+        mailSender.setDefaultEncoding(mailConfig.getDefaultEncoding().toString());
+        mailSender.setUsername(mailConfig.getUsername());
+        mailSender.setPassword(mailConfig.getPassword());
+        mailSender.setProtocol(mailConfig.getProtocol());
+        mailSender.setPort(mailConfig.getPort());
 
         try {
             mailSender.testConnection();
         } catch (MessagingException e) {
-            e.printStackTrace();
+            log.error("测试邮件服务失败", e);
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -81,7 +91,7 @@ public class MailServiceImpl
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(mailProperty.getFrom());
+            helper.setFrom(mailConfig.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true);
@@ -92,6 +102,7 @@ public class MailServiceImpl
             mailSender.send(message);
             //日志信息
         } catch (MessagingException e) {
+            log.error("发送邮件失败", e);
         }
     }
 
