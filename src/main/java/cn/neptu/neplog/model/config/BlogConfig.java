@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,11 +27,12 @@ public class BlogConfig extends BaseEntity {
     @ColumnDefault("'neplog'")
     private String blogName;
 
-    @Column(name = "visit_count")
+    @Column(name = "visit_count", updatable = false)
     @ColumnDefault("0")
     private Long visitCount;
 
-    @Column(name = "install_time")
+    @CreationTimestamp
+    @Column(name = "install_time", updatable = false)
     private Date installTime;
 
     /**
@@ -47,13 +49,12 @@ public class BlogConfig extends BaseEntity {
     //-----------
 
     @Column(name = "default_file_service")
-    @ColumnDefault("'default'")
+    @ColumnDefault("'local'")
     private String defaultFileService;
 
     @Column(name = "available_file_service")
     @ColumnDefault("''")
     private String availableFileService;
-
 
 
     @Override
@@ -75,10 +76,10 @@ public class BlogConfig extends BaseEntity {
             globalCss = "";
         }
         if(defaultFileService == null){
-            defaultFileService = "default";
+            defaultFileService = "local";
         }
         if(availableFileService == null){
-            defaultFileService = "";
+            availableFileService = "";
         }
     }
 }

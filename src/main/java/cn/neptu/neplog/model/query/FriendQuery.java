@@ -20,6 +20,8 @@ public class FriendQuery extends BaseQuery<Friend>{
 
     private String link;
 
+    private String team;
+
     /**
      * 0 待审核
      * 1 公开
@@ -41,6 +43,9 @@ public class FriendQuery extends BaseQuery<Friend>{
             }
             if(StringUtils.hasText(link)){
                 predicates.add(criteriaBuilder.like(root.get("link"),"%" + link + "%"));
+            }
+            if(StringUtils.hasText(team)){
+                predicates.add(criteriaBuilder.equal(root.get("team"), team));
             }
             if(status != null){
                 predicates.add(criteriaBuilder.equal(root.get("status"),status));

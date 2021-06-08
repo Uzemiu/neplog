@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service("blogConfigService")
@@ -21,6 +22,17 @@ public class BlogConfigServiceImpl
     protected BlogConfigServiceImpl(BlogConfigRepository repository) {
         super(repository);
         this.repository = repository;
+    }
+
+    @Override
+    public void resetConfig() {
+        List<BlogConfig> blogConfigList = repository.findAll();
+        BlogConfig config = blogConfigList.isEmpty() ? new BlogConfig() : blogConfigList.get(0);
+        config.setBlogName("Neplog");
+        config.setGlobalCss("");
+        config.setIcp("");
+        config.setDefaultFileService("local");
+        repository.save(config);
     }
 
     @Override

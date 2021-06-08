@@ -15,9 +15,9 @@ import java.util.Set;
 @Repository
 public interface TagRepository extends BaseRepository<Tag,Long> {
 
-    Set<Tag> findByTagIn(Collection<String> tags);
+    Set<Tag> findByNameIn(Collection<String> tags);
 
-    Optional<Tag> findByTag(String tag);
+    Optional<Tag> findByName(String tag);
 
     @Query("select t.articles.size from Tag t where t.id = :id")
     long getArticleCount(@Param("id") Long id);

@@ -6,9 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.io.File;
 
-@SpringBootTest(classes = App.class)
-@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = App.class)
+//@RunWith(SpringRunner.class)
 public class MailTest {
 
     @Resource
@@ -16,6 +17,6 @@ public class MailTest {
 
     @Test
     public void testMail(){
-        mailService.sendSimpleMail("@qq.com","✧(๑•̀ㅁ•́ฅ早","✧(๑•̀ㅁ•́ฅ早");
+//        mailService.sendSimpleMail("@qq.com","✧(๑•̀ㅁ•́ฅ早","✧(๑•̀ㅁ•́ฅ早");
     }
 }

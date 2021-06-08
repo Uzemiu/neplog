@@ -13,6 +13,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@Table(name = "friend", indexes = {
+        @Index(name = "friend_team", columnList = "team")})
 public class Friend extends BaseEntity{
 
     @Id
@@ -34,6 +36,10 @@ public class Friend extends BaseEntity{
     @ColumnDefault("''")
     private String introduction;
 
+    @Column(name = "team")
+    @ColumnDefault("''")
+    private String team;
+
     /**
      * 0 待审核
      * 1 公开
@@ -50,6 +56,9 @@ public class Friend extends BaseEntity{
         }
         if(status == null){
             status = 0;
+        }
+        if(team == null){
+            team = "";
         }
     }
 }

@@ -6,7 +6,7 @@
 
     <groupId>cn.neptu</groupId>
     <artifactId>neplog</artifactId>
-    <version>0.31</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <parent>

@@ -27,4 +27,6 @@ public class FriendDTO {
 
     @Range(min = 0, max = 1,message = "状态只能是0(待审核)或1(公开)")
     private Integer status;
+
+    private String team;
 }

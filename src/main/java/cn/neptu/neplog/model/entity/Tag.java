@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@Table(name = "tag")
 public class Tag extends BaseEntity{
 
     @Id
@@ -21,8 +22,8 @@ public class Tag extends BaseEntity{
     @Column(name = "tag_id")
     private Long id;
 
-    @Column(name = "tag",length = 31,nullable = false, unique = true)
-    private String tag;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     @ManyToMany(mappedBy = "tags")
     @org.hibernate.annotations.ForeignKey(name = "none")

@@ -59,12 +59,12 @@ public class ArticleServiceImpl extends AbstractCrudService<Article, Long> imple
 
         if(articleDTO.getTags() != null){
             for(TagDTO tag: articleDTO.getTags()){
-                if(tag.getId() == null && StringUtils.hasText(tag.getTag())){
+                if(tag.getId() == null && StringUtils.hasText(tag.getName())){
                     Tag newTag = new Tag();
-                    newTag.setTag(tag.getTag());
+                    newTag.setName(tag.getName());
 
                     // 防止tag重名
-                    tagRepository.findByTag(tag.getTag())
+                    tagRepository.findByName(tag.getName())
                             .orElseGet(() -> tagRepository.save(newTag));
                     tag.setId(newTag.getId());
                 }

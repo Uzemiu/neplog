@@ -14,6 +14,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@Table(name = "storage", indexes = {
+        @Index(name = "storage_create_time", columnList = "create_time"),
+//        @Index(name = "storage_location", columnList = "location"),
+        @Index(name = "storage_type", columnList = "type")})
 public class Storage extends BaseEntity{
 
     @Id

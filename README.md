@@ -3,14 +3,18 @@
 这是一个基于Springboot + Hibernate + Redis + Vue开发的轻量级前后端分离个人博客项目的后端部分。
 前端仓库见[neplog-web](https://github.com/Uzemiu/neplog-web) 。
 
-同时也是一个个人以学习为主要目的的项目，主要是对以上所有技术的使用层面上的熟悉。
+同时也是一个个人以学习为主要目的的项目，主要是对以上所有技术的使用层面上的熟悉（其实就是做来玩玩）。
 
-开发过程中都有向 
-[Halo](https://github.com/halo-dev/halo) 和 
-[eladmin](https://github.com/elunez/eladmin) 学习
+目前项目基本功能开发完毕，正在测试阶段，可能存在许多BUG。
+如果发现BUG或者有更好的建议欢迎交流以及PR（不过好像除了我也不会有人用）。
 
-目前项目正在开发中...
+顺便也欢迎各位dalao来审计代码😀
 
+👉 [预览](https://neplog.cn)（暂时不开放后台）
+
+## 食用方法
+
+👉 [食用方法](https://www.neptu.cn/article/2)
 
 ## 更新日志
 

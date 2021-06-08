@@ -32,7 +32,7 @@ public class ImgTest {
     @Test
     public void testSitemap() throws JsonProcessingException {
 
-        sitemapUtil.generateSitemap();
+//        sitemapUtil.generateSitemap();
 
     }
 }

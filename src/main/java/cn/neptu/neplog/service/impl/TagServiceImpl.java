@@ -3,7 +3,6 @@ package cn.neptu.neplog.service.impl;
 import cn.neptu.neplog.exception.BadRequestException;
 import cn.neptu.neplog.model.dto.TagDTO;
 import cn.neptu.neplog.model.entity.Tag;
-import cn.neptu.neplog.model.query.ArticleQuery;
 import cn.neptu.neplog.repository.ArticleRepository;
 import cn.neptu.neplog.repository.TagRepository;
 import cn.neptu.neplog.service.TagService;
@@ -36,8 +35,8 @@ public class TagServiceImpl extends AbstractCrudService<Tag, Long> implements Ta
 
     @Override
     public Tag create(Tag tag) {
-        tagRepository.findByTag(tag.getTag())
-                .ifPresent(t -> {throw new BadRequestException(tag.getTag() + " 已经存在"); });
+        tagRepository.findByName(tag.getName())
+                .ifPresent(t -> {throw new BadRequestException(tag.getName() + " 已经存在"); });
         return tagRepository.save(tag);
     }
 
@@ -48,7 +47,7 @@ public class TagServiceImpl extends AbstractCrudService<Tag, Long> implements Ta
 
     @Override
     public Set<Tag> findTagIn(Collection<String> tags) {
-        return tagRepository.findByTagIn(tags);
+        return tagRepository.findByNameIn(tags);
     }
 
     @Override

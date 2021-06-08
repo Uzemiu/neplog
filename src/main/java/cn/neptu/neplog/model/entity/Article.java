@@ -17,6 +17,9 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "article", indexes = {
+        @Index(name = "article_category_id", columnList = "category_id"),
+        @Index(name = "article_create_time", columnList = "create_time")})
 public class Article extends BaseArticle{
 
     @ManyToOne
@@ -28,7 +31,10 @@ public class Article extends BaseArticle{
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "article_id"),
             foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "tag_id"),
-            inverseForeignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+            inverseForeignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"),
+            indexes = {
+                @Index(name = "article_tag_article_id", columnList = "article_id"),
+                    @Index(name = "article_tag_tag_id", columnList = "tag_id")})
     private Set<Tag> tags;
 
 

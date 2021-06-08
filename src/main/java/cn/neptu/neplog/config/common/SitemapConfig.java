@@ -41,7 +41,4 @@ public class SitemapConfig {
         this.baseUrl = StringUtil.trim(baseUrl, '/');
     }
 
-    public void setTargetFolder(String targetFolder) {
-        this.targetFolder = StringUtils.trimTrailingCharacter(targetFolder, '/');
-    }
 }

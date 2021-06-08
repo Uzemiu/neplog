@@ -46,7 +46,8 @@ public abstract class AbstractConfigService<CONFIG, ID>
         return config.isEmpty() ? createConfig() : config.get(0);
     }
 
-    private CONFIG createConfig(){
+    @Override
+    public CONFIG createConfig(){
         try {
             CONFIG config = entityClass.newInstance();
             repository.save(config);

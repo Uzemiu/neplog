@@ -1,6 +1,5 @@
 package cn.neptu.neplog.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.neptu.neplog.annotation.AnonymousAccess;
 import cn.neptu.neplog.factory.ConfigFactory;
@@ -8,11 +7,9 @@ import cn.neptu.neplog.event.BlogVisitEvent;
 import cn.neptu.neplog.model.config.BlogConfig;
 import cn.neptu.neplog.model.dto.UserDTO;
 import cn.neptu.neplog.model.support.BaseResponse;
-import cn.neptu.neplog.model.vo.BlogConfigVO;
 import cn.neptu.neplog.service.PropertyService;
 import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.utils.RequestUtil;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,8 +33,6 @@ public class ConfigController {
     @GetMapping("/blog")
     @AnonymousAccess
     public BaseResponse<?> getBlogConfig(HttpServletRequest request){
-        eventPublisher.publishEvent(new BlogVisitEvent(this,"0",RequestUtil.getIp(request)));
-
         BlogConfig blogConfig = (BlogConfig) configFactory.getConfigService("blog").getConfig();
         UserDTO owner = userService.getOwner();
 
@@ -52,6 +47,8 @@ public class ConfigController {
 
         res.putAll(propertyService.asMap(propertyService.listByKeyLike("glide_image_%")));
         res.putAll(propertyService.asMap(propertyService.listByKeyLike("glide_title_%")));
+
+        eventPublisher.publishEvent(new BlogVisitEvent(this,"0",RequestUtil.getIp(request)));
 
         return BaseResponse.ok("ok", res);
     }

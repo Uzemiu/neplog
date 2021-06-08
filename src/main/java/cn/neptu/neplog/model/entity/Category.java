@@ -14,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
+@Table(name = "category", indexes = {
+        @Index(name = "category_parent_id", columnList = "parent_id")})
 public class Category extends BaseEntity {
 
     @Id

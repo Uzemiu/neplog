@@ -16,6 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "key", callSuper = false)
 @Entity
+@Table(name = "property")
 public class Property extends BaseEntity{
 
     @Id

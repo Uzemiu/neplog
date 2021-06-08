@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Order
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final RedisUtil redisUtil;
@@ -41,7 +43,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if(userId != null){
                 Optional<User> user = userService.getById(userId);
                 if(!user.isPresent()){
-                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,"User not found");
+                    filterChain.doFilter(httpServletRequest,httpServletResponse);
                     return;
                 }
                 SecurityUtil.setCurrentUser(user.get());
