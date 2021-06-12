@@ -136,13 +136,17 @@ public class SitemapUtil implements InitializingBean {
         OutputFormat format = OutputFormat.createPrettyPrint();
         format.setEncoding("UTF-8");
         File sitemap = new File(sitemapConfig.getTargetFolder() + "/sitemap.xml");
+        if(!sitemap.getParentFile().exists()){
+            log.warn("站点地图目标文件夹不存在: {}", sitemap.getAbsolutePath());
+            return;
+        }
         try {
             XMLWriter writer = new XMLWriter(new FileOutputStream(sitemap), format);
             writer.write(urlset);
             log.info("成功生成站点地图: {}", sitemap.getAbsoluteFile());
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("生成站点地图失败", e);
         }
 
     }

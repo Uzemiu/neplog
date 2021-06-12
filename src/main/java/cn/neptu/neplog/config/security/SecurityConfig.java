@@ -15,22 +15,17 @@ public class SecurityConfig {
     private String captchaPrefix;
 
     /**
-     * jwt签名密钥
-     */
-    private String secret;
-
-    /**
      * AES加密密钥
      */
     private String AESKey;
 
     /**
-     * jwt过期时间（小时）
+     * token过期时间（小时）
      */
     private int tokenExpireTime;
 
     /**
-     * jwt有效期小于该时间则续期（小时）
+     * token有效期小于该时间则续期（小时）
      */
     private int tokenRefreshTime;
 

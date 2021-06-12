@@ -1,10 +1,6 @@
 server:
   port: 80
-  servlet:
-    session:
-      cookie:
-        name: sid
-      timeout: 1d
+
 logging:
   file:
     path: log
@@ -18,7 +14,7 @@ spring:
     port: 465
 
   datasource:
-    url: jdbc:h2:~/.neplog/neplog
+    url: jdbc:h2:./.neplog/db/neplog
     username: neplog
     password: neplog
     driver-class-name: org.h2.Driver
@@ -40,8 +36,6 @@ spring:
     redis:
       repositories:
         enabled: false
-  profiles:
-    active: dev
 
 neplog:
   file:
@@ -49,13 +43,12 @@ neplog:
     # 必须以'/'开头
     virtual: /uploads
     options:
-      avatar: {path: [img], type: avatar, maxSize: 3,thumbnail: true, width: 200, height: 200}
+      avatar: {path: [img], type: avatar, maxSize: 3, thumbnail: true, width: 200, height: 200}
       cover: {path: [img], type: cover, maxSize: 3}
       image: {path: [img], type: image, maxSize: 3}
       file: {path: [common], type: file, maxSize: 30}
 
   security:
-    secret: j.2_d?+bn
     AESKey: I8KI6i+3UhXVd02N
     captcha-prefix: captcha
     token-expire-time: 24
@@ -66,5 +59,5 @@ neplog:
     sitemap:
       enabled: true
       base-url: https://neptu.cn
-      target-folder: .
+      target-folder: .neplog
 
