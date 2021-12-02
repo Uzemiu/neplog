@@ -138,10 +138,12 @@ public class UserServiceImpl extends AbstractCrudService<User, String> implement
 
     @Override
     public void resetBlogPassword() {
-        User owner = userRepository.findByLevel(LevelConstant.LEVEL_OWNER)
-                .orElseThrow(() -> new InternalException("无法获取博主信息"));
-        String newPassword = aesUtil.decrypt("neplog");
-        String bcryptedPassword = BCrypt.hashpw(newPassword,BCrypt.gensalt());
+        User owner = userRepository.findByLevel(LevelConstant.LEVEL_OWNER).orElse(null);
+        if(owner == null){
+            return;
+        }
+        owner.setUsername("neplog");
+        String bcryptedPassword = BCrypt.hashpw("neplog",BCrypt.gensalt());
         owner.setPassword(bcryptedPassword);
         userRepository.save(owner);
     }

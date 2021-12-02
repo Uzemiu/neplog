@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  neplog:
+    build: .
+    ports:
+      - 16002:16002
+    volumes:
+      - ./.neplog/application.yaml:/home/neplog/application.yaml
+      - ./.neplog:/home/neplog/.neplog
+    links:
+      - redis
+    environment:
+      TZ: Asia/Shanghai
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 80:80
+      - 443:443
+
+networks:
+  default:
+    driver: bridge
+    name: neplog_default

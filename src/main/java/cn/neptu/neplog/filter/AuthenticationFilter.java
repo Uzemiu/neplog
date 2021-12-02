@@ -6,8 +6,6 @@ import cn.neptu.neplog.service.UserService;
 import cn.neptu.neplog.utils.TokenUtil;
 import cn.neptu.neplog.utils.RedisUtil;
 import cn.neptu.neplog.utils.SecurityUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -19,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

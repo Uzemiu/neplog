@@ -36,6 +36,8 @@ spring:
     redis:
       repositories:
         enabled: false
+#  profiles:
+#    active: prod
 
 neplog:
   file:
